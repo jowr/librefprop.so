@@ -4,7 +4,7 @@ model PropsPureSubstance
 //package Medium = REFPROPMedium(final substanceNames={"water"},  final explicitVars = "pT");
 //package Medium = REFPROPMedium(final substanceNames={"ammonia"});
 //package Medium = REFPROPMedium(final substanceNames={"co2"});
-package Medium = REFPROPMediumPureSubstance(final substanceNames={"R12"});
+package Medium = REFPROPMediumPureSubstance(final substanceNames={"butane"});
 
 //package Medium = REFPROPMediumPureSubstance(final substanceNames={"water"});
 //package Medium = REFPROPMediumPureSubstance(final substanceNames={"ammonia"},  final explicitVars = "ph");

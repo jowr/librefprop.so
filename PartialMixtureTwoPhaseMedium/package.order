@@ -56,6 +56,6 @@ density_pT
 specificEnthalpy_dTX
 pressure
 specificEnthalpy
-densityLiquidPhase
-dynamicViscosityLiquidPhase
-dynamicViscosityGasPhase
+density_liq
+dynamicViscosity_liq
+dynamicViscosity_gas

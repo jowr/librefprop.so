@@ -16,8 +16,10 @@ package Medium = REFPROPMedium(final substanceNames={"R12"});
 //  Modelica.SIunits.MolarMass MM;
 Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
 
-Modelica.SIunits.DynamicViscosity eta_l = Medium.dynamicViscosityLiquidPhase(props.state);
-Modelica.SIunits.DynamicViscosity eta_g = Medium.dynamicViscosityGasPhase(props.state);
+Modelica.SIunits.DynamicViscosity eta_l = MediaTwoPhaseMixture.PartialMixtureTwoPhaseMedium.dynamicViscosity_liq(
+                                                                             props.state);
+Modelica.SIunits.DynamicViscosity eta_g = MediaTwoPhaseMixture.PartialMixtureTwoPhaseMedium.dynamicViscosity_gas(
+                                                                          props.state);
 /**/
 equation
 

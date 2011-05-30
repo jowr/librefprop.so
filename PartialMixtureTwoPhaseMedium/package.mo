@@ -651,13 +651,46 @@ algorithm
 end specificEnthalpy;
 
 
-replaceable function densityLiquidPhase
+replaceable function density_liq
   input ThermodynamicState state "Thermodynamic state record";
   output Modelica.SIunits.Density d_l;
 algorithm
   d_l:=state.d_l;
-end densityLiquidPhase;
+end density_liq;
 
+
+  replaceable function dynamicViscosity_liq "Viscosity of liquid phase"
+  //  extends dynamicViscosity; Warum funzt das nicht? Er sagt "multiple algorithms"
+    extends Modelica.Icons.Function;
+    input ThermodynamicState state "thermodynamic state record";
+    output DynamicViscosity eta "Dynamic viscosity";
+  /*protected 
+  Modelica.SIunits.Pressure p_sat =  max(state.p,saturationPressure(state.T, {1}));
+  ThermodynamicState state_l=state "liquid state";
+algorithm 
+  state_l.d:=state.d_l;
+  state_l.p:=p_sat;
+  eta := dynamicViscosity(state_l);
+//  eta := Modelica.Media.Water.IF97_Utilities.dynamicViscosity(state.d_l, state.T, p_sat, 1);
+//  Modelica.Utilities.Streams.print(String(p_sat));
+*/
+  end dynamicViscosity_liq;
+
+  replaceable function dynamicViscosity_gas "Viscosity of liquid phase"
+  //  extends dynamicViscosity; Warum funzt das nicht? Er sagt "multiple algorithms"
+    extends Modelica.Icons.Function;
+    input ThermodynamicState state "thermodynamic state record";
+    output DynamicViscosity eta "Dynamic viscosity";
+  /*protected 
+  Modelica.SIunits.Pressure p_sat =  min(state.p,saturationPressure(state.T, {1}));
+  ThermodynamicState state_g=state "gaseous state";
+algorithm 
+  state_g.d:=state.d_g;
+  state_g.p:=p_sat;
+  eta := dynamicViscosity(state_g);
+  */
+  //  eta := Modelica.Media.Water.IF97_Utilities.dynamicViscosity(state.d_g, state.T, p_sat, 1);
+  end dynamicViscosity_gas;
 
   annotation (Documentation(info="<html>
   <h1>PartialMixtureTwoPhaseMedium</h1>
