@@ -1,4 +1,4 @@
-within MediaTwoPhaseMixture.REFPROPMedium;
+within MediaTwoPhaseMixture.REFPROPMediumPureSubstance;
 function getProp_REFPROP_check
   "wrapper for getProp_REFPROP returning 1 property value with error check"
   extends partialREFPROP;

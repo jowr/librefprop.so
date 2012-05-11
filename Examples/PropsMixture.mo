@@ -1,35 +1,36 @@
 within MediaTwoPhaseMixture.Examples;
 model PropsMixture
 //package Medium = REFPROPMedium(final substanceNames={"isobutan"});
-package Medium = REFPROPMedium(final substanceNames={"R12"});
-//package Medium = REFPROPMedium(final substanceNames={"isobutan","propane"},final explicitVars = "pd");
+//package Medium = REFPROPMedium(final substanceNames={"R12"});
+package Medium = REFPROPMedium(final substanceNames={"isobutan","propane"});
+// ",final explicitVars = "pd"";
 //package Medium = MediaTwoPhaseMixture.REFPROPMedium(final substanceNames={"CO2","water"});
 
   Medium.BaseProperties props;
-/*
-  Modelica.SIunits.SpecificEnthalpy h=Medium.specificEnthalpy_pTX(1e5,293,{.5,.5});
+
+  Modelica.SIunits.Pressure psat=Medium.saturationPressure(300);
+
+/*  Modelica.SIunits.SpecificEnthalpy h=Medium.specificEnthalpy_pTX(1e5,293,{.5,.5});
   Modelica.SIunits.Density d;
   Modelica.SIunits.SpecificEntropy s;
   Modelica.SIunits.Temperature Tsat;
   Modelica.SIunits.Pressure psat;
   */
 //  Modelica.SIunits.MolarMass MM;
-Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
+/*Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
 
-Modelica.SIunits.DynamicViscosity eta_l = MediaTwoPhaseMixture.PartialMixtureTwoPhaseMedium.dynamicViscosity_liq(
-                                                                             props.state);
-Modelica.SIunits.DynamicViscosity eta_g = MediaTwoPhaseMixture.PartialMixtureTwoPhaseMedium.dynamicViscosity_gas(
-                                                                          props.state);
-/**/
+Modelica.SIunits.DynamicViscosity eta_l = Medium.dynamicViscosity_liq(props.state);
+Modelica.SIunits.DynamicViscosity eta_g = Medium.dynamicViscosity_gas(props.state);
+*/
 equation
 
     props.p = 1.59e5;
-    props.h = 1.848e5;
+//    props.h = 1.848e5;
   //  props.s = 5.88105;
-//   props.T = 253.15;
+   props.T = 253.15;
 //    props.Xi = {.5};
 //    props.X = {.1,.9};
-//    props.Xi = {1e-4};
+    props.Xi = {1e-4};
 
   //  d = props.d;
   //h = props.h;
