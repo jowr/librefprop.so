@@ -1,4 +1,4 @@
-within MediaTwoPhaseMixture.REFPROPMedium;
+within MediaTwoPhaseMixture.REFPROPMediumPureSubstance;
 function getSatProp_REFPROP
   "calls C function with property identifier & returns single property"
    input String what2calc;

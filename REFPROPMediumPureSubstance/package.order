@@ -1,3 +1,6 @@
+SaturationProperties
+saturationPressure
+saturationTemperature
 debugmode
 explicitVars
 fluidnames
@@ -8,8 +11,6 @@ StrJoin
 partialREFPROP
 getSatProp_REFPROP_check
 getSatProp_REFPROP
-saturationPressure
-saturationTemperature
 getProp_REFPROP_check
 getProp_REFPROP
 setState

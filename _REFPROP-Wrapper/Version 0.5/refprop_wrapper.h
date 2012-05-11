@@ -33,8 +33,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-	EXPORT double props_REFPROP(char* what, char* statevars, char* fluidnames, double *props, double statevar1, double statevar2, double* x, int phase, char* REFPROP_PATH, char* errormsg); //declaration;
-	EXPORT double satprops_REFPROP(char* what, char* statevar, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg); //declaration;
+	EXPORT double props_REFPROP(char* what, char* statevars, char* fluidnames, double *props, double statevar1, double statevar2, double* x, int phase, char* REFPROP_PATH, char* errormsg, int DEBUGMODE); //declaration;
+	EXPORT double satprops_REFPROP(char* what, char* statevar, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg, int DEBUGMODE); //declaration;
 
 #ifdef __cplusplus
 }

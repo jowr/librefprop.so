@@ -8,6 +8,7 @@ partial package PartialMixtureTwoPhaseMedium "Base class for two phase medium of
   "true if the (derived) model should never be called with two-phase inputs";
 
 
+
   redeclare replaceable record extends FluidConstants
   "extended fluid constants"
   /*    Temperature criticalTemperature "critical temperature";
@@ -57,6 +58,7 @@ redeclare replaceable record extends ThermodynamicState
     "phase of the fluid: 1 for 1-phase, 2 for two-phase, 0 for not known, e.g. interactive use";
     Density d_l(start=300) "density liquid phase";
     Density d_g(start=300) "density gas phase";
+    MassFraction X_l[nX] "Mass fraction of NaCl in kg/kg";
     annotation(Documentation(info="<html></html>"));
 //MassFraction X[nX] "Mass fraction of NaCl in kg/kg"
 end ThermodynamicState;
@@ -211,7 +213,7 @@ end ThermodynamicState;
   "Return saturation pressure"
       extends Modelica.Icons.Function;
       input Temperature T "temperature";
-      input MassFraction X[:] "fluid composition as mass fractions";
+      input MassFraction X[:]={1} "fluid composition as mass fractions";
       output AbsolutePressure p "saturation pressure";
 
     annotation(Documentation(info="<html></html>"));
@@ -222,7 +224,7 @@ end ThermodynamicState;
   "Return saturation temperature"
       extends Modelica.Icons.Function;
       input AbsolutePressure p "pressure";
-      input MassFraction X[:] "fluid composition as mass fractions";
+      input MassFraction X[:]={1} "fluid composition as mass fractions";
       output Temperature T "saturation temperature";
 
     annotation(Documentation(info="<html></html>"));
@@ -676,6 +678,7 @@ algorithm
 */
   end dynamicViscosity_liq;
 
+
   replaceable function dynamicViscosity_gas "Viscosity of liquid phase"
   //  extends dynamicViscosity; Warum funzt das nicht? Er sagt "multiple algorithms"
     extends Modelica.Icons.Function;
@@ -691,6 +694,7 @@ algorithm
   */
   //  eta := Modelica.Media.Water.IF97_Utilities.dynamicViscosity(state.d_g, state.T, p_sat, 1);
   end dynamicViscosity_gas;
+
 
   annotation (Documentation(info="<html>
   <h1>PartialMixtureTwoPhaseMedium</h1>

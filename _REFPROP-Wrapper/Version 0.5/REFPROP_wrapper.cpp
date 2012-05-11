@@ -22,7 +22,7 @@
 	copy REFPROP_wrapper.lib "%DYMOLADIR%\bin\lib\"
 	copy refprop_wrapper.h "%DYMOLADIR%\Source\"
 */
-#define DEBUGMODE 1
+//#define DEBUGMODE 1
 
 #include <windows.h>
 #include <stdio.h>
@@ -57,7 +57,7 @@ char *str_replace(char *str, char *search, char *replace, long *count) {
  
 	if (!*count){
 		strncpy(ret,str,n_ret);
-		if (DEBUGMODE) printf("RET: %i %s\n",oldlen,str);
+		//if (DEBUGMODE) printf("RET: %i %s\n",oldlen,str);
 	}else{	
 		i = 0;
 		while (*str)
@@ -72,7 +72,7 @@ char *str_replace(char *str, char *search, char *replace, long *count) {
 	return ret;
 }
 
-int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* i, char* herr, HINSTANCE* RefpropdllInstance, char* errormsg){
+int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, HINSTANCE* RefpropdllInstance, char* errormsg, int DEBUGMODE){
 // Sets up the interface to the REFPROP.DLL
 // is called by props_REFPROP and satprops_REFPROP
 	char DLL_PATH[filepathlength], FLD_PATH[filepathlength];
@@ -92,8 +92,13 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* i, char* herr, HINS
 		strcat(DLL_PATH,"\\refprop.dll");
 		strcat(FLD_PATH, "\\fluids\\");
 	}
-
-    *RefpropdllInstance = LoadLibrary(DLL_PATH);
+	
+	*RefpropdllInstance = LoadLibrary(DLL_PATH);
+    if (!*RefpropdllInstance){
+			sprintf(errormsg,"ERROR in opening REFPROP.DLL at \"%s\"",DLL_PATH);	
+			return 100;
+	}
+	
 	
     char hrf[lengthofreference+1],hfmix[filepathlength+1+7];
 	//char hf[refpropcharlength*ncmax];
@@ -103,20 +108,20 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* i, char* herr, HINS
 	//parse fluid composition string and insert absolute paths
 	char replace[filepathlength+6];
 	strcpy(replace,".fld|");
-	if (DEBUGMODE) printf("REPLACE: %s\n",replace);
+	//if (DEBUGMODE) printf("REPLACE: %s\n",replace);
 	strncat(replace, FLD_PATH,filepathlength-strlen(replace));
 	
 	int hf_len = strlen(fluidnames)+ncmax*(strlen(replace)-1)+4;
 	hf =  (char*) calloc(hf_len, sizeof(char));
 
 	strncpy(hf,FLD_PATH,hf_len);
-	strncat(hf,str_replace(fluidnames, "|", replace, i),hf_len-strlen(hf));
-	if (*i+1>ncmax){
+	strncat(hf,str_replace(fluidnames, "|", replace, nX),hf_len-strlen(hf)); //str_replace returns the number of delimiters -> nX, but components are one more ...
+	if (++*nX>ncmax){ //...that's why nX is incremented
 		sprintf(errormsg,"Too many components (More than %i)\n",ncmax);
 		return 0;
 	}
 	strncat(hf,".fld",hf_len-strlen(hf));
-	if (DEBUGMODE) printf("Fluid composition string:\n %s\n",hf);
+	if (DEBUGMODE) printf("Fluid composition string: \"%s\"\n",hf);
 		
 	strncpy(hfmix,FLD_PATH,filepathlength+1);//add absolute path
 	strncat(hfmix,"hmx.bnc",filepathlength+1+7-strlen(hfmix));
@@ -126,51 +131,55 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* i, char* herr, HINS
 	  //...Call SETUP to initialize the program
 	SETUPdll = (fp_SETUPdllTYPE) GetProcAddress(*RefpropdllInstance,"SETUPdll");
 	//printf("hf:%s\n hrf: %s\n hfmix: %s\n",hf,hrf,hfmix);
+	
+	
 	if (DEBUGMODE) printf("Running SETUPdll...\n");
-	SETUPdll(++*i, hf, hfmix, hrf, ierr, herr,
+	SETUPdll(*nX, hf, hfmix, hrf, ierr, herr,
 				hf_len,filepathlength+1+7,
 				lengthofreference,errormessagelength);
-	if (DEBUGMODE) printf("SETUPdll run (Error no: %i)\n",ierr);
+	if (DEBUGMODE) printf("SETUPdll run complete (Error no: %i)\n",ierr);
 	
 	
-	if (DEBUGMODE) printf("Error code processing...\n");
+//	if (DEBUGMODE) printf("Error code processing...\n");
 	switch(ierr){
 		case 101:
 			//strcpy(errormsg,"error in opening file");	
-			if (DEBUGMODE) printf("Error 101\n");
+//			if (DEBUGMODE) printf("Error 101\n");
 			sprintf(errormsg,"error in opening file %s",hf);	
 			break;
 		case 102:
-			if (DEBUGMODE) printf("Error 102\n");
+//			if (DEBUGMODE) printf("Error 102\n");
 			strcpy(errormsg,"error in file or premature end of file");	
 			break;
 		case -103:
-			if (DEBUGMODE) printf("Error -103\n");
+//			if (DEBUGMODE) printf("Error -103\n");
 			strcpy(errormsg,"unknown model encountered in file");	
 			break;
  		case 104:
-			if (DEBUGMODE) printf("Error 104\n");
+//			if (DEBUGMODE) printf("Error 104\n");
 			strcpy(errormsg,"error in setup of model");	
 			break;
 		case 105:
-			if (DEBUGMODE) printf("Error 105\n");
+//			if (DEBUGMODE) printf("Error 105\n");
 			strcpy(errormsg,"specified model not found");	
 			break;
 		case 111:
-			if (DEBUGMODE) printf("Error 111\n");
+//			if (DEBUGMODE) printf("Error 111\n");
 			strcpy(errormsg,"error in opening mixture file");	
 			break;
 		case 112:
-			if (DEBUGMODE) printf("Error 112\n");
+//			if (DEBUGMODE) printf("Error 112\n");
 			strcpy(errormsg,"mixture file of wrong type");	
 			break;
 		case 114:
-			if (DEBUGMODE) printf("Error 114\n");
+//			if (DEBUGMODE) printf("Error 114\n");
 			strcpy(errormsg,"nc<>nc from setmod");	
 			break;
 		case 0:
+			break;
 		default:
-			if (DEBUGMODE) printf("Error default\n");
+//			if (DEBUGMODE) printf("Unknown error\n");
+			strcpy(errormsg,"Unknown error");	
 			//strcpy(errormsg,"Setup was successful!");
 			strncpy(errormsg,herr,errormessagelength);
 			break;
@@ -185,7 +194,7 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* i, char* herr, HINS
 }
 
 
-double props_REFPROP(char* what, char* statevars_in, char* fluidnames, double *props, double statevar1, double statevar2, double* x, int phase, char* REFPROP_PATH, char* errormsg){
+double props_REFPROP(char* what, char* statevars_in, char* fluidnames, double *props, double statevar1, double statevar2, double* x, int phase, char* REFPROP_PATH, char* errormsg, int DEBUGMODE){
 /*Calculates thermodynamic properties of a pure substance/mixture, returns both single value and array containing all calculated values (because the are calculated anyway)
 INPUT: 
 	what: character specifying return value (p,T,h,s,d,wm,q,e,w) - Explanation of variables at the end of this function
@@ -196,24 +205,22 @@ INPUT:
  	REFPROP_PATH: string defining the path of the refprop.dll
 OUTPUT
 	return value: value of variable specified by the input variable what
-	props: Array containing all calculated values
+	props: Array containing all calculated values (props[0] containing error number)
  	errormsg: string containing error message
 */
-//	double props[17];
 	char statevars[3];
 	double p, T, d, val, dl,dv,q,e,h,s,cv,cp,w,wm,wmliq,wmvap,eta,tcx;
-	long i,ierr=0;
+	long nX,ierr=0; //zero means no error
     char herr[errormessagelength+1];
     HINSTANCE RefpropdllInstance;// Then have windows load the library.
 
-	if (DEBUGMODE) printf("props_REFPROP:\n");
+	if (DEBUGMODE) printf("\nStarting function props_REFPROP to calc %c...\n", what[0]);
 	
 	//initialize interface to REFPROP.dll
-	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &i, herr, &RefpropdllInstance, errormsg)){
-		printf("Error initializing REFPROP: %s\n", errormsg);
+	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
+		printf("Error no. %i initializing REFPROP: \"%s\"\n", props[0], errormsg);
 		return 0;
 	}
-	ierr=0;
 	
 	//CALCULATE MOLAR MASS
 	WMOLdll = (fp_WMOLdllTYPE) GetProcAddress(RefpropdllInstance,"WMOLdll");
@@ -476,7 +483,7 @@ OUTPUT
 		wmliq /= 1000; //g/mol -> kg/mol
 		WMOLdll(xvap,wmvap);
 		wmvap /= 1000; //g/mol -> kg/mol
-		//printf("%d,%s\n%s\nP,T,D,H,CP            %10.4f,%10.4f,%10.4f,%10.4f,%10.4f\n",i,hf,hfmix,p,t,d,h,wm);
+		//printf("%d,%s\n%s\nP,T,D,H,CP            %10.4f,%10.4f,%10.4f,%10.4f,%10.4f\n",nX,hf,hfmix,p,t,d,h,wm);
 		d *= wm*1000; //mol/dm³ -> kg/m³ 
 		dl *= wmliq*1000; //mol/dm³ -> kg/m³ 
 		dv *= wmvap*1000; //mol/dm³ -> kg/m³ 
@@ -486,7 +493,7 @@ OUTPUT
 		cv /= wm;
 		cp /= wm;
 		p *= 1000; //kPa->Pa
-		if (i>1 && abs(q)<990) q *= wmvap/wm; //molar bass -> mass basis
+		if (nX>1 && abs(q)<990) q *= wmvap/wm; //molar bass -> mass basis
 		eta/=1e6;	//uPa.s -> Pa.s
 	}
 	
@@ -507,12 +514,12 @@ OUTPUT
 	props[13] = w; //speed of sound
 	props[14] = wmliq;
 	props[15] = wmvap;
-	for (int ii=0;ii<i;ii++){
+	for (int ii=0;ii<nX;ii++){
 		props[16+ii] = xliq[ii];
-		props[16+i+ii] = xvap[ii];
+		props[16+nX+ii] = xvap[ii];
 	}
 
-	if (DEBUGMODE) printf("MM=%f\n",wm);
+	if (DEBUGMODE) printf("Returning %c\n",what[0]);
 
 	switch(tolower(what[0])){ 	//CHOOSE RETURN VARIABLE
 		case 'p': //molecular weight
@@ -546,7 +553,7 @@ OUTPUT
 //---------------------------------------------------------------------------
 
 
-double satprops_REFPROP(char* what, char* statevar, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg){
+double satprops_REFPROP(char* what, char* statevar, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg, int DEBUGMODE){
 /*Calculates thermodynamic saturation properties of a pure substance/mixture, returns both single value and array containing all calculated values (because the are calculated anyway)
 INPUT: 
 	what: character specifying return value (p,T,h,s,d,wm,q,e,w) - Explanation of variables at the end of this function
@@ -561,17 +568,18 @@ OUTPUT
  	errormsg: string containing error message
 */
 	double p, T, d, val, dl,dv,wm,wmliq,wmvap;
-	long i,ierr=0;
+	long nX,ierr=0;
     char herr[errormessagelength+1];
     HINSTANCE RefpropdllInstance;
 
-	if (DEBUGMODE)  printf("satprops_REFPROP:\n");
+	if (DEBUGMODE)  printf("\nStarting function satprops_REFPROP...\n");
 	
 	//initialize interface to REFPROP.dll
-	if(!init_REFPROP(fluidnames, REFPROP_PATH, &i, herr, &RefpropdllInstance, errormsg)){
-		printf("Error initializing REFPROP");
+	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
+		printf("Error no. %i initializing REFPROP: \"%s\"\n", props[0], errormsg);
 		return 0;
 	}
+
 	
 	//CALCULATE MOLAR MASS
 	WMOLdll = (fp_WMOLdllTYPE) GetProcAddress(RefpropdllInstance,"WMOLdll");
@@ -736,7 +744,7 @@ OUTPUT
 		wmliq /= 1000; //g/mol -> kg/mol
 		WMOLdll(xvap,wmvap);
 		wmvap /= 1000; //g/mol -> kg/mol
-		//printf("%d,%s\n%s\nP,T,D,H,CP            %10.4f,%10.4f,%10.4f,%10.4f,%10.4f\n",i,hf,hfmix,p,t,d,h,wm);
+		//printf("%d,%s\n%s\nP,T,D,H,CP            %10.4f,%10.4f,%10.4f,%10.4f,%10.4f\n",nX,hf,hfmix,p,t,d,h,wm);
 		d *= wm*1000; //mol/dm³ -> kg/m³ 
 		dl *= wmliq*1000; //mol/dm³ -> kg/m³ 
 		dv *= wmvap*1000; //mol/dm³ -> kg/m³ 
@@ -764,12 +772,13 @@ OUTPUT
 	props[13] = 0; //speed of sound
 	props[14] = wmliq;
 	props[15] = wmvap;
-	for (int ii=0;ii<i;ii++){
+	for (int ii=0;ii<nX;ii++){
 		props[16+ii] = xliq[ii];
-		props[16+i+ii] = xvap[ii];
+		props[16+nX+ii] = xvap[ii];
 	}
 	
 	
+		if (DEBUGMODE) printf("Returning %c\n",what[0]);
 	
 		switch(tolower(what[0])){//CHOOSE RETURN VARIABLE
 		case 'p': //molecular weight

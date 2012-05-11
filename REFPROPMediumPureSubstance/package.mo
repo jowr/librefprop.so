@@ -1,5 +1,34 @@
 within MediaTwoPhaseMixture;
-package REFPROPMedium "Two Phase Mixture Medium whose property functions are supplied by a wrapper for the refprop.dll"
+package REFPROPMediumPureSubstance "Two Phase one component medium whose property functions are supplied by a wrapper for the refprop.dll"
+/*To create this package, REFPROPMedium has been copied and the following things have been changed:
+-"extends PartialMixtureTwoPhaseMedium" -> "extends Modelica.Media.Interfaces.PartialTwoPhaseMedium"
+-redeclare record SaturationProperties
+-added preset X to saturationTemperature() and saturationPressure()
+-added s and sat in BaseProperties
+-add p,T,X in ThermodynamicState
+-for specificEnthalpy_dTX:  redeclare function -> function 
+*/
+
+
+redeclare record extends SaturationProperties
+  MassFraction X[nX] "Mass fractions";
+end SaturationProperties;
+
+
+redeclare function extends saturationPressure
+//  extends Modelica.Icons.Function;
+  input MassFraction X[:]={1} "fluid composition as mass fractions";
+algorithm
+    p := getSatProp_REFPROP_check("p", "T", fluidnames,T,X);
+end saturationPressure;
+
+
+redeclare function extends saturationTemperature
+//  extends Modelica.Icons.Function;
+  input MassFraction X[:]={1} "fluid composition as mass fractions";
+algorithm
+    T := getSatProp_REFPROP_check("T", "p", fluidnames,p,X);
+end saturationTemperature;
 constant Boolean debugmode = false
   "print messages in functions and in refpropwrapper.lib (to see the latter, start dymosim.exe in command window)";
 
@@ -8,12 +37,10 @@ constant String explicitVars = "ph"
 final constant String fluidnames= StrJoin(substanceNames,"|");
 
 
-extends PartialMixtureTwoPhaseMedium(
-   mediumName="REFPROP Medium",
-   final reducedX = true,
-   final singleState=false,
-   reference_X=cat(1,fill(0,nX-1),{1}),
-   fluidConstants = rpConstants);
+extends Modelica.Media.Interfaces.PartialTwoPhaseMedium(
+    mediumName="REFPROP Medium",
+    final singleState=false,
+    fluidConstants=rpConstants);
 //"mediumName is being checked for consistency at flowports"
 
   constant FluidConstants[nS] rpConstants(
@@ -35,9 +62,9 @@ extends PartialMixtureTwoPhaseMedium(
 
 redeclare record extends ThermodynamicState
   "a selection of variables that uniquely defines the thermodynamic state"
-/*  AbsolutePressure p "Absolute pressure of medium";
+  AbsolutePressure p "Absolute pressure of medium";
   Temperature T "Temperature of medium";
-  MassFraction X[nX] "Composition (Mass fractions  in kg/kg)";*/
+  MassFraction X[nX] "Composition (Mass fractions  in kg/kg)";/**/
   MolarMass MM "Molar Mass of the whole mixture";
   Density d(start=300) "density";
   Density d_l(start=300) "density liquid phase";
@@ -59,6 +86,8 @@ end ThermodynamicState;
 
   redeclare model extends BaseProperties "Base properties of medium"
 
+    Modelica.SIunits.SpecificEntropy s;
+    SaturationProperties sat "Saturation properties at the medium pressure";
   equation
     u = state.u "h - p/d";
     MM = state.MM;
@@ -163,20 +192,6 @@ end ThermodynamicState;
 
 
 
-
-
-redeclare function extends saturationPressure
-//  extends Modelica.Icons.Function;
-algorithm
-    p := getSatProp_REFPROP_check("p", "T", fluidnames,T,X);
-end saturationPressure;
-
-
-redeclare function extends saturationTemperature
-//  extends Modelica.Icons.Function;
-algorithm
-    T := getSatProp_REFPROP_check("T", "p", fluidnames,p,X);
-end saturationTemperature;
 
 
 
@@ -475,25 +490,6 @@ end setState_dTX;
 
 
 
-  redeclare function specificEnthalpy_dTX
-  "calls REFPROP-Wrapper, returns specific enthalpy"
-    //does not extend existing function from PartialMedium because there the algorithm is already defined
-    extends Modelica.Icons.Function;
-    input Modelica.SIunits.Density d;
-    input Modelica.SIunits.Temperature T;
-    input MassFraction X[:]=reference_X "mass fraction m_NaCl/m_Sol";
-  //  input String fluidnames;
-    input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
-    output Modelica.SIunits.SpecificEnthalpy h;
-  algorithm
-    if debugmode then
-      Modelica.Utilities.Streams.print("Running specificEnthalpy_dTX("+String(d)+","+String(T)+",X)");
-    end if;
-      h :=getProp_REFPROP_check("h", "dT", fluidnames,d,T,X,phase);
-    annotation(LateInline=true,inverse(d=density_ThX(T,h,X,phase),
-                                       T=temperature_hdX(h,d,X,phase)));
-  end specificEnthalpy_dTX;
-
 
 
 
@@ -619,5 +615,5 @@ Germany
 ",
  revisions="<html>
 
-</html>"), uses(Modelica(version="3.1")));
-end REFPROPMedium;
+</html>"));
+end REFPROPMediumPureSubstance;
