@@ -1,11 +1,11 @@
 within MediaTwoPhaseMixture.Examples;
 model PropsPureSubstance
 //package Medium = Modelica.Media.Water.WaterIF97_ph;
+package Medium = MediaTwoPhaseMixture.Water_MixtureTwoPhase_pT;
 //package Medium = REFPROPMedium(final substanceNames={"water"},  final explicitVars = "pT");
 //package Medium = REFPROPMedium(final substanceNames={"ammonia"});
 //package Medium = REFPROPMedium(final substanceNames={"co2"});
-package Medium = MediaTwoPhaseMixture.REFPROPMediumPureSubstance (
-                                             final substanceNames={"butane"});
+//package Medium = MediaTwoPhaseMixture.REFPROPMediumPureSubstance (final substanceNames={"butane"});
 
 //package Medium = REFPROPMediumPureSubstance(final substanceNames={"water"});
 //package Medium = REFPROPMediumPureSubstance(final substanceNames={"ammonia"},  final explicitVars = "ph");

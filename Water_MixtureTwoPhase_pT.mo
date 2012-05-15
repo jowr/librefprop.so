@@ -253,6 +253,11 @@ end specificEntropy_pTX;
                                 liquid and vapour state heat capacities.</p>
 				</html>"));
   end specificHeatCapacityCp;
+
+  redeclare function extends saturationPressure
+  algorithm
+     p := Modelica.Media.Water.WaterIF97_base.saturationPressure(T);
+  end saturationPressure;
  annotation (Documentation(info="<html>
   <h1>Water_MixtureTwoPhase_pT</h1>
   This is a an example use of PartialMixtureTwoPhaseMedium.
