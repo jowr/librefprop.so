@@ -71,3 +71,5 @@ specificEntropy_pqX
 temperature_pqX
 dynamicViscosity
 thermalConductivity
+specificHeatCapacityCp
+specificHeatCapacityCv

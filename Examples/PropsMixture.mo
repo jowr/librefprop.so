@@ -24,6 +24,7 @@ Modelica.SIunits.DynamicViscosity eta_l = Medium.dynamicViscosity_liq(props.stat
 Modelica.SIunits.DynamicViscosity eta_g = Medium.dynamicViscosity_gas(props.state);
 */
   Real q = Medium.vapourQuality(props.state);
+  Modelica.SIunits.SpecificHeatCapacity cv=Medium.specificHeatCapacityCv(props.state);
 equation
 
     props.p = 1e5;

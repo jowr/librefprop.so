@@ -161,10 +161,6 @@ end ThermodynamicState;
   end BaseProperties;
 
 
-
-
-
-
 redeclare function extends saturationPressure
 //  extends Modelica.Icons.Function;
 algorithm
@@ -177,9 +173,6 @@ redeclare function extends saturationTemperature
 algorithm
     T := getSatProp_REFPROP_check("T", "p", fluidnames,p,X);
 end saturationTemperature;
-
-
-
 
 
  redeclare function extends specificEntropy
@@ -297,7 +290,6 @@ end setState_phX;
      annotation(LateInline=true,inverse(h=specificEnthalpy_pTX(p,T,X,phase),
                                         p=pressure_ThX(T,h,X,phase)));
    end temperature_phX;
-
 
 
 redeclare replaceable partial function extends setState_pTX
@@ -441,14 +433,6 @@ end setState_psX;
    end density_psX;
 
 
-
-
-
-
-
-
-
-
 redeclare replaceable partial function extends setState_dTX
       input String fluidnames;
 algorithm
@@ -457,7 +441,6 @@ algorithm
   end if;
   state := setState("dT",d,T,X,phase,fluidnames);
 end setState_dTX;
-
 
 
   redeclare function specificEnthalpy_dTX
@@ -478,29 +461,6 @@ end setState_dTX;
     annotation(LateInline=true,inverse(d=density_ThX(T,h,X,phase),
                                        T=temperature_hdX(h,d,X,phase)));
   end specificEnthalpy_dTX;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 redeclare function extends dynamicViscosity
@@ -528,6 +488,19 @@ end thermalConductivity;
     q := state.q;
     annotation(Documentation(info="<html></html>"));
   end vapourQuality;
+
+
+  redeclare function extends specificHeatCapacityCp
+
+  algorithm
+    cp:=state.cp;
+  end specificHeatCapacityCp;
+
+  redeclare function extends specificHeatCapacityCv
+
+  algorithm
+    cv:=state.cv;
+  end specificHeatCapacityCv;
 
   annotation (Documentation(info="<html>
 <p>

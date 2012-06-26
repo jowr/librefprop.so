@@ -190,7 +190,6 @@ end ThermodynamicState;
   end BaseProperties;
 
 
-
  redeclare function extends specificEntropy
   "Return specific entropy  - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
  algorithm
@@ -203,7 +202,6 @@ end ThermodynamicState;
   algorithm
     d := state.d;
   end density;
-
 
 
 redeclare function extends dewEnthalpy "dew curve specific enthalpy"
@@ -477,6 +475,18 @@ algorithm
   lambda := getProp_REFPROP_check("l", "Td", fluidnames,state.T,state.d,state.X,state.phase);
 end thermalConductivity;
 
+
+  redeclare function extends specificHeatCapacityCp
+
+  algorithm
+    cp:=state.cp;
+  end specificHeatCapacityCp;
+
+  redeclare function extends specificHeatCapacityCv
+
+  algorithm
+    cv:=state.cv;
+  end specificHeatCapacityCv;
 
   annotation (Documentation(info="<html>
 <p>

@@ -3,4 +3,4 @@
 3. Copy \_REFPROP-Wrapper\Version x.x\REFPROP_WRAPPER.H to %DYMOLADIR%\\SOURCE\\
 4. Set the path to the REFPROP program directory with the constant String REFPROP_PATH (at the beginning of the package).
    Make sure you mask the backslashes. It should look something like
-   <pre>constant String REFPROP_PATH = "C:\\Program Files\\REFPROP\\\";
+   constant String REFPROP_PATH = "C:\\Program Files\\REFPROP\\\";

@@ -71,3 +71,5 @@ temperature_pqX
 dynamicViscosity
 thermalConductivity
 vapourQuality
+specificHeatCapacityCp
+specificHeatCapacityCv
