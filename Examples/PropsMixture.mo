@@ -16,21 +16,23 @@ package Medium = REFPROPMedium(final substanceNames={"isobutan","propane"});
   Modelica.SIunits.Temperature Tsat;
   Modelica.SIunits.Pressure psat;
   */
+Modelica.SIunits.Pressure p=Medium.pressure(props.state);
 //  Modelica.SIunits.MolarMass MM;
 /*Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
 
 Modelica.SIunits.DynamicViscosity eta_l = Medium.dynamicViscosity_liq(props.state);
 Modelica.SIunits.DynamicViscosity eta_g = Medium.dynamicViscosity_gas(props.state);
 */
+  Real q = Medium.vapourQuality(props.state);
 equation
 
-    props.p = 1.59e5;
+    props.p = 1e5;
 //    props.h = 1.848e5;
   //  props.s = 5.88105;
-   props.T = 253.15;
+   props.T = 400;
 //    props.Xi = {.5};
 //    props.X = {.1,.9};
-    props.Xi = {1e-4};
+    props.Xi = {.5};
 
   //  d = props.d;
   //h = props.h;

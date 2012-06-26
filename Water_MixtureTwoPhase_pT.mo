@@ -1,6 +1,6 @@
 within MediaTwoPhaseMixture;
 package Water_MixtureTwoPhase_pT
-  "Water model from Modelica.Media compatible to PartialMixtureTwoPhaseMedium"
+  "(incomplete) Water model from Modelica.Media compatible to PartialMixtureTwoPhaseMedium (Example use)"
 
  extends PartialMixtureTwoPhaseMedium(
    final mediumName="TwoPhaseMixtureWater",
@@ -251,7 +251,7 @@ end specificEntropy_pTX;
       annotation (Documentation(info="<html>
                                 <p>In the two phase region this function returns the interpolated heat capacity between the
                                 liquid and vapour state heat capacities.</p>
-				</html>"));
+                                </html>"));
   end specificHeatCapacityCp;
 
   redeclare function extends saturationPressure

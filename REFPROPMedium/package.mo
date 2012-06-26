@@ -1,5 +1,5 @@
 within MediaTwoPhaseMixture;
-package REFPROPMedium "Two Phase Mixture Medium whose property functions are supplied by a wrapper for the refprop.dll"
+package REFPROPMedium "Two Phase Mixture Medium whose property functions are supplied by REFPROPR (via wrapper for refprop.dll)"
 constant Boolean debugmode = false
   "print messages in functions and in refpropwrapper.lib (to see the latter, start dymosim.exe in command window)";
 
@@ -182,14 +182,6 @@ end saturationTemperature;
 
 
 
- redeclare function extends specificEnthalpy
-  "Return specific enthalpy - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
-  extends Modelica.Icons.Function;
- algorithm
-  h := state.h;
- end specificEnthalpy;
-
-
  redeclare function extends specificEntropy
   "Return specific entropy  - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
  algorithm
@@ -202,13 +194,6 @@ end saturationTemperature;
   algorithm
     d := state.d;
   end density;
-
-
- redeclare function extends pressure
-  "Return specific entropy  - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
- algorithm
-  p := state.p;
- end pressure;
 
 
 redeclare function extends dewEnthalpy "dew curve specific enthalpy"
@@ -536,10 +521,18 @@ algorithm
 end thermalConductivity;
 
 
+  redeclare function vapourQuality "Return vapour quality"
+    input ThermodynamicState state "Thermodynamic state record";
+    output MassFraction q "Vapour quality";
+  algorithm
+    q := state.q;
+    annotation(Documentation(info="<html></html>"));
+  end vapourQuality;
+
   annotation (Documentation(info="<html>
 <p>
 <b>REFPROPMedium</b> is a package that delivers <b>REFPROP</b> data to a model based on and largely compatible to the Modelica.Media library.
-It can be used to model two-phase mixtures of all fluids whose data is delivered with REFPROP. It has been developed and tested only in Dymola 7.4.
+It can be used to model two-phase mixtures of all fluids whose data is delivered with REFPROP. It has been developed and tested only in Dymola up to 2012 FD01.
 </p>
 <p>
 All files in this library, including the C source files are released under the Modelica License 2.
@@ -558,7 +551,8 @@ This package needs the package PartialMixtureMediumTwoPhase which should be incl
 </p>
 <h2>Usage</h2>
 As it is based on Modelica.Media, the usage is little different from the usage of the two-phase water model:<br/>
-Create an Instance of REFPROPMedium and pass the components.defines the medium components (medium names are the names of the .fld files in the %REFPROP%\\fluids directory):
+Create an instance of REFPROPMedium and specify the mixture by passing the names of the medium components (medium names are the names of the .fld files in the
+%REFPROP%\\fluids directory):
 <pre>
   package Medium = REFPROPMedium (final substanceNames={\"nitrogen\",\"argon\"});
 </pre>
@@ -566,12 +560,13 @@ Create an Instance of REFPROPMedium.Baseproperties:
 <pre>
   Medium.BaseProperties props;
 </pre>
-You can then use the Baseproperties model to define the actual medium composition(Xi or X), define the thermodynamic state and calculate the corresponding properties.
+You can then use the BaseProperties model to define the actual medium composition (via Xi or X), to define the thermodynamic state and calculate the corresponding properties.
 <pre>
   props.p = 1e5;
   props.T = 300;
   props.Xi = {.8};
   d = props.d;
+  h = props.h;
 </pre>
 <p>Any combination of the pressure, temperature, specific enthalpy, specific entropy and density (p,T,h,s,d) can be used to define a 
 thermodynamic state. Explicit functions for all combinations exist in REFPROP and likewise in the REFPROPMedium package.
@@ -586,6 +581,8 @@ package Medium = REFPROPMedium(final substanceNames={\"water\"}, final explicitV
 </p>
 <p>All calculated values are returned in SI-Units and are mass based.
 </p>
+<p>Verbose mode can be switched on globally by setting the variable <i>debugmode</i> to <i>true</i>. This leads to many status messages from the modelica functions
+  as well as from the compiled library. The latter only appear are only seen in only seen when the dymola.exe is run directly in the command window.
 
 
 <h2>Details</h2>
@@ -594,15 +591,13 @@ package Medium = REFPROPMedium(final substanceNames={\"water\"}, final explicitV
   Alternatively, there is a version of this package limited to single-substance fluids (REFPROPMediumPureSubstance) which uses the standard 
   template Modelica.Media.Interfaces.PartialTwoPhaseMedium.
   All property functions contain a definition of their inverses. So, in many cases no numerical inversion by the solver is needed because
-  explicit REFPROP are used.<br>
+  explicit REFPROP functions are used (meaning, numerical inversion happens in REFPROP instead).<br>
   Example: When explicitVars are set to \"ph\" and p and T are given, the specificEnthalpy is calculated first using the inverse function of 
   Temperature_phX --> specificEnthalpy_pTX. With p and h known all other variables are calculated by setstate_phX.
 <p>
 
 <p>
 <ul>
-<li>Check if the lib-files are accessible, if not give error message.</li>
-<li>add volumetric gas fraction to Thermodynamic State</li>
 </ul>
 </p>
 
@@ -619,5 +614,5 @@ Germany
 ",
  revisions="<html>
 
-</html>"), uses(Modelica(version="3.1")));
+</html>"), uses(Modelica(version="3.2")));
 end REFPROPMedium;

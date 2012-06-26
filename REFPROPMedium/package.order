@@ -13,10 +13,8 @@ saturationTemperature
 getProp_REFPROP_check
 getProp_REFPROP
 setState
-specificEnthalpy
 specificEntropy
 density
-pressure
 dewEnthalpy
 dewEntropy
 dewDensity
@@ -72,3 +70,4 @@ specificEntropy_pqX
 temperature_pqX
 dynamicViscosity
 thermalConductivity
+vapourQuality

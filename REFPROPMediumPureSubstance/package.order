@@ -14,10 +14,8 @@ getSatProp_REFPROP
 getProp_REFPROP_check
 getProp_REFPROP
 setState
-specificEnthalpy
 specificEntropy
 density
-pressure
 dewEnthalpy
 dewEntropy
 dewDensity

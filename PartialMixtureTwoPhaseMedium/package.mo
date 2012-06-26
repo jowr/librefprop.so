@@ -1,12 +1,11 @@
 within MediaTwoPhaseMixture;
-partial package PartialMixtureTwoPhaseMedium "Base class for two phase medium of a mixture of substances "
+partial package PartialMixtureTwoPhaseMedium "Template class for two phase medium of a mixture of substances "
 
 
   extends Modelica.Media.Interfaces.PartialMixtureMedium;
 //  constant Boolean smoothModel "true if the (derived) model should not generate state events";
   constant Boolean onePhase = false
   "true if the (derived) model should never be called with two-phase inputs";
-
 
 
   redeclare replaceable record extends FluidConstants
@@ -140,6 +139,7 @@ end ThermodynamicState;
   algorithm
     sat.Tsat := T;
     sat.psat := saturationPressure(T,X);
+    sat.X := X;
     annotation(Documentation(info="<html></html>"));
   end setSat_TX;
 
@@ -153,6 +153,7 @@ end ThermodynamicState;
   algorithm
     sat.psat := p;
     sat.Tsat := saturationTemperature(p,X);
+    sat.X := X;
     annotation(Documentation(info="<html></html>"));
   end setSat_pX;
 
@@ -423,6 +424,7 @@ end ThermodynamicState;
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output ThermodynamicState state "thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
     state := setState_pTX(p,T,fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end setState_pT;
@@ -435,6 +437,7 @@ end ThermodynamicState;
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output ThermodynamicState state "thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
     state := setState_phX(p,h,fill(0, 0),phase);
     annotation(Documentation(info="<html></html>"));
   end setState_ph;
@@ -447,6 +450,7 @@ end ThermodynamicState;
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output ThermodynamicState state "thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
     state := setState_psX(p,s,fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end setState_ps;
@@ -459,6 +463,7 @@ end ThermodynamicState;
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output ThermodynamicState state "thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
     state := setState_dTX(d,T,fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end setState_dT;
@@ -470,6 +475,7 @@ end ThermodynamicState;
     input MassFraction x "Vapour quality";
     output ThermodynamicState state "Thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
   state := setState_ph(
       p,
       (1 - x)*bubbleEnthalpy(
@@ -486,6 +492,7 @@ end ThermodynamicState;
     input MassFraction x "Vapour quality";
     output ThermodynamicState state "thermodynamic state record";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures.");
   state := setState_ph(
       saturationPressure_sat(
       MediaTwoPhaseMixture.PartialMixtureTwoPhaseMedium.setSat_TX(T)),
@@ -503,8 +510,7 @@ end ThermodynamicState;
 protected
     constant SpecificEnthalpy eps = 1e-8;
   algorithm
-  q := min(max((specificEnthalpy(state) - bubbleEnthalpy(
-    setSat_pX(pressure(state),state.X)))
+  q := min(max((specificEnthalpy(state) - bubbleEnthalpy(setSat_pX(pressure(state),state.X)))
     /(dewEnthalpy(setSat_pX(pressure(state),state.X)) - bubbleEnthalpy(setSat_pX(pressure(state),state.X))
      + eps), 0), 1);
     annotation(Documentation(info="<html></html>"));
@@ -518,6 +524,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output Density d "Density";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use density_phX() instead!");
     d := density_phX(p, h, fill(0,0), phase);
     annotation(Documentation(info="<html></html>"));
   end density_ph;
@@ -530,6 +537,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output Temperature T "Temperature";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use temperature_phX() instead!");
     T := temperature_phX(p, h, fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end temperature_ph;
@@ -542,6 +550,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output AbsolutePressure p "Pressure";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use pressure_dTX() instead!");
     p := pressure(setState_dTX(d, T, fill(0,0),phase));
     annotation(Documentation(info="<html></html>"));
   end pressure_dT;
@@ -555,6 +564,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output SpecificEnthalpy h "specific enthalpy";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use specificEnthalpy_dX() instead!");
     h := specificEnthalpy(setState_dTX(d, T, fill(0,0),phase));
     annotation(Documentation(info="<html></html>"));
   end specificEnthalpy_dT;
@@ -568,7 +578,8 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output SpecificEnthalpy h "specific enthalpy";
   algorithm
-    h := specificEnthalpy_psX(p,s,fill(0,0));
+    assert(nX==1,"This function is not allowed for mixtures. Use specificEnthalpy_psX() instead!");
+    h := specificEnthalpy_psX(p,s,reference_X);
     annotation(Documentation(info="<html></html>"));
   end specificEnthalpy_ps;
 
@@ -580,6 +591,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output Temperature T "Temperature";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use temperature_psX() instead!");
     T := temperature_psX(p,s,fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end temperature_ps;
@@ -592,6 +604,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output Density d "Density";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use density_psX() instead!");
     d := density_psX(p, s, fill(0,0), phase);
     annotation(Documentation(info="<html></html>"));
   end density_ps;
@@ -605,6 +618,7 @@ protected
     input FixedPhase phase=0 "2 for two-phase, 1 for one-phase, 0 if not known";
     output SpecificEnthalpy h "specific enthalpy";
   algorithm
+    assert(nX==1,"This function is not allowed for mixtures. Use specificEnthalpy_pTx() instead!");
     h := specificEnthalpy_pTX(p, T, fill(0,0),phase);
     annotation(Documentation(info="<html></html>"));
   end specificEnthalpy_pT;

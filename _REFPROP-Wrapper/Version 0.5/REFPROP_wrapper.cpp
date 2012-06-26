@@ -184,13 +184,8 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, HIN
 			strncpy(errormsg,herr,errormessagelength);
 			break;
 	}
-	
 	free(hf);
 	return ierr;
-/*	if (ierr) 
-		return 0;
-	else
-		return 1;*/
 }
 
 
@@ -217,8 +212,9 @@ OUTPUT
 	if (DEBUGMODE) printf("\nStarting function props_REFPROP to calc %c...\n", what[0]);
 	
 	//initialize interface to REFPROP.dll
+
 	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
-		printf("Error no. %i initializing REFPROP: \"%s\"\n", props[0], errormsg);
+		printf("Error no. %g initializing REFPROP: \"%s\"\n", props[0], errormsg);
 		return 0;
 	}
 	

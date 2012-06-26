@@ -1,5 +1,5 @@
 within MediaTwoPhaseMixture;
-package REFPROPMediumPureSubstance "Two Phase one component medium whose property functions are supplied by a wrapper for the refprop.dll"
+package REFPROPMediumPureSubstance "Two Phase single component two-phase medium whose property functions are supplied by REFPROP (via wrapper for refprop.dll). Extends PartialTwoPhaseMedium."
 /*To create this package, REFPROPMedium has been copied and the following things have been changed:
 -"extends PartialMixtureTwoPhaseMedium" -> "extends Modelica.Media.Interfaces.PartialTwoPhaseMedium"
 -redeclare record SaturationProperties
@@ -191,20 +191,6 @@ end ThermodynamicState;
 
 
 
-
-
-
-
-
-
- redeclare function extends specificEnthalpy
-  "Return specific enthalpy - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
-  extends Modelica.Icons.Function;
- algorithm
-  h := state.h;
- end specificEnthalpy;
-
-
  redeclare function extends specificEntropy
   "Return specific entropy  - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
  algorithm
@@ -218,12 +204,6 @@ end ThermodynamicState;
     d := state.d;
   end density;
 
-
- redeclare function extends pressure
-  "Return specific entropy  - seems useless, but good for compatibility between PartialMedium and PartialMixedMediumTwoPhase"
- algorithm
-  p := state.p;
- end pressure;
 
 
 redeclare function extends dewEnthalpy "dew curve specific enthalpy"
@@ -327,7 +307,6 @@ end setState_phX;
      annotation(LateInline=true,inverse(h=specificEnthalpy_pTX(p,T,X,phase),
                                         p=pressure_ThX(T,h,X,phase)));
    end temperature_phX;
-
 
 
 redeclare replaceable partial function extends setState_pTX
@@ -471,14 +450,6 @@ end setState_psX;
    end density_psX;
 
 
-
-
-
-
-
-
-
-
 redeclare replaceable partial function extends setState_dTX
       input String fluidnames;
 algorithm
@@ -487,31 +458,6 @@ algorithm
   end if;
   state := setState("dT",d,T,X,phase,fluidnames);
 end setState_dTX;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 redeclare function extends dynamicViscosity
@@ -534,8 +480,8 @@ end thermalConductivity;
 
   annotation (Documentation(info="<html>
 <p>
-<b>REFPROPMedium</b> is a package that delivers <b>REFPROP</b> data to a model based on and largely compatible to the Modelica.Media library.
-It can be used to model two-phase mixtures of all fluids whose data is delivered with REFPROP. It has been developed and tested only in Dymola 7.4.
+<b>REFPROPMediumPureSubstance</b> is a package that delivers <b>REFPROP</b> data to a model based on and compatible to the Modelica.Media library.
+It can be used to calculate two-phase states of all fluids whose data is delivered with REFPROP. It has been developed and tested only in Dymola up to 2012 FD01.
 </p>
 <p>
 All files in this library, including the C source files are released under the Modelica License 2.
@@ -553,21 +499,21 @@ This package needs the package PartialMixtureMediumTwoPhase which should be incl
 
 </p>
 <h2>Usage</h2>
-As it is based on Modelica.Media, the usage is little different from the usage of the two-phase water model:<br/>
-Create an Instance of REFPROPMedium and pass the components.defines the medium components (medium names are the names of the .fld files in the %REFPROP%\\fluids directory):
+Being based on Modelica.Media, it is used like the two-phase water model:<br/>
+Create an Instance of REFPROPMediumPureSubstance and pass the components.defines the medium components (medium names are the names of the .fld files in the %REFPROP%\\fluids directory):
 <pre>
-  package Medium = REFPROPMedium (final substanceNames={\"nitrogen\",\"argon\"});
+  package Medium = REFPROPMediumPureSubstance (final substanceNames={\"nitrogen\"});
 </pre>
-Create an Instance of REFPROPMedium.Baseproperties:
+Create an Instance of REFPROPMediumPureSubstance.Baseproperties:
 <pre>
   Medium.BaseProperties props;
 </pre>
-You can then use the Baseproperties model to define the actual medium composition(Xi or X), define the thermodynamic state and calculate the corresponding properties.
+You can then use the Baseproperties model to define the thermodynamic state and calculate the corresponding properties.
 <pre>
   props.p = 1e5;
   props.T = 300;
-  props.Xi = {.8};
   d = props.d;
+  h = props.h;
 </pre>
 <p>Any combination of the pressure, temperature, specific enthalpy, specific entropy and density (p,T,h,s,d) can be used to define a 
 thermodynamic state. Explicit functions for all combinations exist in REFPROP and likewise in the REFPROPMedium package.
@@ -585,23 +531,11 @@ package Medium = REFPROPMedium(final substanceNames={\"water\"}, final explicitV
 
 
 <h2>Details</h2>
-  In order to take advantage of REFPROP's capability of calculating two-phase mixtures a new Medium template had to be created by merging
-  Modelica.Media.Interfaces.PartialMixtureMedium and Modelica.Media.Interfaces.PartialTwoPhaseMedium of the Modelica Standard Library 3.1.
-  Alternatively, there is a version of this package limited to single-substance fluids (REFPROPMediumPureSubstance) which uses the standard 
-  template Modelica.Media.Interfaces.PartialTwoPhaseMedium.
   All property functions contain a definition of their inverses. So, in many cases no numerical inversion by the solver is needed because
-  explicit REFPROP are used.<br>
+  explicit REFPROP functions are used (meaning, numerical inversion happens in REFPROP instead).<br>
   Example: When explicitVars are set to \"ph\" and p and T are given, the specificEnthalpy is calculated first using the inverse function of 
   Temperature_phX --> specificEnthalpy_pTX. With p and h known all other variables are calculated by setstate_phX.
 <p>
-
-<p>
-<ul>
-<li>Check if the lib-files are accessible, if not give error message.</li>
-<li>add volumetric gas fraction to Thermodynamic State</li>
-</ul>
-</p>
-
 
 <h3> Created by</h3>
 Henning Francke<br/>
