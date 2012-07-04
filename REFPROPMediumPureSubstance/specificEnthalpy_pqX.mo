@@ -12,5 +12,5 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEnthalpy_pqX("+String(p)+","+String(q)+",X)");
   end if;
-  h :=getProp_REFPROP_check("h", "pq", fluidnames,p,q,X,phase);
+  h :=getProp_REFPROP_check("h", "pq",p,q,X,phase);
 end specificEnthalpy_pqX;

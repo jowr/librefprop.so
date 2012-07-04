@@ -6,7 +6,7 @@ function setState "Calculates medium properties"
   input Real statevar2;
   input Modelica.SIunits.MassFraction X[:]=reference_X "Mass fractions";
   input FixedPhase phase "2 for two-phase, 1 for one-phase, 0 if not known";
-  input String fluidnames;
+//  input String fluidnames;
   output ThermodynamicState state "thermodynamic state record";
 //  Real[:] props=getProps_REFPROP_check(statevars, fluidnames,statevar1, statevar2, X, phase);
 /*protected 
@@ -30,7 +30,7 @@ algorithm
                               d=props[5],
                               d_l=props[6],
                               d_g=props[7],
-                              q=min(max(props[8],0),1),
+                              x=min(max(props[8],0),1),
                               u=props[9],
                               h=props[10],
                               s=props[11],

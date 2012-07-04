@@ -24,9 +24,9 @@ package Medium = MediaTwoPhaseMixture.REFPROPMediumPureSubstance (final substanc
 //  Modelica.SIunits.ThermalConductivity lambda= Medium.thermalConductivity(props.state);
 //  Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
   Modelica.SIunits.SpecificHeatCapacity cv=Medium.specificHeatCapacityCv(props.state);
-
+  Medium.SaturationProperties sat=Medium.SaturationProperties(1e5,300,{1});
 equation
-    props.p = 1e5+time*1e5 "sine_p.y";
+    props.p = 1e5 "sine_p.y";
     props.h = 722774;
 
 //  props.s = 5.88105;

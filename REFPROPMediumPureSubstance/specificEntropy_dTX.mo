@@ -11,7 +11,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEntropy_dTX("+String(d)+","+String(T)+",X)");
   end if;
-    s:=getProp_REFPROP_check("s", "dT", fluidnames,d,T,X,phase);
+    s:=getProp_REFPROP_check("s", "dT",d,T,X,phase);
   annotation(LateInline=true,inverse(d = density_TsX(T,s,X,phase),
                                      T=temperature_dsX(d,s,X,phase)));
 end specificEntropy_dTX;

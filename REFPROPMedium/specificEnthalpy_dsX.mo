@@ -16,7 +16,8 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEnthalpy_dsX("+String(d)+","+String(s)+",X)");
   end if;
-    h :=getProp_REFPROP_check("h", "ds", fluidnames,d,s,X,phase);
+//    h :=getProp_REFPROP_check("h", "ds", fluidnames,d,s,X,phase);
+    h :=getProp_REFPROP_check("h", "ds", d,s,X,phase);
   annotation(LateInline=true,inverse(s=specificEntropy_hdX(h,d,X,phase),
                                      d=density_hsX(h,s,X,phase)));
 end specificEnthalpy_dsX;

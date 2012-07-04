@@ -10,7 +10,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running density_pqX("+String(p)+","+String(q)+",X)");
   end if;
-  d :=getProp_REFPROP_check("d", "pq", fluidnames,p,q,X,phase);
+  d :=getProp_REFPROP_check("d", "pq",p,q,X,phase);
 /*  annotation(LateInline=true,inverse(p=pressure_dqX(d,q,X,phase),
                                      q=quality_pdX(p,d,X,phase)));*/
 end density_pqX;

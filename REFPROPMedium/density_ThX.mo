@@ -10,7 +10,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running density_ThX("+String(T)+","+String(h)+",X)");
   end if;
-    d :=getProp_REFPROP_check("d", "Th", fluidnames,T,h,X,phase);
+    d :=getProp_REFPROP_check("d", "Th",T,h,X,phase);
   annotation(LateInline=true,inverse(h=specificEnthalpy_dTX(d,T,X,phase),
                                      T=temperature_hdX(h,d,X,phase)));
 end density_ThX;

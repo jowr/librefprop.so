@@ -15,7 +15,7 @@ algorithm
       Modelica.Utilities.Streams.print("Running specificEntropy_phX("+String(p)+","+String(h)+",X)...");
     // p="+String(p)+",h="+String(h)+", X={"+String(X[1])+","+String(X[2])+"}");
     end if;
-    s:=getProp_REFPROP_check("s", "ph", fluidnames,p,h,X,phase);
+    s:=getProp_REFPROP_check("s", "ph",p,h,X,phase);
   annotation(LateInline=true,inverse(h=specificEnthalpy_psX(p,s,X,phase),
                                      p=pressure_hsX(h,s,X,phase)));
 end specificEntropy_phX;

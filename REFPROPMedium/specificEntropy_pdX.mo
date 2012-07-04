@@ -10,7 +10,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEntropy_pdX("+String(p)+","+String(d)+",X)");
   end if;
-    s:=getProp_REFPROP_check("s", "pd", fluidnames,p,d,X,phase);
+    s:=getProp_REFPROP_check("s", "pd",p,d,X,phase);
   annotation(LateInline=true,inverse(d = density_psX(p,s,X,phase),
                                      p=pressure_dsX(d,s,X,phase)));
 end specificEntropy_pdX;

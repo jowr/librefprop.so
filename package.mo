@@ -3,10 +3,6 @@ package MediaTwoPhaseMixture
   constant String REFPROP_PATH = "d:\\Program Files (x86)\\REFPROP\\";
 
 
-
-
-
-
     annotation (version="0.2", uses(Modelica(version="3.2")),
     Documentation(info="<html>
 <p>

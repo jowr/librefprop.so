@@ -42,7 +42,7 @@ redeclare record extends ThermodynamicState
   Density d(start=300) "density";
   Density d_l(start=300) "density liquid phase";
   Density d_g(start=300) "density gas phase";
-  Real q "vapor quality on a mass basis [mass vapor/total mass]";
+  Real x "vapor quality on a mass basis [mass vapor/total mass]";
   SpecificEnergy u "Specific energy";
   SpecificEnthalpy h "Specific enthalpy";
   SpecificEntropy s "Specific entropy";
@@ -66,7 +66,7 @@ end ThermodynamicState;
 
   //ph-explicit
   if explicitVars=="ph" or explicitVars=="hp" then
-    state = setState_phX(p,h,X,0,fluidnames);
+    state = setState_phX(p,h,X,0) " ,fluidnames)";
     T = temperature_phX(p,h,X)
       "double calculation, but necessary if T is given";
   //  T = state.T "can be used instead";
@@ -79,7 +79,7 @@ end ThermodynamicState;
     //d = state.d "can be used instead";
   elseif explicitVars=="pT" or explicitVars=="Tp" then
   //pT-explicit
-    state = setState_pTX(p,T,X,0,fluidnames);
+    state = setState_pTX(p,T,X,0) ",fluidnames)";
     h = specificEnthalpy_pTX(p,T,X)
       "double calculation, but necessary if s is given";
     //h = state.h "can be used instead";
@@ -93,7 +93,7 @@ end ThermodynamicState;
     //d = state.d "can be used instead";
   elseif explicitVars=="dT" or explicitVars=="Td" then
     //Td-explicit
-    state = setState_dTX(d,T,X,0,fluidnames);
+    state = setState_dTX(d,T,X,0) ",fluidnames)";
     h = specificEnthalpy_dTX(d,T,X)
       "double calculation, but necessary if s is given";
     //h = state.h "can be used instead";
@@ -105,37 +105,37 @@ end ThermodynamicState;
       "state.d double calculation, but necessary if d is given";
   //  p = state.p "can be used instead";
   elseif explicitVars=="ps" or explicitVars=="ps" then
-    state = setState_psX(p,s,X,0,fluidnames);
+    state = setState_psX(p,s,X,0) ",fluidnames)";
     T = temperature_psX(p,s,X);
     h = specificEnthalpy_psX(p,s,X);
     d = density_psX(p,s,X);
   elseif explicitVars=="pd" or explicitVars=="pd" then
-    state = setState_pdX(p,d,X,0,fluidnames);
+    state = setState_pdX(p,d,X,0) ",fluidnames)";
     T = temperature_pdX(p,d,X);
     h = specificEnthalpy_pdX(p,d,X);
     s = specificEntropy_pdX(p,d,X);
   elseif explicitVars=="hT" or explicitVars=="Th" then
-    state = setState_ThX(T,h,X,0,fluidnames);
+    state = setState_ThX(T,h,X,0) ",fluidnames)";
     p = pressure_ThX(T,h,X);
     s = specificEntropy_ThX(T,h,X);
     d = density_ThX(T,h,X);
   elseif explicitVars=="sT" or explicitVars=="Ts" then
-    state = setState_TsX(T,s,X,0,fluidnames);
+    state = setState_TsX(T,s,X,0) ",fluidnames)";
     p = pressure_TsX(T,s,X);
     h = specificEnthalpy_TsX(T,s,X);
     d = density_TsX(T,s,X);
   elseif explicitVars=="hd" or explicitVars=="hd" then
-    state = setState_hdX(h,d,X,0,fluidnames);
+    state = setState_hdX(h,d,X,0) ",fluidnames)";
     p = pressure_hdX(h,d,X);
     s = specificEntropy_hdX(h,d,X);
     T = temperature_hdX(h,d,X);
   elseif explicitVars=="hs" or explicitVars=="sh" then
-    state = setState_hsX(h,s,X,0,fluidnames);
+    state = setState_hsX(h,s,X,0) ",fluidnames)";
     p = pressure_hsX(h,s,X);
     T = temperature_hsX(h,s,X);
     d = density_hsX(h,s,X);
   elseif explicitVars=="sd" or explicitVars=="ds" then
-    state = setState_dsX(d,s,X,0,fluidnames);
+    state = setState_dsX(d,s,X,0) ",fluidnames)";
     p = pressure_dsX(d,s,X);
     h = specificEnthalpy_dsX(d,s,X);
     T = temperature_dsX(d,s,X);
@@ -161,18 +161,27 @@ end ThermodynamicState;
   end BaseProperties;
 
 
+
+
+
+
 redeclare function extends saturationPressure
 //  extends Modelica.Icons.Function;
 algorithm
-    p := getSatProp_REFPROP_check("p", "T", fluidnames,T,X);
+//    p := getSatProp_REFPROP_check("p", "T", fluidnames,T,X);
+    p := getSatProp_REFPROP_check("p", "T", T,X);
 end saturationPressure;
 
 
 redeclare function extends saturationTemperature
 //  extends Modelica.Icons.Function;
 algorithm
-    T := getSatProp_REFPROP_check("T", "p", fluidnames,p,X);
+//    T := getSatProp_REFPROP_check("T", "p", fluidnames,p,X);
+    T := getSatProp_REFPROP_check("T", "p", p,X);
 end saturationTemperature;
+
+
+
 
 
  redeclare function extends specificEntropy
@@ -192,21 +201,21 @@ end saturationTemperature;
 redeclare function extends dewEnthalpy "dew curve specific enthalpy"
   extends Modelica.Icons.Function;
 algorithm
-    hv := getProp_REFPROP_check("h", "pq", fluidnames, sat.psat,1,sat.X,1);
+    hv := getProp_REFPROP_check("h", "pq", sat.psat,1,sat.X,1);
 end dewEnthalpy;
 
 
   redeclare function extends dewEntropy "dew curve specific entropy of water"
     extends Modelica.Icons.Function;
   algorithm
-    sv := getProp_REFPROP_check("s", "pq", fluidnames, sat.psat,1,sat.X,1);
+    sv := getProp_REFPROP_check("s", "pq", sat.psat,1,sat.X,1);
   end dewEntropy;
 
 
   redeclare function extends dewDensity "dew curve specific density of water"
     extends Modelica.Icons.Function;
   algorithm
-    dv := getProp_REFPROP_check("d", "pq", fluidnames, sat.psat,1,sat.X,1);
+    dv := getProp_REFPROP_check("d", "pq", sat.psat,1,sat.X,1);
   end dewDensity;
 
 
@@ -214,7 +223,7 @@ end dewEnthalpy;
   "boiling curve specific enthalpy of water"
     extends Modelica.Icons.Function;
   algorithm
-    hl := getProp_REFPROP_check("h", "pq", fluidnames, sat.psat,0,sat.X,1);
+    hl := getProp_REFPROP_check("h", "pq", sat.psat,0,sat.X,1);
   end bubbleEnthalpy;
 
 
@@ -222,7 +231,7 @@ end dewEnthalpy;
   "boiling curve specific entropy of water"
     extends Modelica.Icons.Function;
   algorithm
-    sl := getProp_REFPROP_check("s", "pq", fluidnames, sat.psat,0,sat.X,1);
+    sl := getProp_REFPROP_check("s", "pq", sat.psat,0,sat.X,1);
   end bubbleEntropy;
 
 
@@ -230,7 +239,7 @@ end dewEnthalpy;
   "boiling curve specific density of water"
     extends Modelica.Icons.Function;
   algorithm
-      dl := getProp_REFPROP_check("d", "pq", fluidnames, sat.psat,0,sat.X,1);
+      dl := getProp_REFPROP_check("d", "pq", sat.psat,0,sat.X,1);
   end bubbleDensity;
 
 
@@ -244,12 +253,12 @@ end molarMass;
 
 redeclare replaceable partial function extends setState_phX
   "Calculates medium properties from p,h,X"
-      input String fluidnames;
+//      input String fluidnames;
 algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running setState_phX("+String(p)+","+String(h)+",X)...");
   end if;
-  state := setState("ph",p,h,X,phase,fluidnames);
+  state := setState("ph",p,h,X,phase) ",fluidnames)";
 end setState_phX;
 
 
@@ -267,7 +276,7 @@ end setState_phX;
        Modelica.Utilities.Streams.print("Running density_phX("+String(p)+","+String(h)+",X)");
      end if;
        // p="+String(p)+",h="+String(h)+", X={"+String(X[1])+","+String(X[2])+"}");
-       d :=getProp_REFPROP_check("d", "ph", fluidnames,p,h,X,phase);
+       d :=getProp_REFPROP_check("d", "ph",p,h,X,phase);
      annotation(LateInline=true,inverse(h=specificEnthalpy_pdX(p,d,X,phase),
                                         p=pressure_hdX(h,d,X,phase)));
    end density_phX;
@@ -286,19 +295,20 @@ end setState_phX;
    if debugmode then
       Modelica.Utilities.Streams.print("Running temperature_phX("+String(p)+","+String(h)+",X)");
    end if;
-       T :=getProp_REFPROP_check("T", "ph", fluidnames,p,h,X,phase);
+       T :=getProp_REFPROP_check("T", "ph",p,h,X,phase);
      annotation(LateInline=true,inverse(h=specificEnthalpy_pTX(p,T,X,phase),
                                         p=pressure_ThX(T,h,X,phase)));
    end temperature_phX;
 
 
+
 redeclare replaceable partial function extends setState_pTX
-      input String fluidnames;
+//      input String fluidnames;
 algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running setState_pTX("+String(p)+","+String(T)+",X)...");
   end if;
-  state := setState("pT",p,T,X,phase,fluidnames);
+  state := setState("pT",p,T,X,phase) ",fluidnames)";
 end setState_pTX;
 
 
@@ -315,7 +325,7 @@ end setState_pTX;
        if debugmode then
          Modelica.Utilities.Streams.print("Running density_pTX("+String(p)+","+String(T)+",X)...");
        end if;
-       d :=getProp_REFPROP_check("d", "pT", fluidnames,p,T,X,phase);
+       d :=getProp_REFPROP_check("d", "pT",p,T,X,phase);
      annotation(LateInline=true,inverse(T=temperature_pdX(p,d,X,phase),
                                         p=pressure_dTX(d,T,X,phase)));
    end density_pTX;
@@ -339,7 +349,7 @@ end setState_pTX;
         Modelica.Utilities.Streams.print("Running specificEnthalpy_pTX("+String(p)+","+String(T)+",X)...");
       end if;
       // p="+String(p)+",T="+String(T)+", X={"+String(X[1])+","+String(X[2])+"}");
-      h :=getProp_REFPROP_check("h", "pT", fluidnames,p,T,X,phase);
+      h :=getProp_REFPROP_check("h", "pT",p,T,X,phase);
     annotation(LateInline=true,inverse(T=temperature_phX(p,h,X,phase),
                                        p=pressure_ThX(T,h,X,phase)));
   end specificEnthalpy_pTX;
@@ -356,7 +366,7 @@ end setState_pTX;
     if debugmode then
       Modelica.Utilities.Streams.print("Running specificEntropy_pTX("+String(p)+","+String(T)+",X)");
     end if;
-    s:=getProp_REFPROP_check("s", "pT", fluidnames,p,T,X,phase);
+    s:=getProp_REFPROP_check("s", "pT",p,T,X,phase);
      annotation(LateInline=true,inverse(T=temperature_psX(p,s,X,phase),
                                        p=pressure_TsX(T,s,X,phase)));
   end specificEntropy_pTX;
@@ -364,12 +374,12 @@ end setState_pTX;
 
 redeclare replaceable partial function extends setState_psX
   "Calculates medium properties from p,s,X"
-      input String fluidnames;
+//      input String fluidnames;
 algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running setState_psX("+String(p)+","+String(s)+",X)...");
   end if;
-  state := setState("ps",p,s,X,phase,fluidnames);
+  state := setState("ps",p,s,X,phase) ",fluidnames)";
 end setState_psX;
 
 
@@ -386,7 +396,7 @@ end setState_psX;
        if debugmode then
          Modelica.Utilities.Streams.print("Running temperature_psX("+String(p)+","+String(s)+",X)...");
        end if;
-       T :=getProp_REFPROP_check("T", "ps", fluidnames,p,s,X,phase);
+       T :=getProp_REFPROP_check("T", "ps",p,s,X,phase);
      annotation(LateInline=true,inverse(s=specificEntropy_pTX(p,T,X,phase),
                                         p=pressure_TsX(T,s,X,phase)));
    end temperature_psX;
@@ -409,7 +419,7 @@ end setState_psX;
       if debugmode then
         Modelica.Utilities.Streams.print("Running specificEnthalpy_psX("+String(p)+","+String(s)+",X)...");
       end if;
-      h :=getProp_REFPROP_check("h", "ps", fluidnames,p,s,X,phase);
+      h :=getProp_REFPROP_check("h", "ps",p,s,X,phase);
     annotation(LateInline=true,inverse(s=specificEntropy_phX(p,h,X,phase),
                                        p=pressure_hsX(h,s,X,phase)));
   end specificEnthalpy_psX;
@@ -427,20 +437,29 @@ end setState_psX;
      if debugmode then
        Modelica.Utilities.Streams.print("Running density_psX("+String(p)+","+String(s)+",X)");
      end if;
-       d :=getProp_REFPROP_check("d", "ps", fluidnames,p,s,X,phase);
+       d :=getProp_REFPROP_check("d", "ps",p,s,X,phase);
      annotation(LateInline=true,inverse(s=specificEntropy_pdX(p,d,X,phase),
                                         p=pressure_dsX(d,s,X,phase)));
    end density_psX;
 
 
+
+
+
+
+
+
+
+
 redeclare replaceable partial function extends setState_dTX
-      input String fluidnames;
+//      input String fluidnames;
 algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running setState_dTX("+String(d)+","+String(T)+",X)...");
   end if;
-  state := setState("dT",d,T,X,phase,fluidnames);
+  state := setState("dT",d,T,X,phase) ",fluidnames)";
 end setState_dTX;
+
 
 
   redeclare function specificEnthalpy_dTX
@@ -457,10 +476,34 @@ end setState_dTX;
     if debugmode then
       Modelica.Utilities.Streams.print("Running specificEnthalpy_dTX("+String(d)+","+String(T)+",X)");
     end if;
-      h :=getProp_REFPROP_check("h", "dT", fluidnames,d,T,X,phase);
+  //    h :=getProp_REFPROP_check("h", "dT", fluidnames,d,T,X,phase);
+      h :=getProp_REFPROP_check("h", "dT", d,T,X,phase);
     annotation(LateInline=true,inverse(d=density_ThX(T,h,X,phase),
                                        T=temperature_hdX(h,d,X,phase)));
   end specificEnthalpy_dTX;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 redeclare function extends dynamicViscosity
@@ -468,7 +511,7 @@ algorithm
     if debugmode then
       Modelica.Utilities.Streams.print("Running dynamicViscosity");
     end if;
-  eta := getProp_REFPROP_check("v", "Td", fluidnames,state.T,state.d,state.X,state.phase);
+  eta := getProp_REFPROP_check("v", "Td",state.T,state.d,state.X,state.phase);
 end dynamicViscosity;
 
 
@@ -477,15 +520,15 @@ algorithm
     if debugmode then
       Modelica.Utilities.Streams.print("Running thermalConductivity");
     end if;
-  lambda := getProp_REFPROP_check("l", "Td", fluidnames,state.T,state.d,state.X,state.phase);
+  lambda := getProp_REFPROP_check("l", "Td",state.T,state.d,state.X,state.phase);
 end thermalConductivity;
 
 
   redeclare function vapourQuality "Return vapour quality"
     input ThermodynamicState state "Thermodynamic state record";
-    output MassFraction q "Vapour quality";
+    output MassFraction x "Vapour quality";
   algorithm
-    q := state.q;
+    x := state.x;
     annotation(Documentation(info="<html></html>"));
   end vapourQuality;
 
@@ -496,11 +539,13 @@ end thermalConductivity;
     cp:=state.cp;
   end specificHeatCapacityCp;
 
+
   redeclare function extends specificHeatCapacityCv
 
   algorithm
     cv:=state.cv;
   end specificHeatCapacityCv;
+
 
   annotation (Documentation(info="<html>
 <p>

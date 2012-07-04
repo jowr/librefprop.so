@@ -10,7 +10,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running pressure_hsX("+String(h)+","+String(s)+",X)");
   end if;
-    p :=getProp_REFPROP_check("p", "hs", fluidnames,h,s,X,phase);
+    p :=getProp_REFPROP_check("p", "hs",h,s,X,phase);
   annotation(LateInline=true,inverse(s=specificEntropy_phX(p,h,X,phase),
                                      h=specificEnthalpy_psX(p,s,X,phase)));
 end pressure_hsX;

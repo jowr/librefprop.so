@@ -506,11 +506,11 @@ end ThermodynamicState;
 
   replaceable function vapourQuality "Return vapour quality"
     input ThermodynamicState state "Thermodynamic state record";
-    output MassFraction q "Vapour quality";
+    output MassFraction x "Vapour quality";
 protected
     constant SpecificEnthalpy eps = 1e-8;
   algorithm
-  q := min(max((specificEnthalpy(state) - bubbleEnthalpy(setSat_pX(pressure(state),state.X)))
+  x := min(max((specificEnthalpy(state) - bubbleEnthalpy(setSat_pX(pressure(state),state.X)))
     /(dewEnthalpy(setSat_pX(pressure(state),state.X)) - bubbleEnthalpy(setSat_pX(pressure(state),state.X))
      + eps), 0), 1);
     annotation(Documentation(info="<html></html>"));

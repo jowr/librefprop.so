@@ -13,7 +13,7 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEnthalpy_TsX("+String(T)+","+String(s)+",X)");
   end if;
-  h :=getProp_REFPROP_check("h", "Ts", fluidnames,T,s,X,phase);
+  h :=getProp_REFPROP_check("h", "Ts",T,s,X,phase);
   annotation(LateInline=true,inverse(s = specificEntropy_ThX(T,h,X,phase),
                                      T=temperature_hsX(h,s,X,phase)));
 end specificEnthalpy_TsX;

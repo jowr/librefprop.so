@@ -11,5 +11,5 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running temperature_pqX("+String(p)+","+String(q)+",X)");
   end if;
-    T :=getProp_REFPROP_check("T", "pq", fluidnames,p,q,X,phase);
+    T :=getProp_REFPROP_check("T", "pq",p,q,X,phase);
 end temperature_pqX;

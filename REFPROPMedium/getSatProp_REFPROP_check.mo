@@ -4,7 +4,7 @@ function getSatProp_REFPROP_check
   extends partialREFPROP;
    input String what2calc;
    input String statevar;
-   input String fluidnames;
+//   input String fluidnames;
    input Real statevarval;
    input MassFraction X[:] "mass fraction m_NaCl/m_Sol";
    output Real val;

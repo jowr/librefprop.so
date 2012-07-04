@@ -1,6 +1,6 @@
 within MediaTwoPhaseMixture;
-package Water_MixtureTwoPhase_pT
-  "(incomplete) Water model from Modelica.Media compatible to PartialMixtureTwoPhaseMedium (Example use)"
+package Water_MixtureTwoPhase_pT "(incomplete) Water model from Modelica.Media compatible to PartialMixtureTwoPhaseMedium (Example use)"
+
 
  extends PartialMixtureTwoPhaseMedium(
    final mediumName="TwoPhaseMixtureWater",
@@ -12,6 +12,7 @@ package Water_MixtureTwoPhase_pT
 //   final extraPropertiesNames={"gas enthalpy","liquid enthalpy"},
 
   constant Modelica.SIunits.MolarMass M_H2O = 0.018015 "[kg/mol] TODO";
+
 
  redeclare model extends BaseProperties "Base properties of medium"
 
@@ -25,7 +26,7 @@ package Water_MixtureTwoPhase_pT
    Modelica.SIunits.SpecificEnthalpy h_l = bubbleEnthalpy(sat);
    Modelica.SIunits.SpecificEnthalpy h_g = dewEnthalpy(sat);
    Real q = min(max((h - h_l)/(h_g - h_l+ 1e-18), 0), 1)
-      "(min=0,max=1) gas phase mass fraction";
+    "(min=0,max=1) gas phase mass fraction";
  //  Integer phase_out "calculated phase";
    //END no gas case
  equation
@@ -82,6 +83,7 @@ package Water_MixtureTwoPhase_pT
 </html>"));
  end BaseProperties;
 
+
   redeclare function specificEnthalpy_pTX
     input Modelica.SIunits.Pressure p;
     input Modelica.SIunits.Temp_K T;
@@ -96,8 +98,9 @@ package Water_MixtureTwoPhase_pT
     annotation(LateInline=true,inverse(T = temperature_phX(p=p,h=h,X=X,phase=phase)));
   end specificEnthalpy_pTX;
 
+
   redeclare function temperature_phX
-    "numerically inverts specificEnthalpy_liquid_pTX"
+  "numerically inverts specificEnthalpy_liquid_pTX"
     input Modelica.SIunits.Pressure p;
     input Modelica.SIunits.SpecificEnthalpy h;
     input MassFraction X[:] "mass fraction m_XCl/m_Sol";
@@ -109,8 +112,9 @@ package Water_MixtureTwoPhase_pT
      annotation(LateInline=true,inverse(h = specificEnthalpy_pTX(p=p,T=T,phase=phase,X=X)));
   end temperature_phX;
 
+
 redeclare record extends ThermodynamicState
-    "a selection of variables that uniquely defines the thermodynamic state"
+  "a selection of variables that uniquely defines the thermodynamic state"
 /*  AbsolutePressure p "Absolute pressure of medium";
   Temperature T(unit="K") "Temperature of medium";
   MassFraction X[nX] "Mass fraction of NaCl in kg/kg";*/
@@ -127,16 +131,19 @@ redeclare record extends ThermodynamicState
 </html>"));
 end ThermodynamicState;
 
+
   redeclare function extends dewEnthalpy "dew curve specific enthalpy of water"
   algorithm
     hv :=  Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(sat.psat);
   end dewEnthalpy;
 
+
   redeclare function extends bubbleEnthalpy
-    "boiling curve specific enthalpy of water"
+  "boiling curve specific enthalpy of water"
   algorithm
     hl := Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hl_p(sat.psat);
   end bubbleEnthalpy;
+
 
   redeclare function extends saturationTemperature
   algorithm
@@ -144,18 +151,21 @@ end ThermodynamicState;
      T := Modelica.Media.Water.WaterIF97_base.saturationTemperature(p);
   end saturationTemperature;
 
+
   redeclare function extends dynamicViscosity
   algorithm
     eta := Modelica.Media.Water.WaterIF97_base.dynamicViscosity(state);
   end dynamicViscosity;
+
 
 redeclare function extends specificEntropy "specific entropy of water"
 algorithm
     s := Modelica.Media.Water.IF97_Utilities.s_ph(state.p, state.h, state.phase);
 end specificEntropy;
 
+
 redeclare function specificEnthalpy_ps
-    "Computes specific enthalpy as a function of pressure and temperature"
+  "Computes specific enthalpy as a function of pressure and temperature"
     extends Modelica.Icons.Function;
   input AbsolutePressure p "Pressure";
   input SpecificEntropy s "Specific entropy";
@@ -165,8 +175,9 @@ algorithm
   h := Modelica.Media.Water.IF97_Utilities.h_ps(p, s, phase);
 end specificEnthalpy_ps;
 
+
 redeclare function extends setState_psX
-    "Return thermodynamic state of water as function of p and s"
+  "Return thermodynamic state of water as function of p and s"
 algorithm
   state := ThermodynamicState(
     d=density_ps(p,s),
@@ -182,18 +193,21 @@ algorithm
     d_g=-1);
 end setState_psX;
 
+
   redeclare function extends temperature "return temperature of ideal gas"
   algorithm
     T := state.T;
   end temperature;
 
+
       redeclare function extends density "return density of ideal gas"
       algorithm
-    d := state.d;
+  d := state.d;
       end density;
 
+
 redeclare function extends setState_pTX
-    "Return thermodynamic state of water as function of p and T"
+  "Return thermodynamic state of water as function of p and T"
 algorithm
   state := ThermodynamicState(
     d=density_pT(p,T),
@@ -209,8 +223,9 @@ algorithm
     d_g=-1);
 end setState_pTX;
 
+
 redeclare function specificEntropy_pTX
-    "Computes specific enthalpy as a function of pressure and temperature"
+  "Computes specific enthalpy as a function of pressure and temperature"
     extends Modelica.Icons.Function;
   input AbsolutePressure p "Pressure";
   input SpecificEntropy T "Specific entropy";
@@ -221,8 +236,9 @@ algorithm
   h := Modelica.Media.Water.IF97_Utilities.h_ps(p, s, phase);
 end specificEntropy_pTX;
 
+
   redeclare function extends thermalConductivity
-    "Thermal conductivity of water"
+  "Thermal conductivity of water"
   algorithm
     lambda := Modelica.Media.Water.IF97_Utilities.thermalConductivity(
         state.d,
@@ -231,8 +247,9 @@ end specificEntropy_pTX;
         state.phase);
   end thermalConductivity;
 
+
   redeclare function extends specificHeatCapacityCp
-    "specific heat capacity at constant pressure of water"
+  "specific heat capacity at constant pressure of water"
 
   algorithm
     if Modelica.Media.Water.WaterIF97_base.dT_explicit then
@@ -254,13 +271,15 @@ end specificEntropy_pTX;
                                 </html>"));
   end specificHeatCapacityCp;
 
+
   redeclare function extends saturationPressure
   algorithm
      p := Modelica.Media.Water.WaterIF97_base.saturationPressure(T);
   end saturationPressure;
 
+
   redeclare function extends specificHeatCapacityCv
-    "specific heat capacity at constant pressure of water"
+  "specific heat capacity at constant pressure of water"
 
   algorithm
     if Modelica.Media.Water.WaterIF97_base.dT_explicit then
@@ -281,6 +300,7 @@ end specificEntropy_pTX;
                                 liquid and vapour state heat capacities.</p>
                                 </html>"));
   end specificHeatCapacityCv;
+
  annotation (Documentation(info="<html>
   <h1>Water_MixtureTwoPhase_pT</h1>
   This is a an example use of PartialMixtureTwoPhaseMedium.
@@ -295,5 +315,5 @@ Germany
 <p>
 <a href=mailto:info@xrg-simulation.de>francke@gfz-potsdam.de</a>
   </html>
-"), uses(Modelica(version="3.1")));
+"));
 end Water_MixtureTwoPhase_pT;

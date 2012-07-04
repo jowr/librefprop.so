@@ -11,5 +11,5 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running specificEntropy_pqX("+String(p)+","+String(q)+",X)");
   end if;
-  s :=getProp_REFPROP_check("s", "pq", fluidnames,p,q,X,phase);
+  s :=getProp_REFPROP_check("s", "pq",p,q,X,phase);
 end specificEntropy_pqX;

@@ -11,6 +11,6 @@ algorithm
   if debugmode then
     Modelica.Utilities.Streams.print("Running pressure_TqX("+String(T)+","+String(q)+",X)");
   end if;
-    p :=getProp_REFPROP_check("p", "Tq", fluidnames,T,q,X,phase);
+    p :=getProp_REFPROP_check("p", "Tq",T,q,X,phase);
   annotation(LateInline=true,inverse(T=temperature_pqX(p,q,X,phase)));
 end pressure_TqX;
