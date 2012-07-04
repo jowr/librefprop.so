@@ -73,4 +73,6 @@ dynamicViscosity
 thermalConductivity
 specificHeatCapacityCp
 specificHeatCapacityCv
+pressure
+specificEnthalpy
 vapourQuality

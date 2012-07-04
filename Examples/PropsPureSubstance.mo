@@ -19,12 +19,12 @@ package Medium = MediaTwoPhaseMixture.REFPROPMediumPureSubstance (final substanc
 //  Modelica.SIunits.Temperature T=props.T;
   Modelica.SIunits.Pressure psat=Medium.saturationPressure(300);
 //  Modelica.SIunits.MolarMass MM;
-//  Real q= Medium.vapourQuality(props.state);
+  Real q= Medium.vapourQuality(props.state);
 //  Modelica.SIunits.SpecificHeatCapacityAtConstantPressure cp;
 //  Modelica.SIunits.ThermalConductivity lambda= Medium.thermalConductivity(props.state);
 //  Modelica.SIunits.DynamicViscosity eta = Medium.dynamicViscosity(props.state);
   Modelica.SIunits.SpecificHeatCapacity cv=Medium.specificHeatCapacityCv(props.state);
-  Medium.SaturationProperties sat=Medium.SaturationProperties(1e5,300,{1});
+  Medium.SaturationProperties sat=Medium.SaturationProperties(1e5,300);
 equation
     props.p = 1e5 "sine_p.y";
     props.h = 722774;

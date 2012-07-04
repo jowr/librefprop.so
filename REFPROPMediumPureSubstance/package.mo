@@ -6,12 +6,13 @@ package REFPROPMediumPureSubstance "Two Phase single component two-phase medium 
 -added preset X to saturationTemperature() and saturationPressure()
 -added s and sat in BaseProperties
 -add p,T,X in ThermodynamicState
--for specificEnthalpy_dTX:  redeclare function -> function 
+-for specificEnthalpy_dTX:  redeclare function -> function
+-remove X from ThermodynamicState and SaturationState
 */
 
 
 redeclare record extends SaturationProperties
-  MassFraction X[nX] "Mass fractions";
+//  MassFraction X[nX] "Mass fractions";
 end SaturationProperties;
 
 
@@ -64,7 +65,7 @@ redeclare record extends ThermodynamicState
   "a selection of variables that uniquely defines the thermodynamic state"
   AbsolutePressure p "Absolute pressure of medium";
   Temperature T "Temperature of medium";
-  MassFraction X[nX] "Composition (Mass fractions  in kg/kg)";/**/
+//  MassFraction X[nX] "Composition (Mass fractions  in kg/kg)";/**/
   MolarMass MM "Molar Mass of the whole mixture";
   Density d(start=300) "density";
   Density d_l(start=300) "density liquid phase";
@@ -78,8 +79,8 @@ redeclare record extends ThermodynamicState
   VelocityOfSound c;
   MolarMass MM_l "Molar Mass of liquid phase";
   MolarMass MM_g "Molar Mass of gas phase";
-  MassFraction X_l[nX] "Composition of liquid phase (Mass fractions  in kg/kg)";
-  MassFraction X_g[nX] "Composition of gas phase (Mass fractions  in kg/kg)";
+//  MassFraction X_l[nX] "Composition of liquid phase (Mass fractions  in kg/kg)";
+//  MassFraction X_g[nX] "Composition of gas phase (Mass fractions  in kg/kg)";
 //  Real GVF "Gas Void Fraction";
 end ThermodynamicState;
 
@@ -172,7 +173,7 @@ end ThermodynamicState;
 
     sat.psat = p;
     sat.Tsat = saturationTemperature(p,X);
-    sat.X = X;
+  //  sat.X = X;
    annotation (Documentation(info="
  <html>
  The baseproperties model is explicit for one set of 2 variables, which can be chosen to be ph, pT, ps, pd, Th, dT, Ts, hd, hs, ds (set explicitVars when calling this package or in package).<br/>
@@ -214,21 +215,21 @@ end ThermodynamicState;
 redeclare function extends dewEnthalpy "dew curve specific enthalpy"
   extends Modelica.Icons.Function;
 algorithm
-    hv := getProp_REFPROP_check("h", "pq", sat.psat,1,sat.X,1);
+    hv := getProp_REFPROP_check("h", "pq", sat.psat,1,reference_X,1);
 end dewEnthalpy;
 
 
   redeclare function extends dewEntropy "dew curve specific entropy of water"
     extends Modelica.Icons.Function;
   algorithm
-    sv := getProp_REFPROP_check("s", "pq", sat.psat,1,sat.X,1);
+    sv := getProp_REFPROP_check("s", "pq", sat.psat,1,reference_X,1);
   end dewEntropy;
 
 
   redeclare function extends dewDensity "dew curve specific density of water"
     extends Modelica.Icons.Function;
   algorithm
-    dv := getProp_REFPROP_check("d", "pq", sat.psat,1,sat.X,1);
+    dv := getProp_REFPROP_check("d", "pq", sat.psat,1,reference_X,1);
   end dewDensity;
 
 
@@ -236,7 +237,7 @@ end dewEnthalpy;
   "boiling curve specific enthalpy of water"
     extends Modelica.Icons.Function;
   algorithm
-    hl := getProp_REFPROP_check("h", "pq", sat.psat,0,sat.X,1);
+    hl := getProp_REFPROP_check("h", "pq", sat.psat,0,reference_X,1);
   end bubbleEnthalpy;
 
 
@@ -244,7 +245,7 @@ end dewEnthalpy;
   "boiling curve specific entropy of water"
     extends Modelica.Icons.Function;
   algorithm
-    sl := getProp_REFPROP_check("s", "pq", sat.psat,0,sat.X,1);
+    sl := getProp_REFPROP_check("s", "pq", sat.psat,0,reference_X,1);
   end bubbleEntropy;
 
 
@@ -252,7 +253,7 @@ end dewEnthalpy;
   "boiling curve specific density of water"
     extends Modelica.Icons.Function;
   algorithm
-      dl := getProp_REFPROP_check("d", "pq", sat.psat,0,sat.X,1);
+      dl := getProp_REFPROP_check("d", "pq", sat.psat,0,reference_X,1);
   end bubbleDensity;
 
 
@@ -531,13 +532,30 @@ end thermalConductivity;
   end specificHeatCapacityCv;
 
 
-  redeclare function vapourQuality "Return vapour quality"
-    input REFPROPMedium.ThermodynamicState state "Thermodynamic state record";
-    output MassFraction x "Vapour quality";
-  algorithm
-    x := state.x;
-    annotation(Documentation(info="<html></html>"));
-  end vapourQuality;
+redeclare function pressure "Return pressure from state record"
+  input ThermodynamicState state "Thermodynamic state record";
+  output Modelica.SIunits.Pressure p "Vapour quality";
+algorithm
+  p := state.p;
+end pressure;
+
+
+redeclare function specificEnthalpy
+  "Return specific enthalpy from state record"
+  input ThermodynamicState state "Thermodynamic state record";
+  output Modelica.SIunits.SpecificEnthalpy h "Vapour quality";
+algorithm
+  h := state.h;
+end specificEnthalpy;
+
+
+redeclare function vapourQuality "Return vapour quality"
+  input ThermodynamicState state "Thermodynamic state record";
+  output MassFraction x "Vapour quality";
+algorithm
+  x := state.x;
+end vapourQuality;
+
 
   annotation (Documentation(info="<html>
 <p>

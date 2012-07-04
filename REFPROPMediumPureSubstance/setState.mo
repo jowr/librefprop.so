@@ -25,7 +25,6 @@ algorithm
   If q = -998 Then Quality = Trim2("Subcooled liquid with p>pc")*/
   state := ThermodynamicState(  p= props[2],
                               T= props[3],
-                              X= X,
                               MM= props[4],
                               d=props[5],
                               d_l=props[6],
@@ -39,8 +38,10 @@ algorithm
                               c=props[14],
                               MM_l=props[15],
                               MM_g=props[16],
+                              phase=0);
+/*
+                              X= X,
                               X_l=props[17:16+nX],
                               X_g=props[17+nX:16+2*nX],
-                              phase=0);
-
+*/
 end setState;
