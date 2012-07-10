@@ -27,7 +27,7 @@ package Medium = MediaTwoPhaseMixture.REFPROPMediumPureSubstance (final substanc
   Medium.SaturationProperties sat=Medium.SaturationProperties(1e5,300);
 equation
     props.p = 1e5 "sine_p.y";
-    props.h = 722774;
+    props.h = 0+time*722774;
 
 //  props.s = 5.88105;
 //   props.T = 350;

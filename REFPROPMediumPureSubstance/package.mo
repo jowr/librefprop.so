@@ -18,17 +18,17 @@ end SaturationProperties;
 
 redeclare function extends saturationPressure
 //  extends Modelica.Icons.Function;
-  input MassFraction X[:]={1} "fluid composition as mass fractions";
+//  input MassFraction X[:]={1} "fluid composition as mass fractions";
 algorithm
-    p := getSatProp_REFPROP_check("p", "T",T,X);
+    p := getSatProp_REFPROP_check("p", "T",T,reference_X);
 end saturationPressure;
 
 
 redeclare function extends saturationTemperature
 //  extends Modelica.Icons.Function;
-  input MassFraction X[:]={1} "fluid composition as mass fractions";
+//  input MassFraction X[:]={1} "fluid composition as mass fractions";
 algorithm
-    T := getSatProp_REFPROP_check("T", "p",p,X);
+    T := getSatProp_REFPROP_check("T", "p",p,reference_X);
 end saturationTemperature;
 constant Boolean debugmode = false
   "print messages in functions and in refpropwrapper.lib (to see the latter, start dymosim.exe in command window)";
@@ -77,8 +77,8 @@ redeclare record extends ThermodynamicState
   Modelica.SIunits.SpecificHeatCapacityAtConstantPressure cp;
   Modelica.SIunits.SpecificHeatCapacityAtConstantVolume cv;
   VelocityOfSound c;
-  MolarMass MM_l "Molar Mass of liquid phase";
-  MolarMass MM_g "Molar Mass of gas phase";
+//  MolarMass MM_l "Molar Mass of liquid phase";
+//  MolarMass MM_g "Molar Mass of gas phase";
 //  MassFraction X_l[nX] "Composition of liquid phase (Mass fractions  in kg/kg)";
 //  MassFraction X_g[nX] "Composition of gas phase (Mass fractions  in kg/kg)";
 //  Real GVF "Gas Void Fraction";
@@ -90,7 +90,8 @@ end ThermodynamicState;
     Modelica.SIunits.SpecificEntropy s;
     SaturationProperties sat "Saturation properties at the medium pressure";
   equation
-    u = state.u "h - p/d";
+    u = h - p/d
+    "state.u - calculated anyway by REFPROP, but this way the expression can be derived symbolically";
     MM = state.MM;
     R  = 1 "Modelica.Constants.R/MM";
 
@@ -172,7 +173,7 @@ end ThermodynamicState;
   end if;
 
     sat.psat = p;
-    sat.Tsat = saturationTemperature(p,X);
+    sat.Tsat = saturationTemperature(p);
   //  sat.X = X;
    annotation (Documentation(info="
  <html>
@@ -189,13 +190,6 @@ end ThermodynamicState;
  </ul>
  </html>"));
   end BaseProperties;
-
-
-
-
-
-
-
 
 
  redeclare function extends specificEntropy
@@ -313,7 +307,6 @@ end setState_phX;
      annotation(LateInline=true,inverse(h=specificEnthalpy_pTX(p,T,X,phase),
                                         p=pressure_ThX(T,h,X,phase)));
    end temperature_phX;
-
 
 
 redeclare replaceable partial function extends setState_pTX
@@ -457,14 +450,6 @@ end setState_psX;
    end density_psX;
 
 
-
-
-
-
-
-
-
-
 redeclare replaceable partial function extends setState_dTX
 //      input String fluidnames;
 algorithm
@@ -473,31 +458,6 @@ algorithm
   end if;
   state := setState("dT",d,T,X,phase) ",fluidnames)";
 end setState_dTX;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 redeclare function extends dynamicViscosity

@@ -29,9 +29,10 @@ Modelica.SIunits.DynamicViscosity eta_g = Medium.dynamicViscosity_gas(props.stat
 equation
 
     props.p = 1e5;
-//    props.h = 1.848e5;
+    props.h = 0+time*8e5;
   //  props.s = 5.88105;
-   props.T = 400;
+//   props.T = 400;
+//   props.state.x = 0.5;
 //    props.Xi = {.5};
 //    props.X = {.1,.9};
     props.Xi = {.5};

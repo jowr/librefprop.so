@@ -41,6 +41,5 @@ algorithm
                               MM_g=props[16],
                               X_l=props[17:16+nX],
                               X_g=props[17+nX:16+2*nX],
-                              phase=0);
-
+                              phase=if (props[8]>0 and props[8]<1) then 2 else 1);
 end setState;

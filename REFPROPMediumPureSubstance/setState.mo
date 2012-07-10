@@ -36,9 +36,7 @@ algorithm
                               cv=props[12],
                               cp=props[13],
                               c=props[14],
-                              MM_l=props[15],
-                              MM_g=props[16],
-                              phase=0);
+                              phase=if props[8]>0 and props[8]<1 then 2 else 1);
 /*
                               X= X,
                               X_l=props[17:16+nX],
