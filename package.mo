@@ -1,7 +1,7 @@
 within ;
 package MediaTwoPhaseMixture 
-  constant String REFPROP_PATH = "d:\\Program Files (x86)\\REFPROP\\";
-
+//   constant String REFPROP_PATH = "d:\\Program Files (x86)\\REFPROP\\";
+     constant String REFPROP_PATH = "/home/jowr/Documents/Fluids/refprop/v9.0/";
 
     annotation (version="0.2", uses(Modelica(version="3.2")),
     Documentation(info="<html>
