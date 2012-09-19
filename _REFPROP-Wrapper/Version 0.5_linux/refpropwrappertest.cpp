@@ -20,7 +20,8 @@ int main(int argc, char* argv[]){
 	int DEBUG = 1;
 	
 	if (argc<5){
-		printf("usage: refpropwrappertest.exe statevars fluidname1|fluidname2|... statevar1 statevar2 REFPROPdir massfractionComponent1 \nexample: refpropwrappertest \"pT\" \"isobutan|propane\" 1e5 293 \"d:\\Programme\\REFPROP\\\" .1");
+//		printf("usage: refpropwrappertest.exe statevars fluidname1|fluidname2|... statevar1 statevar2 REFPROPdir massfractionComponent1 \nexample: refpropwrappertest \"pT\" \"isobutan|propane\" 1e5 293 \"d:\\Programme\\REFPROP\\\" .1");
+		printf("usage: refpropwrappertest statevars fluidname1|fluidname2|... statevar1 statevar2 REFPROPdir massfractionComponent1 \nexample: refpropwrappertest \"pT\" \"ISOBUTAN|PROPANE\" 1e5 293 \"/home/jowr/Documents/Fluids/refprop/v9.0/\" .1\n");
 		return 1;
 	}
 

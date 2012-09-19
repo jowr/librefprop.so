@@ -7,11 +7,19 @@
 # ============================================================================
 
 # used for the output
-BINDIR     =.
 THENAME    =refprop
-
 THEWRAPPER =refprop_wrapper
 THETEST    =refpropwrappertest
+
+###########################################################
+#  Setting the directories for library, header and 
+#  binary files created in this makefile. 
+###########################################################
+LIBDIR     =/home/jowr/Documents/Fluids/refprop/v9.0
+DYMDIR     =/opt/dymola
+LIBINST    =$(DYMDIR)/bin/lib
+HEADINST   =$(DYMDIR)/source
+BINDIR     =.
 
 ###########################################################
 #  Change these lines if you are using a different Fortran 
@@ -33,7 +41,6 @@ CPPFLAGS   =-O2 -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -malign-d
 #  the library file.  
 ###########################################################
 LIBFLAGS   =-rdynamic -fPIC -shared
-LIBDIR     =/home/jowr/Documents/Fluids/refprop/v9.0
 LIBRARY    =lib$(THENAME)
 LIBFILE    =PASS_FTN_LIN
 DYNAMICLIBRARYEXTENSION =.so
@@ -69,30 +76,46 @@ LIBOBJECTFILES = \
 	$(LIBDIR)/fortran/TRNS_VIS.o \
 	$(LIBDIR)/fortran/TRNSP.o \
 	$(LIBDIR)/fortran/UTILITY.o
-
+	
+###########################################################
+#  Link all files to places recognised by the system.
+###########################################################
+.PHONY     : install
+install    : all
+	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
+	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
+	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) $(HEADINST)/$(THEWRAPPER)$(HEADEREXTENSION)
+	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) /usr/include/$(THEWRAPPER)$(HEADEREXTENSION)
+	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	
+.PHONY     : all
+all        : library libheader wrapper wrapheader	
 
 ###########################################################
 #  Compile the wrapper class and its tests.
 ###########################################################
+.PHONY     : wrapheader
+wrapheader : $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION)
+$(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION): $(THEWRAPPER)$(HEADEREXTENSION)
+	cp $(THEWRAPPER)$(HEADEREXTENSION) $(LIBDIR)
+	
 .PHONY     : wrapper
-wrapper    : $(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
-$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION): $(THEWRAPPER).o
-	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).o -l$(THENAME)
+wrapper    : $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) 
+$(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION): $(THEWRAPPER).o library libheader
+	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).o -l$(THENAME)
 	
 .PHONY     : test
 test       : $(THETEST)
-$(THETEST) : $(THETEST).o $(THEWRAPPER).o $(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
-	$(FC) $(FLINKFLAGS) -o $(THETEST) $(THETEST).o $(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+$(THETEST) : $(THETEST).o wrapper wrapheader 
+	$(FC) $(FLINKFLAGS) -o $(THETEST) $(THETEST).o -l$(THEWRAPPER)
 
 ###########################################################
 #  Compile the Fortran sources into a library file that can 
 #  be used as a shared object.
 ###########################################################
-.PHONY     : libinstall
-libinstall : library libheader 
-	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
-	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
-
 .PHONY     : libheader
 libheader  : $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION)
 $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION): src/$(HEADERFILE)$(HEADEREXTENSION)
@@ -102,6 +125,13 @@ $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION): src/$(HEADERFILE)$(HEADEREXTENSION)
 library    : $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) 
 $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION): src/$(LIBFILE).o $(LIBOBJECTFILES)
 	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) src/$(LIBFILE).o $(LIBOBJECTFILES)
+	
+src/$(LIBFILE).FOR: $(LIBDIR)/fortran/PASS_FTN.FOR
+	sed 's/dll_export/!dll_export/g' $(LIBDIR)/fortran/PASS_FTN.FOR > src/$(LIBFILE).FOR
+	cat src/$(LIBFILE).FOR.tpl >> src/$(LIBFILE).FOR
+	
+#	sed -i 's/*10000/(10000)/g' src/$(LIBFILE).FOR
+#	sed -i 's/*255/(255)/g' src/$(LIBFILE).FOR
 
 $(LIBDIR)/fortran/%.o: $(LIBDIR)/fortran/%.FOR
 	$(FC) $(FFLAGS) -o $(LIBDIR)/fortran/$*.o -c $<
@@ -123,7 +153,7 @@ src/%.o    : src/%.cpp
 
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.mod $(BINDIR)/RP-ftn 
+	$(RM) **.o **.so **.mod $(BINDIR)/RP-ftn src/$(LIBFILE).FOR $(THETEST)
 
 ###########################################################
 #  Compile a simple example to illustrate the connection

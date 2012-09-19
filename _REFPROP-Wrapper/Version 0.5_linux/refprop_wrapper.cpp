@@ -25,15 +25,19 @@
 
 //#define DEBUGMODE 1
 
-//#include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <librefprop.h>
-#include <dlfcn.h>  // dlopen etc
-#include <ctype.h> // tolower etc
+#if defined(WIN32) || defined(_WIN32)
+#  include <windows.h>
+#  include "REFPROP_dll.h"
+#else // assuming Linux system
+#  include <stdlib.h>
+#  include <string.h>
+#  include <librefprop.h>
+//#  include <dlfcn.h>  // dlopen etc
+#  include <ctype.h> // tolower etc
+#endif
+//# error "Could not determine system."
 #include "refprop_wrapper.h"
-
 
 
 // Some constants...
@@ -42,6 +46,19 @@ const long errormessagelength=255+filepathlength;
 const long lengthofreference=3;
 const long refpropcharlength=255;
 const long ncmax=20;		// Note: ncmax is the max number of components
+
+static char const GB_optId =            '-' ; // - under UNIX
+static char const GB_altOptId =         '+' ; // + under UNIX
+static char const GB_asciiEsc =         '\\' ; // under UNIX
+static char* const GB_preferredPathSep = "/" ; // / under UNIX
+static char const GB_allowedPathSep[] = "/" ;
+static bool const GB_ignoreCase =       false ; // in filenames only.
+static char const GB_stdinName[] =      "-" ;
+static int const  GB_exitSuccess =      0 ;
+static int const  GB_exitWarning =      1 ;
+static int const  GB_exitError =        2 ;
+static int const  GB_exitFatal =        3 ;
+static int const  GB_exitInternal =     4 ;
 
 char *str_replace(char *str, char *search, char *replace, long *count) {
   int i,n_ret;
@@ -91,12 +108,15 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, voi
 
 	strcpy(FLD_PATH, REFPROP_PATH);
 	strcpy(DLL_PATH, REFPROP_PATH);
-	if (REFPROP_PATH[strlen(REFPROP_PATH)-1]=='\\'){ //if last char is backslash
-		strcat(DLL_PATH, "refprop.dll");
-		strcat(FLD_PATH, "fluids\\");
+	if (REFPROP_PATH[strlen(REFPROP_PATH)-1]==*GB_preferredPathSep){ //if last char is backslash
+//		strcat(DLL_PATH, "refprop.dll");
+		strcat(FLD_PATH, "fluids");
+		strcat(FLD_PATH, GB_preferredPathSep);
 	}else{//add missing backslash
-		strcat(DLL_PATH,"\\refprop.dll");
-		strcat(FLD_PATH, "\\fluids\\");
+//		strcat(DLL_PATH,"\\refprop.dll");
+		strcat(FLD_PATH, GB_preferredPathSep);
+		strcat(FLD_PATH, "fluids");
+		strcat(FLD_PATH, GB_preferredPathSep);
 	}
 
 	//*RefpropdllInstance = LoadLibrary(DLL_PATH);
@@ -115,7 +135,7 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, voi
 
 	//parse fluid composition string and insert absolute paths
 	char replace[filepathlength+6];
-	strcpy(replace,".fld|");
+	strcpy(replace,".FLD|");
 	//if (DEBUGMODE) printf("REPLACE: %s\n",replace);
 	strncat(replace, FLD_PATH,filepathlength-strlen(replace));
 
@@ -128,7 +148,7 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, voi
 		sprintf(errormsg,"Too many components (More than %i)\n",ncmax);
 		return 0;
 	}
-		(hf,".fld",hf_len-strlen(hf));
+	strncat(hf,".FLD",hf_len-strlen(hf));
 	if (DEBUGMODE) printf("Fluid composition string: \"%s\"\n",hf);
 
 	strncpy(hfmix,FLD_PATH,filepathlength+1);//add absolute path
