@@ -5,6 +5,13 @@
 # Copyright   : Use and modify at your own risk.
 # Description : Makefile for Refprop from Fortran and C++ tests.
 # ============================================================================
+# The installation procedure should be as follows:
+# 1) make libheader library
+# 2) sudo make installlib
+# 3) make wrapheader wrapper
+# 4) sudo make installwrap
+# 5) sudo make fixit
+# ============================================================================
 
 # used for the output
 THENAME    =refprop
@@ -81,18 +88,55 @@ LIBOBJECTFILES = \
 #  Link all files to places recognised by the system.
 ###########################################################
 .PHONY     : install
-install    : all
+install    : installlib installwrap 
+	
+.PHONY     : installlib
+installlib : libheader library
 	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
 	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
 	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
 	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	
+.PHONY     : installwrap
+installwrap: wrapheader wrapper
 	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) $(HEADINST)/$(THEWRAPPER)$(HEADEREXTENSION)
 	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
 	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) /usr/include/$(THEWRAPPER)$(HEADEREXTENSION)
 	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
 	
-.PHONY     : all
-all        : library libheader wrapper wrapheader	
+.PHONY     : uninstall
+uninstall  : 
+	$(RM) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
+	$(RM) $(LIBINST)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
+	$(RM) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(HEADINST)/$(THEWRAPPER)$(HEADEREXTENSION)
+	$(RM) $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) /usr/include/$(THEWRAPPER)$(HEADEREXTENSION)
+	$(RM) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	
+.PHONY     : purge
+purge      : 
+	$(RM) $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION)
+	$(RM) $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) 
+	$(RM) $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	
+.PHONY     : fixit
+fixit      : install
+	ln -sf $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+	ln -sf /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) /usr/lib/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+
+.PHONY     : unfixit
+unfixit    : 
+	$(RM) $(LIBINST)/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+	$(RM) /usr/lib/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+
+.PHONY     : removeall
+removeall  : uninstall purge unfixit
+
+#.PHONY     : all
+#all        : install fixit
 
 ###########################################################
 #  Compile the wrapper class and its tests.
@@ -104,12 +148,12 @@ $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION): $(THEWRAPPER)$(HEADEREXTENSION)
 	
 .PHONY     : wrapper
 wrapper    : $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) 
-$(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION): $(THEWRAPPER).o library libheader
+$(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION): $(THEWRAPPER).o wrapheader libheader library
 	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).o -l$(THENAME)
 	
 .PHONY     : test
 test       : $(THETEST)
-$(THETEST) : $(THETEST).o wrapper wrapheader 
+$(THETEST) : $(THETEST).o wrapheader wrapper 
 	$(FC) $(FLINKFLAGS) -o $(THETEST) $(THETEST).o -l$(THEWRAPPER)
 
 ###########################################################
