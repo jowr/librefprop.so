@@ -68,5 +68,36 @@ int main(int argc, char* argv[]){
 		printf("Xliq[%i]=%f\t",ii+1, props[16+ii]);
 		printf("Xvap[%i]=%f\n",ii+1, props[16+nX+ii]);
 	}
+
+	//	INPUT:
+	//		what: character specifying return value (p,T,h,s,d,wm,q,e,w) - Explanation of variables at the end of this function
+	//		statevar: string of 1 variable out of p,T,h,s,d
+	//		fluidnames: string containing names of substances in mixtured separated by |, substance names are identical to those of *.fld-files in REFPROP program directory
+	//		statevarval: values of the variable specified in statevar
+	//	 	x: array containing the mass fractions of the components of the mixture
+	//	 	REFPROP_PATH: string defining the path of the refprop.dll
+	//	OUTPUT
+	//		return value: value of variable specified by the input variable what
+	//		props: Array containing all calculated values
+	//	 	errormsg: string containing error message
+	//
+	char what[255];
+	strcpy(what, "T");
+	char statevar[255];
+	strcpy(statevar, "p");
+	// fluidname defined above
+	//strcpy(fluidname,argv[2]);
+	strcpy(fluidname,"BUTANE");
+	//props is defined
+	double statevarval = 1e5; // 1 bar
+	// x is defined
+	char REFPROP_PATH[255];
+	strcpy(REFPROP_PATH,argv[5]);
+
+	double T;
+	T = satprops_REFPROP (what, statevar, fluidname, props, statevarval, x, REFPROP_PATH, errormsg, DEBUG);
+	printf("Saturation conditions for %s\t",fluidname);
+	printf("Saturation temperature =%f\t",T);
+
 	return 0;
 }

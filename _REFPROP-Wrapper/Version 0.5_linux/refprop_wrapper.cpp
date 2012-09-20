@@ -60,6 +60,7 @@ static int const  GB_exitError =        2 ;
 static int const  GB_exitFatal =        3 ;
 static int const  GB_exitInternal =     4 ;
 
+
 char *str_replace(char *str, char *search, char *replace, long *count) {
   int i,n_ret;
   int newlen = strlen(replace);
@@ -583,7 +584,7 @@ OUTPUT
 //---------------------------------------------------------------------------
 
 
-double satprops_REFPROP(char* what, char* statevar, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg, int DEBUGMODE){
+double satprops_REFPROP(char* what, char* statevar_in, char* fluidnames, double *props, double statevarval, double* x, char* REFPROP_PATH, char* errormsg, int DEBUGMODE){
 /*Calculates thermodynamic saturation properties of a pure substance/mixture, returns both single value and array containing all calculated values (because the are calculated anyway)
 INPUT:
 	what: character specifying return value (p,T,h,s,d,wm,q,e,w) - Explanation of variables at the end of this function
@@ -611,17 +612,31 @@ OUTPUT
 		return 0;
 	}
 
+	if (DEBUGMODE)  printf("\nFunction init_REFPROP was called\n");
 
 	//CALCULATE MOLAR MASS
 //	WMOLdll = (fp_WMOLdllTYPE) GetProcAddress(RefpropdllInstance,"WMOLdll");
 	WMOLdll(x,wm);
 //	sprintf(errormsg," %10.4f, %10.4f, %10.4f,",x[0],x[1],wm);
+	if (DEBUGMODE)  printf("\nFunction WMOLdll was called\n");
+
 	wm /= 1000; //g/mol -> kg/mol
 
+	if (DEBUGMODE)  printf("\nwm converted.\n");
 
-		//identify and assign passed state variables
-	statevar[0] = tolower(statevar[0]);
+	if (DEBUGMODE)  printf("\statevar is %s \n",statevar_in);
+	//identify and assign passed state variables
+	//	char tmpstr[1];
+	//	strcpy(tmpstr,statevar[0]);
+	//	statevar = toLowerCase(tmpstr);
+	//statevar[0] = tolower(statevar[0]);
+	char statevar[1];
+	statevar[0] = tolower(statevar_in[0]);
+	if (DEBUGMODE)  printf("\nstatevar lowercase.\n");
 	if (statevar[0]!='\0'){
+//	if (strcmp(statevar[0],"")){
+//	if (statevar[0] != NULL){
+		if (DEBUGMODE)  printf("\nentering statevar switch.\n");
 			switch(statevar[0]){
 				case 'p':
 					p = statevarval/1000; //Pa->kPa
@@ -644,6 +659,9 @@ OUTPUT
 					return 0;
 			}
 	}
+
+	if (DEBUGMODE)  printf("\nstatevar checked.\n");
+
 	double xliq[ncmax],xvap[ncmax],f[ncmax];
 
 	long j=2,kr;
