@@ -12,7 +12,8 @@
 	GFZ German Research Centre for Geosciences
 	Telegrafenberg, D-14473 Potsdam
 	
-	Modified for Linux in 2012 by
+	Modified for portability to Linux and
+	introduction of POCO library in 2012 by
 	Jorrit Wronski (jowr@mek.dtu.dk)
 	DTU Mechanical Engineering
 
@@ -32,7 +33,7 @@
 #else // assuming Linux system
 #  include <stdlib.h>
 #  include <string.h>
-#  include <librefprop.h>
+#  include <refprop_lib.h>
 //#  include <dlfcn.h>  // dlopen etc
 #  include <ctype.h> // tolower etc
 #endif

@@ -28,12 +28,13 @@ LIBINST    =$(DYMDIR)/bin/lib
 HEADINST   =$(DYMDIR)/source
 BINDIR     =.
 
+OPTFLAGS   = -O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 #  Change these lines if you are using a different Fortran 
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
-FFLAGS     =-Wall -ff2c -pedantic -ffloat-store# -fbounds-check
+FFLAGS     =$(OPTFLAGS) -Wall -pedantic# -ff2c  -fbounds-check
 FLINKFLAGS =$(FFLAGS)
 
 ###########################################################
@@ -41,7 +42,7 @@ FLINKFLAGS =$(FFLAGS)
 #  compiler or if you would like to use other flags. 
 ###########################################################
 CPPC       =g++
-CPPFLAGS   =-O2 -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -malign-double -mpreferred-stack-boundary=8 
+CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -malign-double -mpreferred-stack-boundary=8 
 
 ###########################################################
 #  Change these lines if you have other needs regarding
@@ -53,7 +54,7 @@ LIBFILE    =PASS_FTN_LIN
 DYNAMICLIBRARYEXTENSION =.so
 STATICLIBRARYEXTENSION  =.a
 #ar -cvq $(LIBRARY)$(STATICLIBRARYEXTENSION) $(OBJECTFILES)
-HEADERFILE              =lib$(THENAME)
+HEADERFILE              =$(THENAME)_lib
 HEADEREXTENSION         =.h
 ### List of files to compile
 LIBOBJECTFILES = \
@@ -116,7 +117,7 @@ uninstall  :
 	$(RM) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
 	
 .PHONY     : purge
-purge      : 
+purge      : cleanlib
 	$(RM) $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION)
 	$(RM) $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
 	$(RM) $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) 
@@ -135,8 +136,13 @@ unfixit    :
 .PHONY     : removeall
 removeall  : uninstall purge unfixit
 
-#.PHONY     : all
-#all        : install fixit
+.PHONY     : all
+all        : 
+	make libheader library
+	sudo make installlib
+	make wrapheader wrapper
+	sudo make installwrap
+	sudo make fixit
 
 ###########################################################
 #  Compile the wrapper class and its tests.
@@ -198,6 +204,10 @@ src/%.o    : src/%.cpp
 .PHONY: clean
 clean:
 	$(RM) **.o **.so **.mod $(BINDIR)/RP-ftn src/$(LIBFILE).FOR $(THETEST)
+	
+.PHONY     : cleanlib
+cleanlib   :  
+	$(RM) $(LIBDIR)/fortran/**.o 
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
@@ -208,7 +218,7 @@ clean:
 RP-ftn     : $(BINDIR)/RP-ftn
 $(BINDIR)/RP-ftn : src/refprop-ftn.cpp libheader library 
 	$(CPPC) $(CPPFLAGS) -o src/refprop-ftn.o -c src/refprop-ftn.cpp
-	$(FC) $(FLINKFLAGS) -o $(BINDIR)/RP-ftn src/refprop-ftn.o -l$(THENAME)
+	$(FC) $(FLINKFLAGS) -o $(BINDIR)/RP-ftn src/refprop-ftn.o -l$(THENAME) -lPocoFoundation
 
 .PHONY     : f2f
 f2f        : $(BINDIR)/f2f

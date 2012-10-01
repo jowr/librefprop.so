@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>    /* EXIT_SUCCESS */
 #include <string.h>    /* strlen, memset, memcpy, memchr */
-#include <librefprop.h>    /* refprop header file */
+#include <refprop_lib.h>    /* refprop header file */
 
 #ifndef EXIT_SUCCESS
 #define EXIT_SUCCESS 0
@@ -29,10 +29,24 @@
 #define numparams 72
 #define maxcoefs 50
 
+// define new macros for function names
+// http://stackoverflow.com/questions/195975/how-to-make-a-char-string-from-a-c-macros-value
+#define STR_VALUE(arg)      #arg
+#define FUNCTION_NAME(name) STR_VALUE(name)
+
+//#define TEST_FUNC      test_func
+//#define TEST_FUNC_NAME FUNCTION_NAME(TEST_FUNC)
+
+//#define TEST_FUNC      test_func // done in header
+#define RPVersion_NAME FUNCTION_NAME(RPVersion)
+
+
 void newline() {
 	printf("%s","\n");
 }
 
+#include "Poco/SharedLibrary.h"
+using Poco::SharedLibrary;
 
 int main(int argc, char* argv[]) {
 	static long i,ierr,info_index;
@@ -44,6 +58,24 @@ int main(int argc, char* argv[]) {
 
 	double t=100.0;
 	double p,dl,dv;
+
+	newline();
+
+//    HINSTANCE dll = LoadLibrary("mydll.dll");
+//
+//    func_t * f = (func_t *)GetProcAddress(dll, "func");
+//
+//    f(1, 1.2f);
+
+//	std::string path("/usr/lib/librefprop");
+	std::string path("librefprop");
+	path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
+	SharedLibrary library(path); // will also load the library
+	//RPVersion_t * func = (RPVersion_t *) library.getSymbol("rpversion_");
+	RPVersion_t * func = (RPVersion_t *) library.getSymbol(RPVersion_NAME);
+	func(v);
+	printf("func(v) returned v = %s\n", v);
+	library.unload();
 
 	newline();
 
