@@ -1,6 +1,6 @@
 /*
-	wrapper code for a static library containing functions from the dynamic
-	library librefprop.so to be used from Modelica
+	wrapper code for a static library containing functions from the dynamic library refprop.dll
+	to be used from Modelica
 	
 	This file is released under the Modelica License 2.
 	
@@ -12,58 +12,40 @@
 	GFZ German Research Centre for Geosciences
 	Telegrafenberg, D-14473 Potsdam
 	
-	Modified for Linux in 2012 by
+	Modified for portability to Linux and
+	introduction of POCO library in 2012 by
 	Jorrit Wronski (jowr@mek.dtu.dk)
 	DTU Mechanical Engineering
 
 	needs
-	refprop.h         - header for librefprop.so, based on examples
-	refprop_wrapper.h - header for REFPROP_wrapper.so, also needed by Dymola
+	librefprop.h      - header for librefprop.so, based on examples
+	refprop_wrapper.h - header for static REFPROP_wrapper.a, also needed by Dymola
 	
 	Use the provided makefile to install the library file from source.
 */
 
 //#define DEBUGMODE 1
-//
-//#include "Poco/SharedLibrary.h"
-//using Poco::SharedLibrary;
-//
-//typedef void (*HelloFunc)(); // function pointer type
-//
-//
-//
-//
-//typedef void (__stdcall *fp_XMOLEdllTYPE)(double *,double *,double &);
-//
-////Define explicit function pointers
-//fp_ABFL1dllTYPE ABFL1dll;
-//
-//
-//int main(int argc, char** argv)
-//{
-//std::string path("TestLibrary");
-//path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
-//SharedLibrary library(path); // will also load the library
-//HelloFunc func = (HelloFunc) library.getSymbol("hello");
-//func();
-//library.unload();
-//}
-//return 0;
-
-
 
 #include <stdio.h>
 #if defined(WIN32) || defined(_WIN32)
 #  include <windows.h>
+#  include "REFPROP_dll.h"
 #else // assuming Linux system
 #  include <stdlib.h>
 #  include <string.h>
+#  include <refprop_lib.h>
+//#  include <dlfcn.h>  // dlopen etc
 #  include <ctype.h> // tolower etc
 #endif
 //# error "Could not determine system."
-#include <refprop_lib.h>
 #include "refprop_wrapper.h"
 
+// get the POCO classes
+#include "Poco/SharedLibrary.h"
+#include "Poco/Path.h"
+#include "Poco/File.h"
+#include "Poco/Environment.h"
+#include "Poco/String.h"
 
 // Some constants...
 const long filepathlength=1024;
@@ -72,19 +54,34 @@ const long lengthofreference=3;
 const long refpropcharlength=255;
 const long ncmax=20;		// Note: ncmax is the max number of components
 
-//static const char RP_
-static char const GB_optId =            '-' ; // - under UNIX
-static char const GB_altOptId =         '+' ; // + under UNIX
-static char const GB_asciiEsc =         '\\' ; // under UNIX
-static char* const GB_preferredPathSep = "/" ; // / under UNIX
-static char const GB_allowedPathSep[] = "/" ;
-static bool const GB_ignoreCase =       false ; // in filenames only.
-static char const GB_stdinName[] =      "-" ;
-static int const  GB_exitSuccess =      0 ;
-static int const  GB_exitWarning =      1 ;
-static int const  GB_exitError =        2 ;
-static int const  GB_exitFatal =        3 ;
-static int const  GB_exitInternal =     4 ;
+//Poco::SharedLibrary RefpropdllInstance;
+char loadedfluids[refpropcharlength];
+
+////  Define the functions either by their pointers or type.
+//WMOLdll_POINTER WMOLdll;
+//TPFL2dll_POINTER TPFL2dll;
+//TPFLSHdll_POINTER TPFLSHdll;
+//PHFL1dll_POINTER PHFL1dll;
+//PHFLSHdll_POINTER PHFLSHdll;
+//PDFL1dll_POINTER PDFL1dll;
+//PDFLSHdll_POINTER PDFLSHdll;
+//PSFLSHdll_POINTER PSFLSHdll;
+//PQFLSHdll_POINTER PQFLSHdll;
+//THFLSHdll_POINTER THFLSHdll;
+//TDFLSHdll_POINTER TDFLSHdll;
+//TSFLSHdll_POINTER TSFLSHdll;
+//TQFLSHdll_POINTER TQFLSHdll;
+//DHFL1dll_POINTER DHFL1dll;
+//DHFL2dll_POINTER DHFL2dll;
+//DHFLSHdll_POINTER DHFLSHdll;
+//HSFLSHdll_POINTER HSFLSHdll;
+//DSFL1dll_POINTER DSFL1dll;
+//DSFL2dll_POINTER DSFL2dll;
+//DSFLSHdll_POINTER DSFLSHdll;
+//TRNPRPdll_POINTER TRNPRPdll;
+//SATTdll_POINTER SATTdll;
+//SATPdll_POINTER SATPdll;
+//SATDdll_POINTER SATDdll;
 
 
 char *str_replace(char *str, char *search, char *replace, long *count) {
@@ -122,10 +119,11 @@ char *str_replace(char *str, char *search, char *replace, long *count) {
 	return ret;
 }
 
-int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, void* RefpropdllInstance, char* errormsg, int DEBUGMODE){
+int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, char* errormsg, int DEBUGMODE){
 // Sets up the interface to the REFPROP.DLL
 // is called by props_REFPROP and satprops_REFPROP
-	char DLL_PATH[filepathlength], FLD_PATH[filepathlength];
+//	char DLL_PATH[filepathlength], FLD_PATH[filepathlength];
+
 	long ierr=0;
 
 	if (strlen(REFPROP_PATH)>filepathlength){
@@ -133,50 +131,98 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, voi
 		return 0;
 	}
 
-	strcpy(FLD_PATH, REFPROP_PATH);
-	strcpy(DLL_PATH, REFPROP_PATH);
-	if (REFPROP_PATH[strlen(REFPROP_PATH)-1]==*GB_preferredPathSep){ //if last char is backslash
-//		strcat(DLL_PATH, "refprop.dll");
-		strcat(FLD_PATH, "fluids");
-		strcat(FLD_PATH, GB_preferredPathSep);
-	}else{//add missing backslash
-//		strcat(DLL_PATH,"\\refprop.dll");
-		strcat(FLD_PATH, GB_preferredPathSep);
-		strcat(FLD_PATH, "fluids");
-		strcat(FLD_PATH, GB_preferredPathSep);
+	char* REFPROP_PATH_CHAR = REFPROP_PATH;
+	char* FLUIDS_CHAR = "fluids";
+	char* LIBRARY_CHAR;
+
+
+	Poco::Path REF_PATH(true),FLD_PATH(true),LIB_PATH(true); // all paths will be absolute
+
+	REF_PATH.parse(REFPROP_PATH_CHAR, Poco::Path::PATH_NATIVE);
+	if (!REF_PATH.isDirectory()) REF_PATH.append(REF_PATH.separator());
+	Poco::File theFile(REF_PATH);
+	if ( !theFile.isDirectory() || !theFile.canRead() ){
+		sprintf (errormsg,"REF_PATH is not a readable directory: %s \n", REF_PATH.toString().c_str());
+		return 0;
 	}
 
-    //std::string path("TestLibrary");
-	//path.append(SharedLibrary::suffix()); // adds ".dll" or ".so"
-	//SharedLibrary library(path); // will also load the library
-	//HelloFunc func = (HelloFunc) library.getSymbol("hello");
-	//func();
-	//library.unload();
+	FLD_PATH.parse(REF_PATH.toString());
+	FLD_PATH.pushDirectory(FLUIDS_CHAR);
 
-	//*RefpropdllInstance = LoadLibrary(DLL_PATH);
-//	RefpropdllInstance = dlopen(DLL_PATH, RTLD_LAZY);
-//    if (!RefpropdllInstance){
-//    	sprintf(errormsg,"ERROR in opening librefprop.so at \"%s\"",DLL_PATH);
-//    	fputs (dlerror(), stderr);
-//    	return 100;
+	LIB_PATH.parse(REF_PATH.toString());
+	bool is_linux = ( 0 == Poco::icompare(Poco::Environment::osName(), "linux") );
+	if (is_linux){
+		LIBRARY_CHAR = "librefprop.so";
+	} else {
+		LIBRARY_CHAR = "refprop.dll";
+	}
+	LIB_PATH.setFileName(LIBRARY_CHAR);
+
+	if (DEBUGMODE) printf ("Comparison of fluids : %i \n", strcmp(fluidnames,loadedfluids) );
+//	if (DEBUGMODE) printf ("Comparison of library: %i \n", LIB_PATH.toString().compare(RefpropdllInstance.getPath()) );
+//	if (strcmp(fluidnames,loadedfluids)==0) {
+////	if ( LIB_PATH.toString().compare(RefpropdllInstance.getPath())==0  ) {
+////		sprintf(errormsg,"Library is already loaded: %s \n",LIB_PATH.toString().c_str());
+//		if (DEBUGMODE) printf ("Returning: %s and %s \n", RefpropdllInstance.getPath().c_str(),fluidnames );
+//		return 0;
+////	}
+//    }
+
+	if (DEBUGMODE) {
+	  printf ("REF_PATH as string: %s \n", REF_PATH.toString().c_str());
+	  printf ("FLD_PATH as string: %s \n", FLD_PATH.toString().c_str());
+	  printf ("LIB_PATH as string: %s \n", LIB_PATH.toString().c_str());
+	  printf ("Running on: %s \n", Poco::Environment::osName().c_str());
+	}
+
+	theFile = Poco::File(LIB_PATH);
+	if ( !theFile.isFile() || !theFile.canExecute() ){
+		sprintf (errormsg,"LIB_PATH is not an executable file: %s \n", LIB_PATH.toString().c_str());
+		return 0;
+	}
+	char LIB_PATH_CHAR[filepathlength];
+	strcpy(LIB_PATH_CHAR,LIB_PATH.toString().c_str());
+
+	theFile = Poco::File(FLD_PATH);
+	if ( !theFile.isDirectory() || !theFile.canRead() ){
+		sprintf (errormsg,"FLD_PATH is not a readable directory: %s \n", FLD_PATH.toString().c_str());
+		return 0;
+	}
+	char FLD_PATH_CHAR[filepathlength];
+	strcpy(FLD_PATH_CHAR,FLD_PATH.toString().c_str());
+
+////  First we load the library with the POCO foundation
+////  classes and then define all the needed functions
+////  by their names and a cast to the correct type.
+//	if (DEBUGMODE) printf ("RefpropdllInstance loaded path: %s \n", RefpropdllInstance.getPath().c_str());
+//	if (DEBUGMODE) printf ("New path for loading the library: %s \n", LIB_PATH.toString().c_str());
+//	if (DEBUGMODE) printf ("Comparison: %i \n", LIB_PATH.toString().compare(RefpropdllInstance.getPath()) );
+//	if ( LIB_PATH.toString().compare(RefpropdllInstance.getPath())!=0  ) {
+//		RefpropdllInstance.unload();
+//		if (DEBUGMODE) printf ("RefpropdllInstance unloaded: %s \n", "true");
+//		RefpropdllInstance.load(LIB_PATH_CHAR);
+//	}
+//
+//	if (!RefpropdllInstance.isLoaded()){
+//	  	sprintf(errormsg,"ERROR in opening library at \"%s\"",LIB_PATH_CHAR);
+//	   	return 100;
 //	}
 
 
     char hrf[lengthofreference+1],hfmix[filepathlength+1+7];
-	//char hf[refpropcharlength*ncmax];
 	char *hf;
 
-
+	strcpy(loadedfluids,fluidnames);
 	//parse fluid composition string and insert absolute paths
 	char replace[filepathlength+6];
 	strcpy(replace,".FLD|");
 	//if (DEBUGMODE) printf("REPLACE: %s\n",replace);
-	strncat(replace, FLD_PATH,filepathlength-strlen(replace));
+	strncat(replace, FLD_PATH_CHAR,filepathlength-strlen(replace));
 
 	int hf_len = strlen(fluidnames)+ncmax*(strlen(replace)-1)+4;
 	hf =  (char*) calloc(hf_len, sizeof(char));
 
-	strncpy(hf,FLD_PATH,hf_len);
+	strncpy(hf,FLD_PATH_CHAR,hf_len);
 	strncat(hf,str_replace(fluidnames, "|", replace, nX),hf_len-strlen(hf)); //str_replace returns the number of delimiters -> nX, but components are one more ...
 	if (++*nX>ncmax){ //...that's why nX is incremented
 		sprintf(errormsg,"Too many components (More than %i)\n",ncmax);
@@ -185,26 +231,40 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, voi
 	strncat(hf,".FLD",hf_len-strlen(hf));
 	if (DEBUGMODE) printf("Fluid composition string: \"%s\"\n",hf);
 
-	strncpy(hfmix,FLD_PATH,filepathlength+1);//add absolute path
+	strncpy(hfmix,FLD_PATH_CHAR,filepathlength+1);//add absolute path
 	strncat(hfmix,"hmx.bnc",filepathlength+1+7-strlen(hfmix));
 	strcpy(hrf,"DEF");
 
 
-//	//...Call SETUP to initialize the program
-//	SETUPdll = (fp_SETUPdllTYPE) GetProcAddress(*RefpropdllInstance,"SETUPdll");
-//	//printf("hf:%s\n hrf: %s\n hfmix: %s\n",hf,hrf,hfmix);
-//	void (*SETUP)(void);
-//	void (*SETUP)(void);
-//	SETUP = dlsym(RefpropdllInstance, "SETUPdll");
-//	if ((errormsg = dlerror()) != NULL)  {
-//		fputs(errormsg, stderr);
-//        exit(1);
-//    }
-
-
+//	SETUPdll_TYPE   * SETUPdll   = (SETUPdll_TYPE *  ) RefpropdllInstance.getSymbol(SETUPdll_NAME);
 	if (DEBUGMODE) printf("Running SETUPdll...\n");
 	SETUPdll(*nX, hf, hfmix, hrf, ierr, herr);
 	if (DEBUGMODE) printf("SETUPdll run complete (Error no: %i)\n",ierr);
+
+//	WMOLdll = (WMOLdll_POINTER) RefpropdllInstance.getSymbol(WMOLdll_NAME);
+//	TPFL2dll = (TPFL2dll_POINTER) RefpropdllInstance.getSymbol(TPFL2dll_NAME);
+//	TPFLSHdll = (TPFLSHdll_POINTER) RefpropdllInstance.getSymbol(TPFLSHdll_NAME);
+//	PHFL1dll = (PHFL1dll_POINTER) RefpropdllInstance.getSymbol(PHFL1dll_NAME);
+//	PHFLSHdll = (PHFLSHdll_POINTER) RefpropdllInstance.getSymbol(PHFLSHdll_NAME);
+//	PDFL1dll = (PDFL1dll_POINTER) RefpropdllInstance.getSymbol(PDFL1dll_NAME);
+//	PDFLSHdll = (PDFLSHdll_POINTER) RefpropdllInstance.getSymbol(PDFLSHdll_NAME);
+//	PSFLSHdll = (PSFLSHdll_POINTER) RefpropdllInstance.getSymbol(PSFLSHdll_NAME);
+//	PQFLSHdll = (PQFLSHdll_POINTER) RefpropdllInstance.getSymbol(PQFLSHdll_NAME);
+//	THFLSHdll = (THFLSHdll_POINTER) RefpropdllInstance.getSymbol(THFLSHdll_NAME);
+//	TDFLSHdll = (TDFLSHdll_POINTER) RefpropdllInstance.getSymbol(TDFLSHdll_NAME);
+//	TSFLSHdll = (TSFLSHdll_POINTER) RefpropdllInstance.getSymbol(TSFLSHdll_NAME);
+//	TQFLSHdll = (TQFLSHdll_POINTER) RefpropdllInstance.getSymbol(TQFLSHdll_NAME);
+//	DHFL1dll = (DHFL1dll_POINTER) RefpropdllInstance.getSymbol(DHFL1dll_NAME);
+//	DHFL2dll = (DHFL2dll_POINTER) RefpropdllInstance.getSymbol(DHFL2dll_NAME);
+//	DHFLSHdll = (DHFLSHdll_POINTER) RefpropdllInstance.getSymbol(DHFLSHdll_NAME);
+//	HSFLSHdll = (HSFLSHdll_POINTER) RefpropdllInstance.getSymbol(HSFLSHdll_NAME);
+//	DSFL1dll = (DSFL1dll_POINTER) RefpropdllInstance.getSymbol(DSFL1dll_NAME);
+//	DSFL2dll = (DSFL2dll_POINTER) RefpropdllInstance.getSymbol(DSFL2dll_NAME);
+//	DSFLSHdll = (DSFLSHdll_POINTER) RefpropdllInstance.getSymbol(DSFLSHdll_NAME);
+//	TRNPRPdll = (TRNPRPdll_POINTER) RefpropdllInstance.getSymbol(TRNPRPdll_NAME);
+//	SATTdll = (SATTdll_POINTER) RefpropdllInstance.getSymbol(SATTdll_NAME);
+//	SATPdll = (SATPdll_POINTER) RefpropdllInstance.getSymbol(SATPdll_NAME);
+//	SATDdll = (SATDdll_POINTER) RefpropdllInstance.getSymbol(SATDdll_NAME);
 
 
 //	if (DEBUGMODE) printf("Error code processing...\n");
@@ -275,19 +335,23 @@ OUTPUT
 	long nX,ierr=0; //zero means no error
     char herr[errormessagelength+1];
 //    HINSTANCE RefpropdllInstance;// Then have windows load the library.
-    void* RefpropdllInstance;
+//    Poco::SharedLibrary RefpropdllInstance("");
 
 	if (DEBUGMODE) printf("\nStarting function props_REFPROP to calc %c...\n", what[0]);
 
 	//initialize interface to REFPROP.dll
-
-	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
-		printf("Error no. %g initializing REFPROP: \"%s\"\n", props[0], errormsg);
-		return 0;
+//	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
+//		printf("Error no. %g initializing REFPROP: \"%s\"\n", props[0], errormsg);
+//		return 0;
+//	}
+	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, errormsg, DEBUGMODE)){
+			printf("Error no. %g initializing REFPROP: \"%s\"\n", props[0], errormsg);
+			return 0;
 	}
 
 	//CALCULATE MOLAR MASS
 //	WMOLdll = (fp_WMOLdllTYPE) GetProcAddress(RefpropdllInstance,"WMOLdll");
+//	WMOLdll_TYPE    * WMOLdll    = (WMOLdll_TYPE *   ) RefpropdllInstance.getSymbol(WMOLdll_NAME);
 	WMOLdll(x,wm);
 //	sprintf(errormsg," %10.4f, %10.4f, %10.4f,",x[0],x[1],wm);
 	wm /= 1000; //g/mol -> kg/mol
@@ -421,6 +485,7 @@ OUTPUT
 				default:
 //					DHFLSHdll = (fp_DHFLSHdllTYPE) GetProcAddress(RefpropdllInstance,"DHFLSHdll");
 					DHFLSHdll(d,h,x,T,p,dl,dv,xliq,xvap,q,e,s,cv,cp,w,ierr,herr,errormessagelength);
+					break;
 			}
 		}else if (strcmp(statevars,"hs")==0 || strcmp(statevars,"sh")==0){
 //			HSFLSHdll = (fp_HSFLSHdllTYPE) GetProcAddress(RefpropdllInstance,"HSFLSHdll");
@@ -438,6 +503,7 @@ OUTPUT
 				default:
 //					DSFLSHdll = (fp_DSFLSHdllTYPE) GetProcAddress(RefpropdllInstance,"DSFLSHdll");
 					DSFLSHdll(d,s,x,T,p,dl,dv,xliq,xvap,q,e,h,cv,cp,w,ierr,herr,errormessagelength);
+					break;
 			}
 		}else
 			sprintf(errormsg,"Unknown combination of state variables! %s", statevars);
@@ -448,6 +514,7 @@ OUTPUT
 		case 'l':	//thermal conductivity W/m.K
 //			TRNPRPdll = (fp_TRNPRPdllTYPE) GetProcAddress(RefpropdllInstance,"TRNPRPdll");
 			TRNPRPdll (T,d,x,eta,tcx,ierr,herr,errormessagelength);
+			break;
 		}
 
 
@@ -538,6 +605,7 @@ OUTPUT
 			break;
 		default:
 			strncpy(errormsg,herr,errormessagelength);
+			break;
 	}
 
 
@@ -635,12 +703,14 @@ OUTPUT
 	long nX,ierr=0;
     char herr[errormessagelength+1];
 //    HINSTANCE RefpropdllInstance;
-    void* RefpropdllInstance;
+//    void* RefpropdllInstance;
+//    Poco::SharedLibrary RefpropdllInstance("");
+
 
 	if (DEBUGMODE)  printf("\nStarting function satprops_REFPROP...\n");
 
 	//initialize interface to REFPROP.dll
-	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, &RefpropdllInstance, errormsg, DEBUGMODE)){
+	if(props[0]=(double)init_REFPROP(fluidnames, REFPROP_PATH, &nX, herr, errormsg, DEBUGMODE)){
 		printf("Error no. %i initializing REFPROP: \"%s\"\n", props[0], errormsg);
 		return 0;
 	}
@@ -813,6 +883,7 @@ OUTPUT
 			break;
 		default:
 			strncpy(errormsg,herr,errormessagelength);
+			break;
 	}
 
 	/*SATHdll = (fp_SATHdllTYPE) GetProcAddress(RefpropdllInstance,"SATHdll");

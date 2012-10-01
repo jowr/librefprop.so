@@ -1,0 +1,17 @@
+#!/bin/bash 
+#
+function defineFunction {
+    echo "$1_TYPE * $1 = ($1_TYPE *) library.getSymbol($1_NAME);"
+}
+#
+## declare an array variable
+# declare -a arr=(RPVersion SETPATHdll ABFL1dll ABFL2dll ACTVYdll AGdll CCRITdll CP0dll CRITPdll CSATKdll CV2PKdll CVCPKdll CVCPdll DBDTdll DBFL1dll DBFL2dll DDDPdll DDDTdll DEFLSHdll DHD1dll DHFLSHdll DHFL1dll DHFL2dll DIELECdll DOTFILLdll DPDD2dll DPDDKdll DPDDdll DPDTKdll DPDTdll DPTSATKdll DSFLSHdll DSFL1dll DSFL2dll ENTHALdll ENTROdll ESFLSHdll FGCTYdll FPVdll GERG04dll GETFIJdll GETKTVdll GIBBSdll HSFLSHdll INFOdll LIMITKdll LIMITSdll LIMITXdll MELTPdll MELTTdll MLTH2Odll NAMEdll PDFL1dll PDFLSHdll PEFLSHdll PHFL1dll PHFLSHdll PQFLSHdll PREOSdll PRESSdll PSFL1dll PSFLSHdll PUREFLDdll QMASSdll QMOLEdll SATDdll SATEdll SATHdll SATPdll SATSdll SATTdll SETAGAdll SETKTVdll SETMIXdll SETMODdll SETREFdll SETUPdll SPECGRdll SUBLPdll SUBLTdll SURFTdll SURTENdll TDFLSHdll TEFLSHdll THERM0dll THERM2dll THERM3dll THERMdll THFLSHdll TPFLSHdll TPFL2dll TPRHOdll TQFLSHdll TRNPRPdll TSFLSHdll VIRBdll VIRCdll WMOLdll XMASSdll XMOLEdll)
+# These ones are used in the wrapper
+declare -a arr=(WMOLdll TPFL2dll TPFLSHdll PHFL1dll PHFLSHdll PDFL1dll PDFLSHdll PSFLSHdll PQFLSHdll THFLSHdll TDFLSHdll TSFLSHdll TQFLSHdll DHFL1dll DHFL2dll DHFLSHdll HSFLSHdll DSFL1dll DSFL2dll DSFLSHdll TRNPRPdll SATTdll SATPdll SATDdll)
+#
+## now loop through the above array
+for i in ${arr[@]}
+do
+   defineFunction $i # or do whatever with individual element of the array
+done
+

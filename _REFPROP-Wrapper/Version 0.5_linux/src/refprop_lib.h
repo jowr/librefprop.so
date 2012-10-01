@@ -14,221 +14,440 @@ typedef float   REAL;
 typedef double  DOUBLE_PRECISION;
 typedef int     LOGICAL;
 
+// Do some manual changes to the function names
+// if needed.
 #if defined(WIN32) || defined(_WIN32)
-//#  define LIBRARY_API __declspec(dllexport)
-#  define LIBRARY_API __stdcall
-#else
-#  define LIBRARY_API
-#ifdef _CRAY
-#  include <fortran.h>
-#  define RPVersion  RPVERSION
-#  define SETPATHdll SETPATHDLL
-#  define ABFL1dll ABFL1DLL
-#  define ABFL2dll ABFL2DLL
-#  define ACTVYdll ACTVYDLL
-#  define AGdll AGDLL
-#  define CCRITdll CCRITDLL
-#  define CP0dll CP0DLL
-#  define CRITPdll CRITPDLL
-#  define CSATKdll CSATKDLL
-#  define CV2PKdll CV2PKDLL
-#  define CVCPKdll CVCPKDLL
-#  define CVCPdll CVCPDLL
-#  define DBDTdll DBDTDLL
-#  define DBFL1dll DBFL1DLL
-#  define DBFL2dll DBFL2DLL
-#  define DDDPdll DDDPDLL
-#  define DDDTdll DDDTDLL
-#  define DEFLSHdll DEFLSHDLL
-#  define DHD1dll DHD1DLL
-#  define DHFL1dll DHFL1DLL
-#  define DHFL2dll DHFL2DLL
-#  define DHFLSHdll DHFLSHDLL
-#  define DIELECdll DIELECDLL
-#  define DOTFILLdll DOTFILLDLL
-#  define DPDD2dll DPDD2DLL
-#  define DPDDKdll DPDDKDLL
-#  define DPDDdll DPDDDLL
-#  define DPDTKdll DPDTKDLL
-#  define DPDTdll DPDTDLL
-#  define DPTSATKdll DPTSATKDLL
-#  define DSFLSHdll DSFLSHDLL
-#  define DSFL1dll DSFL1DLL
-#  define DSFL2dll DSFL2DLL
-#  define ENTHALdll ENTHALDLL
-#  define ENTROdll ENTRODLL
-#  define ESFLSHdll ESFLSHDLL
-#  define FGCTYdll FGCTYDLL
-#  define FPVdll FPVDLL
-#  define GERG04dll GERG04DLL
-#  define GETFIJdll GETFIJDLL
-#  define GETKTVdll GETKTVDLL
-#  define GIBBSdll GIBBSDLL
-#  define HSFLSHdll HSFLSHDLL
-#  define INFOdll INFODLL
-#  define LIMITKdll LIMITKDLL
-#  define LIMITSdll LIMITSDLL
-#  define LIMITXdll LIMITXDLL
-#  define MELTPdll MELTPDLL
-#  define MELTTdll MELTTDLL
-#  define MLTH2Odll MLTH2ODLL
-#  define NAMEdll NAMEDLL
-#  define PDFL1dll PDFL1DLL
-#  define PDFLSHdll PDFLSHDLL
-#  define PEFLSHdll PEFLSHDLL
-#  define PHFL1dll PHFL1DLL
-#  define PHFLSHdll PHFLSHDLL
-#  define PQFLSHdll PQFLSHDLL
-#  define PREOSdll PREOSDLL
-#  define PRESSdll PRESSDLL
-#  define PSFL1dll PSFL1DLL
-#  define PSFLSHdll PSFLSHDLL
-#  define PUREFLDdll PUREFLDDLL
-#  define QMASSdll QMASSDLL
-#  define QMOLEdll QMOLEDLL
-#  define SATDdll SATDDLL
-#  define SATEdll SATEDLL
-#  define SATHdll SATHDLL
-#  define SATPdll SATPDLL
-#  define SATSdll SATSDLL
-#  define SATTdll SATTDLL
-#  define SETAGAdll SETAGADLL
-#  define SETKTVdll SETKTVDLL
-#  define SETMIXdll SETMIXDLL
-#  define SETMODdll SETMODDLL
-#  define SETREFdll SETREFDLL
-#  define SETUPdll SETUPDLL
-#  define SPECGRdll SPECGRDLL
-#  define SUBLPdll SUBLPDLL
-#  define SUBLTdll SUBLTDLL
-#  define SURFTdll SURFTDLL
-#  define SURTENdll SURTENDLL
-#  define TDFLSHdll TDFLSHDLL
-#  define TEFLSHdll TEFLSHDLL
-#  define THERM0dll THERM0DLL
-#  define THERM2dll THERM2DLL
-#  define THERM3dll THERM3DLL
-#  define THERMdll THERMDLL
-#  define THFLSHdll THFLSHDLL
-#  define TPFLSHdll TPFLSHDLL
-#  define TPFL2dll TPFL2DLL
-#  define TPRHOdll TPRHODLL
-#  define TQFLSHdll TQFLSHDLL
-#  define TRNPRPdll TRNPRPDLL
-#  define TSFLSHdll TSFLSHDLL
-#  define VIRBdll VIRBDLL
-#  define VIRCdll VIRCDLL
-#  define WMOLdll WMOLDLL
-#  define XMASSdll XMASSDLL
+// Define compiler specific calling conventions
+// for the shared library.
+#  define LIBRARY_API __stdcall // __declspec(dllexport)
+// Do not define function names for the shared library,
+// in this case it is the REFPROP.dll and no special
+// names are needed.
+#  define RPVersion  RPVersion
+#  define SETPATHdll SETPATHdll
+#  define ABFL1dll ABFL1dll
+#  define ABFL2dll ABFL2dll
+#  define ACTVYdll ACTVYdll
+#  define AGdll AGdll
+#  define CCRITdll CCRITdll
+#  define CP0dll CP0dll
+#  define CRITPdll CRITPdll
+#  define CSATKdll CSATKdll
+#  define CV2PKdll CV2PKdll
+#  define CVCPKdll CVCPKdll
+#  define CVCPdll CVCPdll
+#  define DBDTdll DBDTdll
+#  define DBFL1dll DBFL1dll
+#  define DBFL2dll DBFL2dll
+#  define DDDPdll DDDPdll
+#  define DDDTdll DDDTdll
+#  define DEFLSHdll DEFLSHdll
+#  define DHD1dll DHD1dll
+#  define DHFL1dll DHFL1dll
+#  define DHFL2dll DHFL2dll
+#  define DHFLSHdll DHFLSHdll
+#  define DIELECdll DIELECdll
+#  define DOTFILLdll DOTFILLdll
+#  define DPDD2dll DPDD2dll
+#  define DPDDKdll DPDDKdll
+#  define DPDDdll DPDDdll
+#  define DPDTKdll DPDTKdll
+#  define DPDTdll DPDTdll
+#  define DPTSATKdll DPTSATKdll
+#  define DSFLSHdll DSFLSHdll
+#  define DSFL1dll DSFL1dll
+#  define DSFL2dll DSFL2dll
+#  define ENTHALdll ENTHALdll
+#  define ENTROdll ENTROdll
+#  define ESFLSHdll ESFLSHdll
+#  define FGCTYdll FGCTYdll
+#  define FPVdll FPVdll
+#  define GERG04dll GERG04dll
+#  define GETFIJdll GETFIJdll
+#  define GETKTVdll GETKTVdll
+#  define GIBBSdll GIBBSdll
+#  define HSFLSHdll HSFLSHdll
+#  define INFOdll INFOdll
+#  define LIMITKdll LIMITKdll
+#  define LIMITSdll LIMITSdll
+#  define LIMITXdll LIMITXdll
+#  define MELTPdll MELTPdll
+#  define MELTTdll MELTTdll
+#  define MLTH2Odll MLTH2Odll
+#  define NAMEdll NAMEdll
+#  define PDFL1dll PDFL1dll
+#  define PDFLSHdll PDFLSHdll
+#  define PEFLSHdll PEFLSHdll
+#  define PHFL1dll PHFL1dll
+#  define PHFLSHdll PHFLSHdll
+#  define PQFLSHdll PQFLSHdll
+#  define PREOSdll PREOSdll
+#  define PRESSdll PRESSdll
+#  define PSFL1dll PSFL1dll
+#  define PSFLSHdll PSFLSHdll
+#  define PUREFLDdll PUREFLDdll
+#  define QMASSdll QMASSdll
+#  define QMOLEdll QMOLEdll
+#  define SATDdll SATDdll
+#  define SATEdll SATEdll
+#  define SATHdll SATHdll
+#  define SATPdll SATPdll
+#  define SATSdll SATSdll
+#  define SATTdll SATTdll
+#  define SETAGAdll SETAGAdll
+#  define SETKTVdll SETKTVdll
+#  define SETMIXdll SETMIXdll
+#  define SETMODdll SETMODdll
+#  define SETREFdll SETREFdll
+#  define SETUPdll SETUPdll
+#  define SPECGRdll SPECGRdll
+#  define SUBLPdll SUBLPdll
+#  define SUBLTdll SUBLTdll
+#  define SURFTdll SURFTdll
+#  define SURTENdll SURTENdll
+#  define TDFLSHdll TDFLSHdll
+#  define TEFLSHdll TEFLSHdll
+#  define THERM0dll THERM0dll
+#  define THERM2dll THERM2dll
+#  define THERM3dll THERM3dll
+#  define THERMdll THERMdll
+#  define THFLSHdll THFLSHdll
+#  define TPFLSHdll TPFLSHdll
+#  define TPFL2dll TPFL2dll
+#  define TPRHOdll TPRHOdll
+#  define TQFLSHdll TQFLSHdll
+#  define TRNPRPdll TRNPRPdll
+#  define TSFLSHdll TSFLSHdll
+#  define VIRBdll VIRBdll
+#  define VIRCdll VIRCdll
+#  define WMOLdll WMOLdll
+#  define XMASSdll XMASSdll
 #  define XMOLEdll XMOLEdll
-#else
-#  if !defined(_AIX) && !defined(__hpux)
-#    define RPVersion  rpversion_
-#    define SETPATHdll setpathdll_
-#    define ABFL1dll abfl1dll_
-#    define ABFL2dll abfl2dll_
-#    define ACTVYdll actvydll_
-#    define AGdll agdll_
-#    define CCRITdll ccritdll_
-#    define CP0dll cp0dll_
-#    define CRITPdll critpdll_
-#    define CSATKdll csatkdll_
-#    define CV2PKdll cv2pkdll_
-#    define CVCPKdll cvcpkdll_
-#    define CVCPdll cvcpdll_
-#    define DBDTdll dbdtdll_
-#    define DBFL1dll dbfl1dll_
-#    define DBFL2dll dbfl2dll_
-#    define DDDPdll dddpdll_
-#    define DDDTdll dddtdll_
-#    define DEFLSHdll deflshdll_
-#    define DHD1dll dhd1dll_
-#    define DHFL1dll dhfl1dll_
-#    define DHFL2dll dhfl2dll_
-#    define DHFLSHdll dhflshdll_
-#    define DIELECdll dielecdll_
-#    define DOTFILLdll dotfilldll_
-#    define DPDD2dll dpdd2dll_
-#    define DPDDKdll dpddkdll_
-#    define DPDDdll dpdddll_
-#    define DPDTKdll dpdtkdll_
-#    define DPDTdll dpdtdll_
-#    define DPTSATKdll dptsatkdll_
-#    define DSFLSHdll dsflshdll_
-#    define DSFL1dll dsfl1dll_
-#    define DSFL2dll dsfl2dll_
-#    define ENTHALdll enthaldll_
-#    define ENTROdll entrodll_
-#    define ESFLSHdll esflshdll_
-#    define FGCTYdll fgctydll_
-#    define FPVdll fpvdll_
-#    define GERG04dll gerg04dll_
-#    define GETFIJdll getfijdll_
-#    define GETKTVdll getktvdll_
-#    define GIBBSdll gibbsdll_
-#    define HSFLSHdll hsflshdll_
-#    define INFOdll infodll_
-#    define LIMITKdll limitkdll_
-#    define LIMITSdll limitsdll_
-#    define LIMITXdll limitxdll_
-#    define MELTPdll meltpdll_
-#    define MELTTdll melttdll_
-#    define MLTH2Odll mlth2odll_
-#    define NAMEdll namedll_
-#    define PDFL1dll pdfl1dll_
-#    define PDFLSHdll pdflshdll_
-#    define PEFLSHdll peflshdll_
-#    define PHFL1dll phfl1dll_
-#    define PHFLSHdll phflshdll_
-#    define PQFLSHdll pqflshdll_
-#    define PREOSdll preosdll_
-#    define PRESSdll pressdll_
-#    define PSFL1dll psfl1dll_
-#    define PSFLSHdll psflshdll_
-#    define PUREFLDdll pureflddll_
-#    define QMASSdll qmassdll_
-#    define QMOLEdll qmoledll_
-#    define SATDdll satddll_
-#    define SATEdll satedll_
-#    define SATHdll sathdll_
-#    define SATPdll satpdll_
-#    define SATSdll satsdll_
-#    define SATTdll sattdll_
-#    define SETAGAdll setagadll_
-#    define SETKTVdll setktvdll_
-#    define SETMIXdll setmixdll_
-#    define SETMODdll setmoddll_
-#    define SETREFdll setrefdll_
-#    define SETUPdll setupdll_
-#    define SPECGRdll specgrdll_
-#    define SUBLPdll sublpdll_
-#    define SUBLTdll subltdll_
-#    define SURFTdll surftdll_
-#    define SURTENdll surtendll_
-#    define TDFLSHdll tdflshdll_
-#    define TEFLSHdll teflshdll_
-#    define THERM0dll therm0dll_
-#    define THERM2dll therm2dll_
-#    define THERM3dll therm3dll_
-#    define THERMdll thermdll_
-#    define THFLSHdll thflshdll_
-#    define TPFLSHdll tpflshdll_
-#    define TPFL2dll tpfl2dll_
-#    define TPRHOdll tprhodll_
-#    define TQFLSHdll tqflshdll_
-#    define TRNPRPdll trnprpdll_
-#    define TSFLSHdll tsflshdll_
-#    define VIRBdll virbdll_
-#    define VIRCdll vircdll_
-#    define WMOLdll wmoldll_
-#    define XMASSdll xmassdll_
-#    define XMOLEdll xmoledll_
-#  endif
-#  define _fcd          char *
-#  define _cptofcd(a,b) (a)
-#  define _fcdlen(a)    strlen(a)
-#endif
-#endif
+#else // defined(WIN32) || defined(_WIN32)
+// Define compiler specific calling conventions
+// for the shared library.
+#  define LIBRARY_API
+// Define function names for the shared library,
+// in this case it is the librefprop.so and the
+// names might change on some systems during
+// the compilation of the Fortran files.
+#  ifdef _CRAY
+#    include <fortran.h>
+#    define RPVersion    RPVERSION
+#    define SETPATHdll SETPATHDLL
+#    define ABFL1dll ABFL1DLL
+#    define ABFL2dll ABFL2DLL
+#    define ACTVYdll ACTVYDLL
+#    define AGdll AGDLL
+#    define CCRITdll CCRITDLL
+#    define CP0dll CP0DLL
+#    define CRITPdll CRITPDLL
+#    define CSATKdll CSATKDLL
+#    define CV2PKdll CV2PKDLL
+#    define CVCPKdll CVCPKDLL
+#    define CVCPdll CVCPDLL
+#    define DBDTdll DBDTDLL
+#    define DBFL1dll DBFL1DLL
+#    define DBFL2dll DBFL2DLL
+#    define DDDPdll DDDPDLL
+#    define DDDTdll DDDTDLL
+#    define DEFLSHdll DEFLSHDLL
+#    define DHD1dll DHD1DLL
+#    define DHFL1dll DHFL1DLL
+#    define DHFL2dll DHFL2DLL
+#    define DHFLSHdll DHFLSHDLL
+#    define DIELECdll DIELECDLL
+#    define DOTFILLdll DOTFILLDLL
+#    define DPDD2dll DPDD2DLL
+#    define DPDDKdll DPDDKDLL
+#    define DPDDdll DPDDDLL
+#    define DPDTKdll DPDTKDLL
+#    define DPDTdll DPDTDLL
+#    define DPTSATKdll DPTSATKDLL
+#    define DSFLSHdll DSFLSHDLL
+#    define DSFL1dll DSFL1DLL
+#    define DSFL2dll DSFL2DLL
+#    define ENTHALdll ENTHALDLL
+#    define ENTROdll ENTRODLL
+#    define ESFLSHdll ESFLSHDLL
+#    define FGCTYdll FGCTYDLL
+#    define FPVdll FPVDLL
+#    define GERG04dll GERG04DLL
+#    define GETFIJdll GETFIJDLL
+#    define GETKTVdll GETKTVDLL
+#    define GIBBSdll GIBBSDLL
+#    define HSFLSHdll HSFLSHDLL
+#    define INFOdll INFODLL
+#    define LIMITKdll LIMITKDLL
+#    define LIMITSdll LIMITSDLL
+#    define LIMITXdll LIMITXDLL
+#    define MELTPdll MELTPDLL
+#    define MELTTdll MELTTDLL
+#    define MLTH2Odll MLTH2ODLL
+#    define NAMEdll NAMEDLL
+#    define PDFL1dll PDFL1DLL
+#    define PDFLSHdll PDFLSHDLL
+#    define PEFLSHdll PEFLSHDLL
+#    define PHFL1dll PHFL1DLL
+#    define PHFLSHdll PHFLSHDLL
+#    define PQFLSHdll PQFLSHDLL
+#    define PREOSdll PREOSDLL
+#    define PRESSdll PRESSDLL
+#    define PSFL1dll PSFL1DLL
+#    define PSFLSHdll PSFLSHDLL
+#    define PUREFLDdll PUREFLDDLL
+#    define QMASSdll QMASSDLL
+#    define QMOLEdll QMOLEDLL
+#    define SATDdll SATDDLL
+#    define SATEdll SATEDLL
+#    define SATHdll SATHDLL
+#    define SATPdll SATPDLL
+#    define SATSdll SATSDLL
+#    define SATTdll SATTDLL
+#    define SETAGAdll SETAGADLL
+#    define SETKTVdll SETKTVDLL
+#    define SETMIXdll SETMIXDLL
+#    define SETMODdll SETMODDLL
+#    define SETREFdll SETREFDLL
+#    define SETUPdll SETUPDLL
+#    define SPECGRdll SPECGRDLL
+#    define SUBLPdll SUBLPDLL
+#    define SUBLTdll SUBLTDLL
+#    define SURFTdll SURFTDLL
+#    define SURTENdll SURTENDLL
+#    define TDFLSHdll TDFLSHDLL
+#    define TEFLSHdll TEFLSHDLL
+#    define THERM0dll THERM0DLL
+#    define THERM2dll THERM2DLL
+#    define THERM3dll THERM3DLL
+#    define THERMdll THERMDLL
+#    define THFLSHdll THFLSHDLL
+#    define TPFLSHdll TPFLSHDLL
+#    define TPFL2dll TPFL2DLL
+#    define TPRHOdll TPRHODLL
+#    define TQFLSHdll TQFLSHDLL
+#    define TRNPRPdll TRNPRPDLL
+#    define TSFLSHdll TSFLSHDLL
+#    define VIRBdll VIRBDLL
+#    define VIRCdll VIRCDLL
+#    define WMOLdll WMOLDLL
+#    define XMASSdll XMASSDLL
+#    define XMOLEdll XMOLEDLL
+#  else // _CRAY not defined
+#    if !defined(_AIX) && !defined(__hpux)
+#      define RPVersion  rpversion_
+#      define SETPATHdll setpathdll_
+#      define ABFL1dll abfl1dll_
+#      define ABFL2dll abfl2dll_
+#      define ACTVYdll actvydll_
+#      define AGdll agdll_
+#      define CCRITdll ccritdll_
+#      define CP0dll cp0dll_
+#      define CRITPdll critpdll_
+#      define CSATKdll csatkdll_
+#      define CV2PKdll cv2pkdll_
+#      define CVCPKdll cvcpkdll_
+#      define CVCPdll cvcpdll_
+#      define DBDTdll dbdtdll_
+#      define DBFL1dll dbfl1dll_
+#      define DBFL2dll dbfl2dll_
+#      define DDDPdll dddpdll_
+#      define DDDTdll dddtdll_
+#      define DEFLSHdll deflshdll_
+#      define DHD1dll dhd1dll_
+#      define DHFL1dll dhfl1dll_
+#      define DHFL2dll dhfl2dll_
+#      define DHFLSHdll dhflshdll_
+#      define DIELECdll dielecdll_
+#      define DOTFILLdll dotfilldll_
+#      define DPDD2dll dpdd2dll_
+#      define DPDDKdll dpddkdll_
+#      define DPDDdll dpdddll_
+#      define DPDTKdll dpdtkdll_
+#      define DPDTdll dpdtdll_
+#      define DPTSATKdll dptsatkdll_
+#      define DSFLSHdll dsflshdll_
+#      define DSFL1dll dsfl1dll_
+#      define DSFL2dll dsfl2dll_
+#      define ENTHALdll enthaldll_
+#      define ENTROdll entrodll_
+#      define ESFLSHdll esflshdll_
+#      define FGCTYdll fgctydll_
+#      define FPVdll fpvdll_
+#      define GERG04dll gerg04dll_
+#      define GETFIJdll getfijdll_
+#      define GETKTVdll getktvdll_
+#      define GIBBSdll gibbsdll_
+#      define HSFLSHdll hsflshdll_
+#      define INFOdll infodll_
+#      define LIMITKdll limitkdll_
+#      define LIMITSdll limitsdll_
+#      define LIMITXdll limitxdll_
+#      define MELTPdll meltpdll_
+#      define MELTTdll melttdll_
+#      define MLTH2Odll mlth2odll_
+#      define NAMEdll namedll_
+#      define PDFL1dll pdfl1dll_
+#      define PDFLSHdll pdflshdll_
+#      define PEFLSHdll peflshdll_
+#      define PHFL1dll phfl1dll_
+#      define PHFLSHdll phflshdll_
+#      define PQFLSHdll pqflshdll_
+#      define PREOSdll preosdll_
+#      define PRESSdll pressdll_
+#      define PSFL1dll psfl1dll_
+#      define PSFLSHdll psflshdll_
+#      define PUREFLDdll pureflddll_
+#      define QMASSdll qmassdll_
+#      define QMOLEdll qmoledll_
+#      define SATDdll satddll_
+#      define SATEdll satedll_
+#      define SATHdll sathdll_
+#      define SATPdll satpdll_
+#      define SATSdll satsdll_
+#      define SATTdll sattdll_
+#      define SETAGAdll setagadll_
+#      define SETKTVdll setktvdll_
+#      define SETMIXdll setmixdll_
+#      define SETMODdll setmoddll_
+#      define SETREFdll setrefdll_
+#      define SETUPdll setupdll_
+#      define SPECGRdll specgrdll_
+#      define SUBLPdll sublpdll_
+#      define SUBLTdll subltdll_
+#      define SURFTdll surftdll_
+#      define SURTENdll surtendll_
+#      define TDFLSHdll tdflshdll_
+#      define TEFLSHdll teflshdll_
+#      define THERM0dll therm0dll_
+#      define THERM2dll therm2dll_
+#      define THERM3dll therm3dll_
+#      define THERMdll thermdll_
+#      define THFLSHdll thflshdll_
+#      define TPFLSHdll tpflshdll_
+#      define TPFL2dll tpfl2dll_
+#      define TPRHOdll tprhodll_
+#      define TQFLSHdll tqflshdll_
+#      define TRNPRPdll trnprpdll_
+#      define TSFLSHdll tsflshdll_
+#      define VIRBdll virbdll_
+#      define VIRCdll vircdll_
+#      define WMOLdll wmoldll_
+#      define XMASSdll xmassdll_
+#      define XMOLEdll xmoledll_
+#    endif // !defined(_AIX) && !defined(__hpux)
+#  endif // _CRAY not defined, else branch
+#endif // defined(WIN32) || defined(_WIN32), else branch
+
+
+// define new macros for function names
+// http://stackoverflow.com/questions/195975/how-to-make-a-char-string-from-a-c-macros-value
+#define STR_VALUE(arg)      #arg
+#define FUNCTION_NAME(name) STR_VALUE(name)
+//#define TEST_FUNC      test_func
+//#define TEST_FUNC_NAME FUNCTION_NAME(TEST_FUNC)
+
+#define RPVersion_NAME FUNCTION_NAME(RPVersion)
+#define SETPATHdll_NAME FUNCTION_NAME(SETPATHdll)
+#define ABFL1dll_NAME FUNCTION_NAME(ABFL1dll)
+#define ABFL2dll_NAME FUNCTION_NAME(ABFL2dll)
+#define ACTVYdll_NAME FUNCTION_NAME(ACTVYdll)
+#define AGdll_NAME FUNCTION_NAME(AGdll)
+#define CCRITdll_NAME FUNCTION_NAME(CCRITdll)
+#define CP0dll_NAME FUNCTION_NAME(CP0dll)
+#define CRITPdll_NAME FUNCTION_NAME(CRITPdll)
+#define CSATKdll_NAME FUNCTION_NAME(CSATKdll)
+#define CV2PKdll_NAME FUNCTION_NAME(CV2PKdll)
+#define CVCPKdll_NAME FUNCTION_NAME(CVCPKdll)
+#define CVCPdll_NAME FUNCTION_NAME(CVCPdll)
+#define DBDTdll_NAME FUNCTION_NAME(DBDTdll)
+#define DBFL1dll_NAME FUNCTION_NAME(DBFL1dll)
+#define DBFL2dll_NAME FUNCTION_NAME(DBFL2dll)
+#define DDDPdll_NAME FUNCTION_NAME(DDDPdll)
+#define DDDTdll_NAME FUNCTION_NAME(DDDTdll)
+#define DEFLSHdll_NAME FUNCTION_NAME(DEFLSHdll)
+#define DHD1dll_NAME FUNCTION_NAME(DHD1dll)
+#define DHFL1dll_NAME FUNCTION_NAME(DHFL1dll)
+#define DHFL2dll_NAME FUNCTION_NAME(DHFL2dll)
+#define DHFLSHdll_NAME FUNCTION_NAME(DHFLSHdll)
+#define DIELECdll_NAME FUNCTION_NAME(DIELECdll)
+#define DOTFILLdll_NAME FUNCTION_NAME(DOTFILLdll)
+#define DPDD2dll_NAME FUNCTION_NAME(DPDD2dll)
+#define DPDDKdll_NAME FUNCTION_NAME(DPDDKdll)
+#define DPDDdll_NAME FUNCTION_NAME(DPDDdll)
+#define DPDTKdll_NAME FUNCTION_NAME(DPDTKdll)
+#define DPDTdll_NAME FUNCTION_NAME(DPDTdll)
+#define DPTSATKdll_NAME FUNCTION_NAME(DPTSATKdll)
+#define DSFLSHdll_NAME FUNCTION_NAME(DSFLSHdll)
+#define DSFL1dll_NAME FUNCTION_NAME(DSFL1dll)
+#define DSFL2dll_NAME FUNCTION_NAME(DSFL2dll)
+#define ENTHALdll_NAME FUNCTION_NAME(ENTHALdll)
+#define ENTROdll_NAME FUNCTION_NAME(ENTROdll)
+#define ESFLSHdll_NAME FUNCTION_NAME(ESFLSHdll)
+#define FGCTYdll_NAME FUNCTION_NAME(FGCTYdll)
+#define FPVdll_NAME FUNCTION_NAME(FPVdll)
+#define GERG04dll_NAME FUNCTION_NAME(GERG04dll)
+#define GETFIJdll_NAME FUNCTION_NAME(GETFIJdll)
+#define GETKTVdll_NAME FUNCTION_NAME(GETKTVdll)
+#define GIBBSdll_NAME FUNCTION_NAME(GIBBSdll)
+#define HSFLSHdll_NAME FUNCTION_NAME(HSFLSHdll)
+#define INFOdll_NAME FUNCTION_NAME(INFOdll)
+#define LIMITKdll_NAME FUNCTION_NAME(LIMITKdll)
+#define LIMITSdll_NAME FUNCTION_NAME(LIMITSdll)
+#define LIMITXdll_NAME FUNCTION_NAME(LIMITXdll)
+#define MELTPdll_NAME FUNCTION_NAME(MELTPdll)
+#define MELTTdll_NAME FUNCTION_NAME(MELTTdll)
+#define MLTH2Odll_NAME FUNCTION_NAME(MLTH2Odll)
+#define NAMEdll_NAME FUNCTION_NAME(NAMEdll)
+#define PDFL1dll_NAME FUNCTION_NAME(PDFL1dll)
+#define PDFLSHdll_NAME FUNCTION_NAME(PDFLSHdll)
+#define PEFLSHdll_NAME FUNCTION_NAME(PEFLSHdll)
+#define PHFL1dll_NAME FUNCTION_NAME(PHFL1dll)
+#define PHFLSHdll_NAME FUNCTION_NAME(PHFLSHdll)
+#define PQFLSHdll_NAME FUNCTION_NAME(PQFLSHdll)
+#define PREOSdll_NAME FUNCTION_NAME(PREOSdll)
+#define PRESSdll_NAME FUNCTION_NAME(PRESSdll)
+#define PSFL1dll_NAME FUNCTION_NAME(PSFL1dll)
+#define PSFLSHdll_NAME FUNCTION_NAME(PSFLSHdll)
+#define PUREFLDdll_NAME FUNCTION_NAME(PUREFLDdll)
+#define QMASSdll_NAME FUNCTION_NAME(QMASSdll)
+#define QMOLEdll_NAME FUNCTION_NAME(QMOLEdll)
+#define SATDdll_NAME FUNCTION_NAME(SATDdll)
+#define SATEdll_NAME FUNCTION_NAME(SATEdll)
+#define SATHdll_NAME FUNCTION_NAME(SATHdll)
+#define SATPdll_NAME FUNCTION_NAME(SATPdll)
+#define SATSdll_NAME FUNCTION_NAME(SATSdll)
+#define SATTdll_NAME FUNCTION_NAME(SATTdll)
+#define SETAGAdll_NAME FUNCTION_NAME(SETAGAdll)
+#define SETKTVdll_NAME FUNCTION_NAME(SETKTVdll)
+#define SETMIXdll_NAME FUNCTION_NAME(SETMIXdll)
+#define SETMODdll_NAME FUNCTION_NAME(SETMODdll)
+#define SETREFdll_NAME FUNCTION_NAME(SETREFdll)
+#define SETUPdll_NAME FUNCTION_NAME(SETUPdll)
+#define SPECGRdll_NAME FUNCTION_NAME(SPECGRdll)
+#define SUBLPdll_NAME FUNCTION_NAME(SUBLPdll)
+#define SUBLTdll_NAME FUNCTION_NAME(SUBLTdll)
+#define SURFTdll_NAME FUNCTION_NAME(SURFTdll)
+#define SURTENdll_NAME FUNCTION_NAME(SURTENdll)
+#define TDFLSHdll_NAME FUNCTION_NAME(TDFLSHdll)
+#define TEFLSHdll_NAME FUNCTION_NAME(TEFLSHdll)
+#define THERM0dll_NAME FUNCTION_NAME(THERM0dll)
+#define THERM2dll_NAME FUNCTION_NAME(THERM2dll)
+#define THERM3dll_NAME FUNCTION_NAME(THERM3dll)
+#define THERMdll_NAME FUNCTION_NAME(THERMdll)
+#define THFLSHdll_NAME FUNCTION_NAME(THFLSHdll)
+#define TPFLSHdll_NAME FUNCTION_NAME(TPFLSHdll)
+#define TPFL2dll_NAME FUNCTION_NAME(TPFL2dll)
+#define TPRHOdll_NAME FUNCTION_NAME(TPRHOdll)
+#define TQFLSHdll_NAME FUNCTION_NAME(TQFLSHdll)
+#define TRNPRPdll_NAME FUNCTION_NAME(TRNPRPdll)
+#define TSFLSHdll_NAME FUNCTION_NAME(TSFLSHdll)
+#define VIRBdll_NAME FUNCTION_NAME(VIRBdll)
+#define VIRCdll_NAME FUNCTION_NAME(VIRCdll)
+#define WMOLdll_NAME FUNCTION_NAME(WMOLdll)
+#define XMASSdll_NAME FUNCTION_NAME(XMASSdll)
+#define XMOLEdll_NAME FUNCTION_NAME(XMOLEdll)
+
 
 // I'll try to follow this example from:
 // http://www.gershnik.com/tips/cpp.asp
@@ -244,552 +463,317 @@ typedef int     LOGICAL;
 #ifdef __cplusplus
 extern "C" {
 #endif
+  // extra function for setup
+  typedef void (LIBRARY_API RPVersion_TYPE )( char* );
+  typedef void (LIBRARY_API SETPATHdll_TYPE)( const char* );
+  //
+  typedef void (LIBRARY_API ABFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API ABFL2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API ACTVYdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API AGdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API CCRITdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API CP0dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API CRITPdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API CSATKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API CV2PKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API CVCPKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API CVCPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DBDTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DBFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DBFL2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DDDPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DDDTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DEFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DHD1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DHFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
+  typedef void (LIBRARY_API DHFL2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
+  typedef void (LIBRARY_API DHFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DIELECdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DOTFILLdll_TYPE)(INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DPDD2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DPDDKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DPDDdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DPDTKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DPDTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API DPTSATKdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DSFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API DSFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
+  typedef void (LIBRARY_API DSFL2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
+  typedef void (LIBRARY_API ENTHALdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API ENTROdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API ESFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API FGCTYdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *);
+  typedef void (LIBRARY_API FPVdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API GERG04dll_TYPE)(INTEGER &,INTEGER &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API GETFIJdll_TYPE)(char*,DOUBLE_PRECISION *,char*,char*,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API GETKTVdll_TYPE)(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,char*,char*,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API GIBBSdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API HSFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API INFOdll_TYPE)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API LIMITKdll_TYPE)(char*,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API LIMITSdll_TYPE)(char*,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER );
+  typedef void (LIBRARY_API LIMITXdll_TYPE)(char*,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API MELTPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API MELTTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API MLTH2Odll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API NAMEdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API PDFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PDFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PEFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PHFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PHFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PQFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PREOSdll_TYPE)(INTEGER &);
+  typedef void (LIBRARY_API PRESSdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API PSFL1dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PSFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API PUREFLDdll_TYPE)(INTEGER &);
+  typedef void (LIBRARY_API QMASSdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API QMOLEdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATDdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATEdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATSdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SATTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SETAGAdll_TYPE)(INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SETKTVdll_TYPE)(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API SETMIXdll_TYPE)(char*,char*,char*,INTEGER &,char*,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API SETMODdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API SETREFdll_TYPE)(char*,INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
+  //typedef void (LIBRARY_API SETUPdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
+  typedef void (LIBRARY_API SETUPdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER &,char*);
+  typedef void (LIBRARY_API SPECGRdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API SUBLPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SUBLTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SURFTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API SURTENdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TDFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TEFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API THERM0dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API THERM2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API THERM3dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API THERMdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API THFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TPFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TPFL2dll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
+  typedef void (LIBRARY_API TPRHOdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TQFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TRNPRPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API TSFLSHdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
+  typedef void (LIBRARY_API VIRBdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API VIRCdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API WMOLdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API XMASSdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  typedef void (LIBRARY_API XMOLEdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
 
-	// pattern to follow: typedef void [compiler specific stuff]  func_t(int, float);
+  //Declare the functions for direct access
+  RPVersion_TYPE RPVersion;
+  SETPATHdll_TYPE SETPATHdll;
+  ABFL1dll_TYPE ABFL1dll;
+  ABFL2dll_TYPE ABFL2dll;
+  ACTVYdll_TYPE ACTVYdll;
+  AGdll_TYPE AGdll;
+  CCRITdll_TYPE CCRITdll;
+  CP0dll_TYPE CP0dll;
+  CRITPdll_TYPE CRITPdll;
+  CSATKdll_TYPE CSATKdll;
+  CV2PKdll_TYPE CV2PKdll;
+  CVCPKdll_TYPE CVCPKdll;
+  CVCPdll_TYPE CVCPdll;
+  DBDTdll_TYPE DBDTdll;
+  DBFL1dll_TYPE DBFL1dll;
+  DBFL2dll_TYPE DBFL2dll;
+  DDDPdll_TYPE DDDPdll;
+  DDDTdll_TYPE DDDTdll;
+  DEFLSHdll_TYPE DEFLSHdll;
+  DHD1dll_TYPE DHD1dll;
+  DHFLSHdll_TYPE DHFLSHdll;
+  DHFL1dll_TYPE DHFL1dll;
+  DHFL2dll_TYPE DHFL2dll;
+  DIELECdll_TYPE DIELECdll;
+  DOTFILLdll_TYPE DOTFILLdll;
+  DPDD2dll_TYPE DPDD2dll;
+  DPDDKdll_TYPE DPDDKdll;
+  DPDDdll_TYPE DPDDdll;
+  DPDTKdll_TYPE DPDTKdll;
+  DPDTdll_TYPE DPDTdll;
+  DPTSATKdll_TYPE DPTSATKdll;
+  DSFLSHdll_TYPE DSFLSHdll;
+  DSFL1dll_TYPE DSFL1dll;
+  DSFL2dll_TYPE DSFL2dll;
+  ENTHALdll_TYPE ENTHALdll;
+  ENTROdll_TYPE ENTROdll;
+  ESFLSHdll_TYPE ESFLSHdll;
+  FGCTYdll_TYPE FGCTYdll;
+  FPVdll_TYPE FPVdll;
+  GERG04dll_TYPE GERG04dll;
+  GETFIJdll_TYPE GETFIJdll;
+  GETKTVdll_TYPE GETKTVdll;
+  GIBBSdll_TYPE GIBBSdll;
+  HSFLSHdll_TYPE HSFLSHdll;
+  INFOdll_TYPE INFOdll;
+  LIMITKdll_TYPE LIMITKdll;
+  LIMITSdll_TYPE LIMITSdll;
+  LIMITXdll_TYPE LIMITXdll;
+  MELTPdll_TYPE MELTPdll;
+  MELTTdll_TYPE MELTTdll;
+  MLTH2Odll_TYPE MLTH2Odll;
+  NAMEdll_TYPE NAMEdll;
+  PDFL1dll_TYPE PDFL1dll;
+  PDFLSHdll_TYPE PDFLSHdll;
+  PEFLSHdll_TYPE PEFLSHdll;
+  PHFL1dll_TYPE PHFL1dll;
+  PHFLSHdll_TYPE PHFLSHdll;
+  PQFLSHdll_TYPE PQFLSHdll;
+  PREOSdll_TYPE PREOSdll;
+  PRESSdll_TYPE PRESSdll;
+  PSFL1dll_TYPE PSFL1dll;
+  PSFLSHdll_TYPE PSFLSHdll;
+  PUREFLDdll_TYPE PUREFLDdll;
+  QMASSdll_TYPE QMASSdll;
+  QMOLEdll_TYPE QMOLEdll;
+  SATDdll_TYPE SATDdll;
+  SATEdll_TYPE SATEdll;
+  SATHdll_TYPE SATHdll;
+  SATPdll_TYPE SATPdll;
+  SATSdll_TYPE SATSdll;
+  SATTdll_TYPE SATTdll;
+  SETAGAdll_TYPE SETAGAdll;
+  SETKTVdll_TYPE SETKTVdll;
+  SETMIXdll_TYPE SETMIXdll;
+  SETMODdll_TYPE SETMODdll;
+  SETREFdll_TYPE SETREFdll;
+  SETUPdll_TYPE SETUPdll;
+  SPECGRdll_TYPE SPECGRdll;
+  SUBLPdll_TYPE SUBLPdll;
+  SUBLTdll_TYPE SUBLTdll;
+  SURFTdll_TYPE SURFTdll;
+  SURTENdll_TYPE SURTENdll;
+  TDFLSHdll_TYPE TDFLSHdll;
+  TEFLSHdll_TYPE TEFLSHdll;
+  THERM0dll_TYPE THERM0dll;
+  THERM2dll_TYPE THERM2dll;
+  THERM3dll_TYPE THERM3dll;
+  THERMdll_TYPE THERMdll;
+  THFLSHdll_TYPE THFLSHdll;
+  TPFLSHdll_TYPE TPFLSHdll;
+  TPFL2dll_TYPE TPFL2dll;
+  TPRHOdll_TYPE TPRHOdll;
+  TQFLSHdll_TYPE TQFLSHdll;
+  TRNPRPdll_TYPE TRNPRPdll;
+  TSFLSHdll_TYPE TSFLSHdll;
+  VIRBdll_TYPE VIRBdll;
+  VIRCdll_TYPE VIRCdll;
+  WMOLdll_TYPE WMOLdll;
+  XMASSdll_TYPE XMASSdll;
+  XMOLEdll_TYPE XMOLEdll;
 
-	// extra function for setup
-	typedef void (LIBRARY_API RPVersion_t )( char* );
-	typedef void (LIBRARY_API SETPATHdll_t)( const char* );
-	//
-	typedef void (LIBRARY_API ABFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API ABFL2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API ACTVYdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API AGdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API CCRITdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API CP0dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API CRITPdll_t)(DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API CSATKdll_t)(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API CV2PKdll_t)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API CVCPKdll_t)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API CVCPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DBDTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DBFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DBFL2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DDDPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DDDTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DEFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DHD1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DHFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-	typedef void (LIBRARY_API DHFL2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-	typedef void (LIBRARY_API DHFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DIELECdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DOTFILLdll_t)(INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DPDD2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DPDDKdll_t)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DPDDdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DPDTKdll_t)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DPDTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API DPTSATKdll_t)(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DSFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API DSFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-	typedef void (LIBRARY_API DSFL2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-	typedef void (LIBRARY_API ENTHALdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API ENTROdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API ESFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API FGCTYdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *);
-	typedef void (LIBRARY_API FPVdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API GERG04dll_t)(INTEGER &,INTEGER &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API GETFIJdll_t)(char*,DOUBLE_PRECISION *,char*,char*,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API GETKTVdll_t)(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,char*,char*,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API GIBBSdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API HSFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API INFOdll_t)(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API LIMITKdll_t)(char*,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API LIMITSdll_t)(char*,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER );
-	typedef void (LIBRARY_API LIMITXdll_t)(char*,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API MELTPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API MELTTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API MLTH2Odll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API NAMEdll_t)(INTEGER &,char*,char*,char*,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API PDFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PDFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PEFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PHFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PHFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PQFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PREOSdll_t)(INTEGER &);
-	typedef void (LIBRARY_API PRESSdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API PSFL1dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PSFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API PUREFLDdll_t)(INTEGER &);
-	typedef void (LIBRARY_API QMASSdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API QMOLEdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATDdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATEdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATSdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SATTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SETAGAdll_t)(INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SETKTVdll_t)(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API SETMIXdll_t)(char*,char*,char*,INTEGER &,char*,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API SETMODdll_t)(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API SETREFdll_t)(char*,INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-	//typedef void (LIBRARY_API SETUPdll_t)(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-	typedef void (LIBRARY_API SETUPdll_t)(INTEGER &,char*,char*,char*,INTEGER &,char*);
-	typedef void (LIBRARY_API SPECGRdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API SUBLPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SUBLTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SURFTdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API SURTENdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TDFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TEFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API THERM0dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API THERM2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API THERM3dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API THERMdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API THFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TPFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TPFL2dll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-	typedef void (LIBRARY_API TPRHOdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TQFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TRNPRPdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API TSFLSHdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-	typedef void (LIBRARY_API VIRBdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API VIRCdll_t)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API WMOLdll_t)(DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API XMASSdll_t)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-	typedef void (LIBRARY_API XMOLEdll_t)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
+  //Define explicit function pointers
+  typedef RPVersion_TYPE * RPVersion_POINTER;
+  typedef SETPATHdll_TYPE * SETPATHdll_POINTER;
+  typedef ABFL1dll_TYPE * ABFL1dll_POINTER;
+  typedef ABFL2dll_TYPE * ABFL2dll_POINTER;
+  typedef ACTVYdll_TYPE * ACTVYdll_POINTER;
+  typedef AGdll_TYPE * AGdll_POINTER;
+  typedef CCRITdll_TYPE * CCRITdll_POINTER;
+  typedef CP0dll_TYPE * CP0dll_POINTER;
+  typedef CRITPdll_TYPE * CRITPdll_POINTER;
+  typedef CSATKdll_TYPE * CSATKdll_POINTER;
+  typedef CV2PKdll_TYPE * CV2PKdll_POINTER;
+  typedef CVCPKdll_TYPE * CVCPKdll_POINTER;
+  typedef CVCPdll_TYPE * CVCPdll_POINTER;
+  typedef DBDTdll_TYPE * DBDTdll_POINTER;
+  typedef DBFL1dll_TYPE * DBFL1dll_POINTER;
+  typedef DBFL2dll_TYPE * DBFL2dll_POINTER;
+  typedef DDDPdll_TYPE * DDDPdll_POINTER;
+  typedef DDDTdll_TYPE * DDDTdll_POINTER;
+  typedef DEFLSHdll_TYPE * DEFLSHdll_POINTER;
+  typedef DHD1dll_TYPE * DHD1dll_POINTER;
+  typedef DHFLSHdll_TYPE * DHFLSHdll_POINTER;
+  typedef DHFL1dll_TYPE * DHFL1dll_POINTER;
+  typedef DHFL2dll_TYPE * DHFL2dll_POINTER;
+  typedef DIELECdll_TYPE * DIELECdll_POINTER;
+  typedef DOTFILLdll_TYPE * DOTFILLdll_POINTER;
+  typedef DPDD2dll_TYPE * DPDD2dll_POINTER;
+  typedef DPDDKdll_TYPE * DPDDKdll_POINTER;
+  typedef DPDDdll_TYPE * DPDDdll_POINTER;
+  typedef DPDTKdll_TYPE * DPDTKdll_POINTER;
+  typedef DPDTdll_TYPE * DPDTdll_POINTER;
+  typedef DPTSATKdll_TYPE * DPTSATKdll_POINTER;
+  typedef DSFLSHdll_TYPE * DSFLSHdll_POINTER;
+  typedef DSFL1dll_TYPE * DSFL1dll_POINTER;
+  typedef DSFL2dll_TYPE * DSFL2dll_POINTER;
+  typedef ENTHALdll_TYPE * ENTHALdll_POINTER;
+  typedef ENTROdll_TYPE * ENTROdll_POINTER;
+  typedef ESFLSHdll_TYPE * ESFLSHdll_POINTER;
+  typedef FGCTYdll_TYPE * FGCTYdll_POINTER;
+  typedef FPVdll_TYPE * FPVdll_POINTER;
+  typedef GERG04dll_TYPE * GERG04dll_POINTER;
+  typedef GETFIJdll_TYPE * GETFIJdll_POINTER;
+  typedef GETKTVdll_TYPE * GETKTVdll_POINTER;
+  typedef GIBBSdll_TYPE * GIBBSdll_POINTER;
+  typedef HSFLSHdll_TYPE * HSFLSHdll_POINTER;
+  typedef INFOdll_TYPE * INFOdll_POINTER;
+  typedef LIMITKdll_TYPE * LIMITKdll_POINTER;
+  typedef LIMITSdll_TYPE * LIMITSdll_POINTER;
+  typedef LIMITXdll_TYPE * LIMITXdll_POINTER;
+  typedef MELTPdll_TYPE * MELTPdll_POINTER;
+  typedef MELTTdll_TYPE * MELTTdll_POINTER;
+  typedef MLTH2Odll_TYPE * MLTH2Odll_POINTER;
+  typedef NAMEdll_TYPE * NAMEdll_POINTER;
+  typedef PDFL1dll_TYPE * PDFL1dll_POINTER;
+  typedef PDFLSHdll_TYPE * PDFLSHdll_POINTER;
+  typedef PEFLSHdll_TYPE * PEFLSHdll_POINTER;
+  typedef PHFL1dll_TYPE * PHFL1dll_POINTER;
+  typedef PHFLSHdll_TYPE * PHFLSHdll_POINTER;
+  typedef PQFLSHdll_TYPE * PQFLSHdll_POINTER;
+  typedef PREOSdll_TYPE * PREOSdll_POINTER;
+  typedef PRESSdll_TYPE * PRESSdll_POINTER;
+  typedef PSFL1dll_TYPE * PSFL1dll_POINTER;
+  typedef PSFLSHdll_TYPE * PSFLSHdll_POINTER;
+  typedef PUREFLDdll_TYPE * PUREFLDdll_POINTER;
+  typedef QMASSdll_TYPE * QMASSdll_POINTER;
+  typedef QMOLEdll_TYPE * QMOLEdll_POINTER;
+  typedef SATDdll_TYPE * SATDdll_POINTER;
+  typedef SATEdll_TYPE * SATEdll_POINTER;
+  typedef SATHdll_TYPE * SATHdll_POINTER;
+  typedef SATPdll_TYPE * SATPdll_POINTER;
+  typedef SATSdll_TYPE * SATSdll_POINTER;
+  typedef SATTdll_TYPE * SATTdll_POINTER;
+  typedef SETAGAdll_TYPE * SETAGAdll_POINTER;
+  typedef SETKTVdll_TYPE * SETKTVdll_POINTER;
+  typedef SETMIXdll_TYPE * SETMIXdll_POINTER;
+  typedef SETMODdll_TYPE * SETMODdll_POINTER;
+  typedef SETREFdll_TYPE * SETREFdll_POINTER;
+  typedef SETUPdll_TYPE * SETUPdll_POINTER;
+  typedef SPECGRdll_TYPE * SPECGRdll_POINTER;
+  typedef SUBLPdll_TYPE * SUBLPdll_POINTER;
+  typedef SUBLTdll_TYPE * SUBLTdll_POINTER;
+  typedef SURFTdll_TYPE * SURFTdll_POINTER;
+  typedef SURTENdll_TYPE * SURTENdll_POINTER;
+  typedef TDFLSHdll_TYPE * TDFLSHdll_POINTER;
+  typedef TEFLSHdll_TYPE * TEFLSHdll_POINTER;
+  typedef THERM0dll_TYPE * THERM0dll_POINTER;
+  typedef THERM2dll_TYPE * THERM2dll_POINTER;
+  typedef THERM3dll_TYPE * THERM3dll_POINTER;
+  typedef THERMdll_TYPE * THERMdll_POINTER;
+  typedef THFLSHdll_TYPE * THFLSHdll_POINTER;
+  typedef TPFLSHdll_TYPE * TPFLSHdll_POINTER;
+  typedef TPFL2dll_TYPE * TPFL2dll_POINTER;
+  typedef TPRHOdll_TYPE * TPRHOdll_POINTER;
+  typedef TQFLSHdll_TYPE * TQFLSHdll_POINTER;
+  typedef TRNPRPdll_TYPE * TRNPRPdll_POINTER;
+  typedef TSFLSHdll_TYPE * TSFLSHdll_POINTER;
+  typedef VIRBdll_TYPE * VIRBdll_POINTER;
+  typedef VIRCdll_TYPE * VIRCdll_POINTER;
+  typedef WMOLdll_TYPE * WMOLdll_POINTER;
+  typedef XMASSdll_TYPE * XMASSdll_POINTER;
+  typedef XMOLEdll_TYPE * XMOLEdll_POINTER;
 
-
-	//Declare the functions
-	RPVersion_t RPVersion;
-	SETPATHdll_t SETPATHdll;
-	ABFL1dll_t ABFL1dll;
-	ABFL2dll_t ABFL2dll;
-	ACTVYdll_t ACTVYdll;
-	AGdll_t AGdll;
-	CCRITdll_t CCRITdll;
-	CP0dll_t CP0dll;
-	CRITPdll_t CRITPdll;
-	CSATKdll_t CSATKdll;
-	CV2PKdll_t CV2PKdll;
-	CVCPKdll_t CVCPKdll;
-	CVCPdll_t CVCPdll;
-	DBDTdll_t DBDTdll;
-	DBFL1dll_t DBFL1dll;
-	DBFL2dll_t DBFL2dll;
-	DDDPdll_t DDDPdll;
-	DDDTdll_t DDDTdll;
-	DEFLSHdll_t DEFLSHdll;
-	DHD1dll_t DHD1dll;
-	DHFLSHdll_t DHFLSHdll;
-	DHFL1dll_t DHFL1dll;
-	DHFL2dll_t DHFL2dll;
-	DIELECdll_t DIELECdll;
-	DOTFILLdll_t DOTFILLdll;
-	DPDD2dll_t DPDD2dll;
-	DPDDKdll_t DPDDKdll;
-	DPDDdll_t DPDDdll;
-	DPDTKdll_t DPDTKdll;
-	DPDTdll_t DPDTdll;
-	DPTSATKdll_t DPTSATKdll;
-	DSFLSHdll_t DSFLSHdll;
-	DSFL1dll_t DSFL1dll;
-	DSFL2dll_t DSFL2dll;
-	ENTHALdll_t ENTHALdll;
-	ENTROdll_t ENTROdll;
-	ESFLSHdll_t ESFLSHdll;
-	FGCTYdll_t FGCTYdll;
-	FPVdll_t FPVdll;
-	GERG04dll_t GERG04dll;
-	GETFIJdll_t GETFIJdll;
-	GETKTVdll_t GETKTVdll;
-	GIBBSdll_t GIBBSdll;
-	HSFLSHdll_t HSFLSHdll;
-	INFOdll_t INFOdll;
-	LIMITKdll_t LIMITKdll;
-	LIMITSdll_t LIMITSdll;
-	LIMITXdll_t LIMITXdll;
-	MELTPdll_t MELTPdll;
-	MELTTdll_t MELTTdll;
-	MLTH2Odll_t MLTH2Odll;
-	NAMEdll_t NAMEdll;
-	PDFL1dll_t PDFL1dll;
-	PDFLSHdll_t PDFLSHdll;
-	PEFLSHdll_t PEFLSHdll;
-	PHFL1dll_t PHFL1dll;
-	PHFLSHdll_t PHFLSHdll;
-	PQFLSHdll_t PQFLSHdll;
-	PREOSdll_t PREOSdll;
-	PRESSdll_t PRESSdll;
-	PSFL1dll_t PSFL1dll;
-	PSFLSHdll_t PSFLSHdll;
-	PUREFLDdll_t PUREFLDdll;
-	QMASSdll_t QMASSdll;
-	QMOLEdll_t QMOLEdll;
-	SATDdll_t SATDdll;
-	SATEdll_t SATEdll;
-	SATHdll_t SATHdll;
-	SATPdll_t SATPdll;
-	SATSdll_t SATSdll;
-	SATTdll_t SATTdll;
-	SETAGAdll_t SETAGAdll;
-	SETKTVdll_t SETKTVdll;
-	SETMIXdll_t SETMIXdll;
-	SETMODdll_t SETMODdll;
-	SETREFdll_t SETREFdll;
-	SETUPdll_t SETUPdll;
-	SPECGRdll_t SPECGRdll;
-	SUBLPdll_t SUBLPdll;
-	SUBLTdll_t SUBLTdll;
-	SURFTdll_t SURFTdll;
-	SURTENdll_t SURTENdll;
-	TDFLSHdll_t TDFLSHdll;
-	TEFLSHdll_t TEFLSHdll;
-	THERM0dll_t THERM0dll;
-	THERM2dll_t THERM2dll;
-	THERM3dll_t THERM3dll;
-	THERMdll_t THERMdll;
-	THFLSHdll_t THFLSHdll;
-	TPFLSHdll_t TPFLSHdll;
-	TPFL2dll_t TPFL2dll;
-	TPRHOdll_t TPRHOdll;
-	TQFLSHdll_t TQFLSHdll;
-	TRNPRPdll_t TRNPRPdll;
-	TSFLSHdll_t TSFLSHdll;
-	VIRBdll_t VIRBdll;
-	VIRCdll_t VIRCdll;
-	WMOLdll_t WMOLdll;
-	XMASSdll_t XMASSdll;
-	XMOLEdll_t XMOLEdll;
-
-    //Define explicit function pointers
-    typedef RPVersion_t * RPVersion_ptr;
-    typedef SETPATHdll_t * SETPATHdll_ptr;
-	 typedef ABFL1dll_t * ABFL1dll_ptr;
-	 typedef ABFL2dll_t * ABFL2dll_ptr;
-	 typedef ACTVYdll_t * ACTVYdll_ptr;
-	 typedef AGdll_t * AGdll_ptr;
-	 typedef CCRITdll_t * CCRITdll_ptr;
-	 typedef CP0dll_t * CP0dll_ptr;
-	 typedef CRITPdll_t * CRITPdll_ptr;
-	 typedef CSATKdll_t * CSATKdll_ptr;
-	 typedef CV2PKdll_t * CV2PKdll_ptr;
-	 typedef CVCPKdll_t * CVCPKdll_ptr;
-	 typedef CVCPdll_t * CVCPdll_ptr;
-	 typedef DBDTdll_t * DBDTdll_ptr;
-	 typedef DBFL1dll_t * DBFL1dll_ptr;
-	 typedef DBFL2dll_t * DBFL2dll_ptr;
-	 typedef DDDPdll_t * DDDPdll_ptr;
-	 typedef DDDTdll_t * DDDTdll_ptr;
-	 typedef DEFLSHdll_t * DEFLSHdll_ptr;
-	 typedef DHD1dll_t * DHD1dll_ptr;
-	 typedef DHFLSHdll_t * DHFLSHdll_ptr;
-	 typedef DHFL1dll_t * DHFL1dll_ptr;
-	 typedef DHFL2dll_t * DHFL2dll_ptr;
-	 typedef DIELECdll_t * DIELECdll_ptr;
-	 typedef DOTFILLdll_t * DOTFILLdll_ptr;
-	 typedef DPDD2dll_t * DPDD2dll_ptr;
-	 typedef DPDDKdll_t * DPDDKdll_ptr;
-	 typedef DPDDdll_t * DPDDdll_ptr;
-	 typedef DPDTKdll_t * DPDTKdll_ptr;
-	 typedef DPDTdll_t * DPDTdll_ptr;
-	 typedef DPTSATKdll_t * DPTSATKdll_ptr;
-	 typedef DSFLSHdll_t * DSFLSHdll_ptr;
-	 typedef DSFL1dll_t * DSFL1dll_ptr;
-	 typedef DSFL2dll_t * DSFL2dll_ptr;
-	 typedef ENTHALdll_t * ENTHALdll_ptr;
-	 typedef ENTROdll_t * ENTROdll_ptr;
-	 typedef ESFLSHdll_t * ESFLSHdll_ptr;
-	 typedef FGCTYdll_t * FGCTYdll_ptr;
-	 typedef FPVdll_t * FPVdll_ptr;
-	 typedef GERG04dll_t * GERG04dll_ptr;
-	 typedef GETFIJdll_t * GETFIJdll_ptr;
-	 typedef GETKTVdll_t * GETKTVdll_ptr;
-	 typedef GIBBSdll_t * GIBBSdll_ptr;
-	 typedef HSFLSHdll_t * HSFLSHdll_ptr;
-	 typedef INFOdll_t * INFOdll_ptr;
-	 typedef LIMITKdll_t * LIMITKdll_ptr;
-	 typedef LIMITSdll_t * LIMITSdll_ptr;
-	 typedef LIMITXdll_t * LIMITXdll_ptr;
-	 typedef MELTPdll_t * MELTPdll_ptr;
-	 typedef MELTTdll_t * MELTTdll_ptr;
-	 typedef MLTH2Odll_t * MLTH2Odll_ptr;
-	 typedef NAMEdll_t * NAMEdll_ptr;
-	 typedef PDFL1dll_t * PDFL1dll_ptr;
-	 typedef PDFLSHdll_t * PDFLSHdll_ptr;
-	 typedef PEFLSHdll_t * PEFLSHdll_ptr;
-	 typedef PHFL1dll_t * PHFL1dll_ptr;
-	 typedef PHFLSHdll_t * PHFLSHdll_ptr;
-	 typedef PQFLSHdll_t * PQFLSHdll_ptr;
-	 typedef PREOSdll_t * PREOSdll_ptr;
-	 typedef PRESSdll_t * PRESSdll_ptr;
-	 typedef PSFL1dll_t * PSFL1dll_ptr;
-	 typedef PSFLSHdll_t * PSFLSHdll_ptr;
-	 typedef PUREFLDdll_t * PUREFLDdll_ptr;
-	 typedef QMASSdll_t * QMASSdll_ptr;
-	 typedef QMOLEdll_t * QMOLEdll_ptr;
-	 typedef SATDdll_t * SATDdll_ptr;
-	 typedef SATEdll_t * SATEdll_ptr;
-	 typedef SATHdll_t * SATHdll_ptr;
-	 typedef SATPdll_t * SATPdll_ptr;
-	 typedef SATSdll_t * SATSdll_ptr;
-	 typedef SATTdll_t * SATTdll_ptr;
-	 typedef SETAGAdll_t * SETAGAdll_ptr;
-	 typedef SETKTVdll_t * SETKTVdll_ptr;
-	 typedef SETMIXdll_t * SETMIXdll_ptr;
-	 typedef SETMODdll_t * SETMODdll_ptr;
-	 typedef SETREFdll_t * SETREFdll_ptr;
-	 typedef SETUPdll_t * SETUPdll_ptr;
-	 typedef SPECGRdll_t * SPECGRdll_ptr;
-	 typedef SUBLPdll_t * SUBLPdll_ptr;
-	 typedef SUBLTdll_t * SUBLTdll_ptr;
-	 typedef SURFTdll_t * SURFTdll_ptr;
-	 typedef SURTENdll_t * SURTENdll_ptr;
-	 typedef TDFLSHdll_t * TDFLSHdll_ptr;
-	 typedef TEFLSHdll_t * TEFLSHdll_ptr;
-	 typedef THERM0dll_t * THERM0dll_ptr;
-	 typedef THERM2dll_t * THERM2dll_ptr;
-	 typedef THERM3dll_t * THERM3dll_ptr;
-	 typedef THERMdll_t * THERMdll_ptr;
-	 typedef THFLSHdll_t * THFLSHdll_ptr;
-	 typedef TPFLSHdll_t * TPFLSHdll_ptr;
-	 typedef TPFL2dll_t * TPFL2dll_ptr;
-	 typedef TPRHOdll_t * TPRHOdll_ptr;
-	 typedef TQFLSHdll_t * TQFLSHdll_ptr;
-	 typedef TRNPRPdll_t * TRNPRPdll_ptr;
-	 typedef TSFLSHdll_t * TSFLSHdll_ptr;
-	 typedef VIRBdll_t * VIRBdll_ptr;
-	 typedef VIRCdll_t * VIRCdll_ptr;
-	 typedef WMOLdll_t * WMOLdll_ptr;
-	 typedef XMASSdll_t * XMASSdll_ptr;
-	 typedef XMOLEdll_t * XMOLEdll_ptr;
-
-
-	#ifdef __cplusplus
-	} // extern "C"
-	#endif
-
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-// routines used in henning francke's wrapper
-// setup, wmol, tpflsh, phflsh, PDFL1, PDFLSH, PSFLSH, PQFLSH, THFLSH,
-// TDFLSH, TSFLSH, TQFLSH, DHFLSH, HSFLSH, DSFLSH, TRNPRP, SATT, SATP, SATD
-// TPFL2, DHFL1, DHFL2, DSFL1, DSFL2
-//
-////Define explicit function pointers
-//fp_RPVersion RPVersion;
-//fp_SETPATHdll SETPATHdll;
-////Define explicit function pointers
-//fp_ABFL1dll ABFL1dll;
-//fp_ABFL2dll ABFL2dll;
-//fp_ACTVYdll ACTVYdll;
-//fp_AGdll AGdll;
-//fp_CCRITdll CCRITdll;
-//fp_CP0dll CP0dll;
-//fp_CRITPdll CRITPdll;
-//fp_CSATKdll CSATKdll;
-//fp_CV2PKdll CV2PKdll;
-//fp_CVCPKdll CVCPKdll;
-//fp_CVCPdll CVCPdll;
-//fp_DBDTdll DBDTdll;
-//fp_DBFL1dll DBFL1dll;
-//fp_DBFL2dll DBFL2dll;
-//fp_DDDPdll DDDPdll;
-//fp_DDDTdll DDDTdll;
-//fp_DEFLSHdll DEFLSHdll;
-//fp_DHD1dll DHD1dll;
-//fp_DHFLSHdll DHFLSHdll;
-//fp_DHFL1dll DHFL1dll;
-//fp_DHFL2dll DHFL2dll;
-//fp_DIELECdll DIELECdll;
-//fp_DOTFILLdll DOTFILLdll;
-//fp_DPDD2dll DPDD2dll;
-//fp_DPDDKdll DPDDKdll;
-//fp_DPDDdll DPDDdll;
-//fp_DPDTKdll DPDTKdll;
-//fp_DPDTdll DPDTdll;
-//fp_DPTSATKdll DPTSATKdll;
-//fp_DSFLSHdll DSFLSHdll;
-//fp_DSFL1dll DSFL1dll;
-//fp_DSFL2dll DSFL2dll;
-//fp_ENTHALdll ENTHALdll;
-//fp_ENTROdll ENTROdll;
-//fp_ESFLSHdll ESFLSHdll;
-//fp_FGCTYdll FGCTYdll;
-//fp_FPVdll FPVdll;
-//fp_GERG04dll GERG04dll;
-//fp_GETFIJdll GETFIJdll;
-//fp_GETKTVdll GETKTVdll;
-//fp_GIBBSdll GIBBSdll;
-//fp_HSFLSHdll HSFLSHdll;
-//fp_INFOdll INFOdll;
-//fp_LIMITKdll LIMITKdll;
-//fp_LIMITSdll LIMITSdll;
-//fp_LIMITXdll LIMITXdll;
-//fp_MELTPdll MELTPdll;
-//fp_MELTTdll MELTTdll;
-//fp_MLTH2Odll MLTH2Odll;
-//fp_NAMEdll NAMEdll;
-//fp_PDFL1dll PDFL1dll;
-//fp_PDFLSHdll PDFLSHdll;
-//fp_PEFLSHdll PEFLSHdll;
-//fp_PHFL1dll PHFL1dll;
-//fp_PHFLSHdll PHFLSHdll;
-//fp_PQFLSHdll PQFLSHdll;
-//fp_PREOSdll PREOSdll;
-//fp_PRESSdll PRESSdll;
-//fp_PSFL1dll PSFL1dll;
-//fp_PSFLSHdll PSFLSHdll;
-//fp_PUREFLDdll PUREFLDdll;
-//fp_QMASSdll QMASSdll;
-//fp_QMOLEdll QMOLEdll;
-//fp_SATDdll SATDdll;
-//fp_SATEdll SATEdll;
-//fp_SATHdll SATHdll;
-//fp_SATPdll SATPdll;
-//fp_SATSdll SATSdll;
-//fp_SATTdll SATTdll;
-//fp_SETAGAdll SETAGAdll;
-//fp_SETKTVdll SETKTVdll;
-//fp_SETMIXdll SETMIXdll;
-//fp_SETMODdll SETMODdll;
-//fp_SETREFdll SETREFdll;
-//fp_SETUPdll SETUPdll;
-//fp_SPECGRdll SPECGRdll;
-//fp_SUBLPdll SUBLPdll;
-//fp_SUBLTdll SUBLTdll;
-//fp_SURFTdll SURFTdll;
-//fp_SURTENdll SURTENdll;
-//fp_TDFLSHdll TDFLSHdll;
-//fp_TEFLSHdll TEFLSHdll;
-//fp_THERM0dll THERM0dll;
-//fp_THERM2dll THERM2dll;
-//fp_THERM3dll THERM3dll;
-//fp_THERMdll THERMdll;
-//fp_THFLSHdll THFLSHdll;
-//fp_TPFLSHdll TPFLSHdll;
-//fp_TPFL2dll TPFL2dll;
-//fp_TPRHOdll TPRHOdll;
-//fp_TQFLSHdll TQFLSHdll;
-//fp_TRNPRPdll TRNPRPdll;
-//fp_TSFLSHdll TSFLSHdll;
-//fp_VIRBdll VIRBdll;
-//fp_VIRCdll VIRCdll;
-//fp_WMOLdll WMOLdll;
-//fp_XMASSdll XMASSdll;
-//fp_XMOLEdll XMOLEdll;
-
-//#ifdef __cplusplus
-//} // extern "C"
-//#endif
-
-
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-//	// extra function for setup
-//	void RPVersion ( char* );
-//	void SETPATHdll( const char* );
-//	//
-//	void ABFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void ABFL2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void ACTVYdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void AGdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void CCRITdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void CP0dll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void CRITPdll(DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void CSATKdll(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void CV2PKdll(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void CVCPKdll(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void CVCPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void DBDTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DBFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DBFL2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DDDPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DDDTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DEFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DHD1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void DHFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-//	void DHFL2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-//	void DHFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DIELECdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DOTFILLdll(INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DPDD2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DPDDKdll(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void DPDDdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DPDTKdll(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void DPDTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void DPTSATKdll(INTEGER &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DSFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void DSFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-//	void DSFL2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-//	void ENTHALdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void ENTROdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void ESFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void FGCTYdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *);
-//	void FPVdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void GERG04dll(INTEGER &,INTEGER &,INTEGER &,char*,INTEGER );
-//	void GETFIJdll(char*,DOUBLE_PRECISION *,char*,char*,INTEGER ,INTEGER ,INTEGER );
-//	void GETKTVdll(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,char*,char*,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-//	void GIBBSdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void HSFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void INFOdll(INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void LIMITKdll(char*,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-//	void LIMITSdll(char*,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER );
-//	void LIMITXdll(char*,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-//	void MELTPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void MELTTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void MLTH2Odll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void NAMEdll(INTEGER &,char*,char*,char*,INTEGER ,INTEGER ,INTEGER );
-//	void PDFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PDFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PEFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PHFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PHFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PQFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PREOSdll(INTEGER &);
-//	void PRESSdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void PSFL1dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PSFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void PUREFLDdll(INTEGER &);
-//	void QMASSdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void QMOLEdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SATDdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-//	void SATEdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SATHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SATPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-//	void SATSdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SATTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER );
-//	void SETAGAdll(INTEGER &,char*,INTEGER );
-//	void SETKTVdll(INTEGER &,INTEGER &,char*,DOUBLE_PRECISION *,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER );
-//	void SETMIXdll(char*,char*,char*,INTEGER &,char*,DOUBLE_PRECISION *,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-//	void SETMODdll(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-//	void SETREFdll(char*,INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
-//	//void SETUPdll(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
-//	void SETUPdll(INTEGER &,char*,char*,char*,INTEGER &,char*);
-//	void SPECGRdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void SUBLPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SUBLTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SURFTdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void SURTENdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TDFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TEFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void THERM0dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void THERM2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void THERM3dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void THERMdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
-//	void THFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TPFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TPFL2dll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );//added by henning francke
-//	void TPRHOdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,INTEGER &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TQFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TRNPRPdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void TSFLSHdll(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,INTEGER &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
-//	void VIRBdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void VIRCdll(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void WMOLdll(DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void XMASSdll(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//	void XMOLEdll(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-//#ifdef __cplusplus
-//} // extern "C"
-//#endif
+#ifdef __cplusplus
+} // extern "C"
+#endif
 // REFPROP_H
 #endif
-// routines used in henning francke's wrapper
-// setup, wmol, tpflsh, phflsh, PDFL1, PDFLSH, PSFLSH, PQFLSH, THFLSH,
-// TDFLSH, TSFLSH, TQFLSH, DHFLSH, HSFLSH, DSFLSH, TRNPRP, SATT, SATP, SATD
-// TPFL2, DHFL1, DHFL2, DSFL1, DSFL2
-//
+
