@@ -14,9 +14,11 @@
 # ============================================================================
 
 # used for the output
-THENAME    =refprop
-THEWRAPPER =refprop_wrapper
-THETEST    =refpropwrappertest
+THENAME          =refprop
+THEWRAPPER       =refprop_wrapper
+THETEST          =refpropwrappertest
+LIBRARYEXTENSION =$(DYNAMICLIBRARYEXTENSION)
+WRAPPEREXTENSION =$(DYNAMICLIBRARYEXTENSION)
 
 ###########################################################
 #  Setting the directories for library, header and 
@@ -94,44 +96,44 @@ install    : installlib installwrap
 .PHONY     : installlib
 installlib : libheader library
 	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	ln -sf $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
-	ln -sf $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/$(LIBRARY)$(LIBRARYEXTENSION) /usr/lib/$(LIBRARY)$(LIBRARYEXTENSION)
 	
 .PHONY     : installwrap
 installwrap: wrapheader wrapper
 	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) $(HEADINST)/$(THEWRAPPER)$(HEADEREXTENSION)
-	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(WRAPPEREXTENSION) $(LIBINST)/lib$(THEWRAPPER)$(WRAPPEREXTENSION)
 	ln -sf $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) /usr/include/$(THEWRAPPER)$(HEADEREXTENSION)
-	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBDIR)/lib$(THEWRAPPER)$(WRAPPEREXTENSION) /usr/lib/lib$(THEWRAPPER)$(WRAPPEREXTENSION)
 	
 .PHONY     : uninstall
 uninstall  : 
 	$(RM) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(RM) $(LIBINST)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(RM) /usr/include/$(HEADERFILE)$(HEADEREXTENSION)
-	$(RM) /usr/lib/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) /usr/lib/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(RM) $(HEADINST)/$(THEWRAPPER)$(HEADEREXTENSION)
-	$(RM) $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBINST)/lib$(THEWRAPPER)$(WRAPPEREXTENSION)
 	$(RM) /usr/include/$(THEWRAPPER)$(HEADEREXTENSION)
-	$(RM) /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) /usr/lib/lib$(THEWRAPPER)$(WRAPPEREXTENSION)
 	
 .PHONY     : purge
 purge      : cleanlib
 	$(RM) $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(RM) $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBDIR)/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(RM) $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION) 
-	$(RM) $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBDIR)/lib$(THEWRAPPER)$(WRAPPEREXTENSION)
 	
 .PHONY     : fixit
 fixit      : install
-	ln -sf $(LIBINST)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(LIBINST)/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
-	ln -sf /usr/lib/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) /usr/lib/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+	ln -sf $(LIBINST)/lib$(THEWRAPPER)$(WRAPPEREXTENSION) $(LIBINST)/libREFPROP_wrapper$(WRAPPEREXTENSION)
+	ln -sf /usr/lib/lib$(THEWRAPPER)$(WRAPPEREXTENSION) /usr/lib/libREFPROP_wrapper$(WRAPPEREXTENSION)
 
 .PHONY     : unfixit
 unfixit    : 
-	$(RM) $(LIBINST)/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
-	$(RM) /usr/lib/libREFPROP_wrapper$(DYNAMICLIBRARYEXTENSION)
+	$(RM) $(LIBINST)/libREFPROP_wrapper$(WRAPPEREXTENSION)
+	$(RM) /usr/lib/libREFPROP_wrapper$(WRAPPEREXTENSION)
 
 .PHONY     : removeall
 removeall  : uninstall purge unfixit
@@ -153,19 +155,24 @@ $(LIBDIR)/$(THEWRAPPER)$(HEADEREXTENSION): $(THEWRAPPER)$(HEADEREXTENSION)
 	cp $(THEWRAPPER)$(HEADEREXTENSION) $(LIBDIR)
 	
 .PHONY     : wrapper
-wrapper    : $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) 
-$(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION): $(THEWRAPPER).o wrapheader libheader library
-	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).o -l$(THENAME) -lPocoFoundation
+wrapper    : poco 
+#wrapper    : $(LIBDIR)/lib$(THEWRAPPER)$(WRAPPEREXTENSION) 
+
+.PHONY     : nopoco
+nopoco     : $(THEWRAPPER).o wrapheader libheader library
+	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).org.o -l$(THENAME) -lPocoFoundation
+
+.PHONY     : poco
+poco       : $(THEWRAPPER).poco.o wrapheader libheader library
+	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/lib$(THEWRAPPER)$(DYNAMICLIBRARYEXTENSION) $(THEWRAPPER).poco.o -l$(THENAME) -lPocoFoundation
 	
-#.PHONY     : wrapper
-#wrapper    : $(LIBDIR)/lib$(THEWRAPPER)$(STATICLIBRARYEXTENSION) 
-#$(LIBDIR)/lib$(THEWRAPPER)$(STATICLIBRARYEXTENSION): $(THEWRAPPER).o wrapheader libheader library
-#	ar -cvq $(LIBDIR)/lib$(THEWRAPPER)$(STATICLIBRARYEXTENSION) $(THEWRAPPER).o 
+#$(LIBDIR)/lib$(THEWRAPPER)$(STATICLIBRARYEXTENSION): $(THEWRAPPER).o wrapheader libheader 
+#	ar -cvq $(LIBDIR)/lib$(THEWRAPPER)$(STATICLIBRARYEXTENSION) $(THEWRAPPER).o src/$(LIBFILE).o $(LIBOBJECTFILES)
 	
 .PHONY     : test
 test       : $(THETEST)
 $(THETEST) : $(THETEST).o wrapheader wrapper 
-	$(FC) $(FLINKFLAGS) -o $(THETEST) $(THETEST).o -l$(THEWRAPPER)
+	$(FC) $(FLINKFLAGS) -o $(THETEST) $(THETEST).o -l$(THEWRAPPER) -lPocoFoundation
 
 ###########################################################
 #  Compile the Fortran sources into a library file that can 
@@ -177,7 +184,8 @@ $(LIBDIR)/$(HEADERFILE)$(HEADEREXTENSION): src/$(HEADERFILE)$(HEADEREXTENSION)
 	cp src/$(HEADERFILE)$(HEADEREXTENSION) $(LIBDIR)
 
 .PHONY     : library
-library    : $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) 
+library    : $(LIBDIR)/$(LIBRARY)$(LIBRARYEXTENSION) 
+
 $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION): src/$(LIBFILE).o $(LIBOBJECTFILES)
 	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) src/$(LIBFILE).o $(LIBOBJECTFILES)
 	
@@ -227,7 +235,7 @@ $(BINDIR)/RP-ftn : src/refprop-ftn.cpp libheader library
 
 .PHONY     : f2f
 f2f        : $(BINDIR)/f2f
-$(BINDIR)/f2f    : example/ex-mix.for $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
+$(BINDIR)/f2f    : example/ex-mix.for $(LIBDIR)/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(FC) $(FFLAGS) -o example/ex-mix.o -c example/ex-mix.for
 	$(FC) $(FLINKFLAGS) -o $(BINDIR)/f2f example/ex-mix.o $(LIBDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION)
 

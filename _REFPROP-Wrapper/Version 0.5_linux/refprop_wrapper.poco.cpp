@@ -45,6 +45,7 @@
 #include "Poco/Path.h"
 #include "Poco/File.h"
 #include "Poco/Environment.h"
+#include "Poco/StringTokenizer.h"
 #include "Poco/String.h"
 
 // Some constants...
@@ -56,6 +57,7 @@ const long ncmax=20;		// Note: ncmax is the max number of components
 
 //Poco::SharedLibrary RefpropdllInstance;
 char loadedfluids[refpropcharlength];
+char loadedpath[filepathlength];
 
 ////  Define the functions either by their pointers or type.
 //WMOLdll_POINTER WMOLdll;
@@ -83,20 +85,26 @@ char loadedfluids[refpropcharlength];
 //SATPdll_POINTER SATPdll;
 //SATDdll_POINTER SATDdll;
 
-
-char *str_replace(char *str, char *search, char *replace, long *count) {
+//str_replace    (fluidnames,          "|",       replace,          nX)
+char *str_replace(char *str,  char *search, char *replace, long *count) {
   int i,n_ret;
   int newlen = strlen(replace);
   int oldlen = strlen(search);
   char *ret;
   *count = 0;
- 
+
  //count occurrences of searchstring
   for (i = 0; oldlen && str[i]; ++i)
     if (strstr(&str[i], search) == &str[i]){ // if walk through is at searchstr
       ++*count, i+=oldlen - 1;
 	  }
-	ret  = (char *) calloc(n_ret = (strlen(str) + 1 + *count * (newlen - oldlen)), sizeof(char));
+  ret  = (char *) calloc(n_ret = (strlen(str) + 1 + *count * (newlen - oldlen)), sizeof(char));
+//  std::string stri (&str);
+//  std::string sear (&search);
+//  Poco::StringTokenizer StrTok(stri,sear,Poco::StringTokenizer::TOK_TRIM);
+//  *count = StrTok.count();
+//  ret  = (char *) calloc(n_ret = (strlen(str) + 1 + *count * (newlen - oldlen)), sizeof(char));
+
   if (!ret){
 	printf("Could not allocate memory");
 	return "";
@@ -118,75 +126,139 @@ char *str_replace(char *str, char *search, char *replace, long *count) {
 	}
 	return ret;
 }
+//char *str_replace(char *str,  char *search, char *replace, long *count) {
+//  int i,n_ret;
+//  int newlen = strlen(replace);
+//  int oldlen = strlen(search);
+//  char *ret;
+//  *count = 0;
+//
+// //count occurrences of searchstring
+//  for (i = 0; oldlen && str[i]; ++i)
+//    if (strstr(&str[i], search) == &str[i]){ // if walk through is at searchstr
+//      ++*count, i+=oldlen - 1;
+//	  }
+//	ret  = (char *) calloc(n_ret = (strlen(str) + 1 + *count * (newlen - oldlen)), sizeof(char));
+//  if (!ret){
+//	printf("Could not allocate memory");
+//	return "";
+//	}
+//
+//	if (!*count){
+//		strncpy(ret,str,n_ret);
+//		//if (DEBUGMODE) printf("RET: %i %s\n",oldlen,str);
+//	}else{
+//		i = 0;
+//		while (*str)
+//		if (strstr(str, search) == str)
+//		  strncpy(&ret[i], replace,n_ret-i-1),
+//		  i += newlen,
+//		  str += oldlen;
+//		else
+//		  ret[i++] = *str++;
+//	  ret[i] = '\0';
+//	}
+//	return ret;
+//}
 
-int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, char* errormsg, int DEBUGMODE){
+int init_REFPROP(char* fluidnames, char* REFPROP_PATH_CHAR, long* nX, char* herr, char* errormsg, int DEBUGMODE){
 // Sets up the interface to the REFPROP.DLL
 // is called by props_REFPROP and satprops_REFPROP
 //	char DLL_PATH[filepathlength], FLD_PATH[filepathlength];
 
 	long ierr=0;
+//	DEBUGMODE = 1;
 
-	if (strlen(REFPROP_PATH)>filepathlength){
-		sprintf(errormsg,"REFPROP_PATH too long (%i > %i)\n",strlen(REFPROP_PATH),filepathlength);
+	if (strlen(REFPROP_PATH_CHAR)>filepathlength){
+		sprintf(errormsg,"REFPROP_PATH_CHAR too long (%i > %i)\n",strlen(REFPROP_PATH_CHAR),filepathlength);
 		return 0;
 	}
+	// Define temporary objects for checks.
+	char REF_PATH_CHAR[filepathlength];
+	Poco::Path REF_PATH(true);
+	char FLUIDS_CHAR[filepathlength] = "fluids";
+	Poco::Path FLD_PATH(true);
+	char LIBRARY_CHAR[filepathlength];
+	Poco::Path LIB_PATH(true);
+	Poco::File theFile;
 
-	char* REFPROP_PATH_CHAR = REFPROP_PATH;
-	char* FLUIDS_CHAR = "fluids";
-	char* LIBRARY_CHAR;
-
-
-	Poco::Path REF_PATH(true),FLD_PATH(true),LIB_PATH(true); // all paths will be absolute
-
+	// Parse the string and append a path separator if necessary.
 	REF_PATH.parse(REFPROP_PATH_CHAR, Poco::Path::PATH_NATIVE);
 	if (!REF_PATH.isDirectory()) REF_PATH.append(REF_PATH.separator());
-	Poco::File theFile(REF_PATH);
-	if ( !theFile.isDirectory() || !theFile.canRead() ){
+	// Overwrite the provided path
+	strcpy(REF_PATH_CHAR,REF_PATH.toString().c_str());
+
+	// Check the path if running in debugmode
+	if (DEBUGMODE) {
+	  theFile = Poco::File(REF_PATH);
+	  if ( !theFile.isDirectory() || !theFile.canRead() ){
 		sprintf (errormsg,"REF_PATH is not a readable directory: %s \n", REF_PATH.toString().c_str());
 		return 0;
+	  }
 	}
 
-	FLD_PATH.parse(REF_PATH.toString());
+	// The fluid files are in the Refprop directory, append "fluids".
+	FLD_PATH.parse(REF_PATH_CHAR);
 	FLD_PATH.pushDirectory(FLUIDS_CHAR);
 
-	LIB_PATH.parse(REF_PATH.toString());
-	bool is_linux = ( 0 == Poco::icompare(Poco::Environment::osName(), "linux") );
-	if (is_linux){
-		LIBRARY_CHAR = "librefprop.so";
+	if (DEBUGMODE) {
+		// Determine which library file should be loaded
+		bool is_linux = ( 0 == Poco::icompare(Poco::Environment::osName(), "linux") );
+		if (is_linux){
+			strcpy(LIBRARY_CHAR,"librefprop.so");
+		} else {
+			strcpy(LIBRARY_CHAR,"refprop.dll");
+		}
+		std::string path(REF_PATH_CHAR); // This is not fail-safe, the OS might look somewhere else, e.g. /usr/lib ...
+		//std::string path(Poco::Environment::get("PATH"));
+		bool found_lib = Poco::Path::find(path, LIBRARY_CHAR, LIB_PATH);
+		if (found_lib) {
+			printf ("Found library %s in path %s \n", LIBRARY_CHAR, path.c_str());
+		} else {
+			printf ("Cannot find library %s in path %s \n", LIBRARY_CHAR, path.c_str());
+		}
 	} else {
-		LIBRARY_CHAR = "refprop.dll";
+		LIB_PATH.parse(REF_PATH_CHAR);
 	}
-	LIB_PATH.setFileName(LIBRARY_CHAR);
 
-	if (DEBUGMODE) printf ("Comparison of fluids : %i \n", strcmp(fluidnames,loadedfluids) );
-//	if (DEBUGMODE) printf ("Comparison of library: %i \n", LIB_PATH.toString().compare(RefpropdllInstance.getPath()) );
+	// Check for new fluids and if the library has to be loaded again.
+	if (DEBUGMODE) printf ("Comparison of fluids : %i \n", strcmp(fluidnames,loadedfluids)  );
+	if (DEBUGMODE) printf ("Comparison of path   : %i \n", strcmp(REF_PATH_CHAR,loadedpath) );
+	if (DEBUGMODE) printf ("Checking setup       : %s and %s \n\n", REF_PATH_CHAR,loadedpath  );
+
 //	if (strcmp(fluidnames,loadedfluids)==0) {
-////	if ( LIB_PATH.toString().compare(RefpropdllInstance.getPath())==0  ) {
-////		sprintf(errormsg,"Library is already loaded: %s \n",LIB_PATH.toString().c_str());
-//		if (DEBUGMODE) printf ("Returning: %s and %s \n", RefpropdllInstance.getPath().c_str(),fluidnames );
+//	  if ( strcmp(REF_PATH_CHAR,loadedpath)==0  ) {
+//		sprintf(errormsg,"Library is already loaded: %s \n",LIB_PATH.toString().c_str());
+//		if (DEBUGMODE) printf ("No setup needed: %s and %s \n", REF_PATH_CHAR,loadedpath );
 //		return 0;
-////	}
+//	  }
 //    }
+
+	strcpy(loadedpath,REF_PATH_CHAR);
 
 	if (DEBUGMODE) {
 	  printf ("REF_PATH as string: %s \n", REF_PATH.toString().c_str());
 	  printf ("FLD_PATH as string: %s \n", FLD_PATH.toString().c_str());
 	  printf ("LIB_PATH as string: %s \n", LIB_PATH.toString().c_str());
-	  printf ("Running on: %s \n", Poco::Environment::osName().c_str());
+	  printf ("Running OS family : %s \n\n", Poco::Environment::osName().c_str());
 	}
 
-	theFile = Poco::File(LIB_PATH);
-	if ( !theFile.isFile() || !theFile.canExecute() ){
-		sprintf (errormsg,"LIB_PATH is not an executable file: %s \n", LIB_PATH.toString().c_str());
-		return 0;
+	if (DEBUGMODE) {
+		theFile = Poco::File(LIB_PATH);
+		if ( !theFile.isFile() || !theFile.canExecute() ){
+			sprintf (errormsg,"LIB_PATH is not an executable file: %s \n", LIB_PATH.toString().c_str());
+			return 0;
+		}
 	}
 	char LIB_PATH_CHAR[filepathlength];
 	strcpy(LIB_PATH_CHAR,LIB_PATH.toString().c_str());
 
+	if (DEBUGMODE) {
 	theFile = Poco::File(FLD_PATH);
 	if ( !theFile.isDirectory() || !theFile.canRead() ){
 		sprintf (errormsg,"FLD_PATH is not a readable directory: %s \n", FLD_PATH.toString().c_str());
 		return 0;
+	}
 	}
 	char FLD_PATH_CHAR[filepathlength];
 	strcpy(FLD_PATH_CHAR,FLD_PATH.toString().c_str());
@@ -212,7 +284,6 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, cha
     char hrf[lengthofreference+1],hfmix[filepathlength+1+7];
 	char *hf;
 
-	strcpy(loadedfluids,fluidnames);
 	//parse fluid composition string and insert absolute paths
 	char replace[filepathlength+6];
 	strcpy(replace,".FLD|");
@@ -239,6 +310,7 @@ int init_REFPROP(char* fluidnames, char* REFPROP_PATH, long* nX, char* herr, cha
 //	SETUPdll_TYPE   * SETUPdll   = (SETUPdll_TYPE *  ) RefpropdllInstance.getSymbol(SETUPdll_NAME);
 	if (DEBUGMODE) printf("Running SETUPdll...\n");
 	SETUPdll(*nX, hf, hfmix, hrf, ierr, herr);
+	strcpy(loadedfluids,fluidnames);
 	if (DEBUGMODE) printf("SETUPdll run complete (Error no: %i)\n",ierr);
 
 //	WMOLdll = (WMOLdll_POINTER) RefpropdllInstance.getSymbol(WMOLdll_NAME);
@@ -337,6 +409,8 @@ OUTPUT
 //    HINSTANCE RefpropdllInstance;// Then have windows load the library.
 //    Poco::SharedLibrary RefpropdllInstance("");
 
+//    DEBUGMODE = 1;
+
 	if (DEBUGMODE) printf("\nStarting function props_REFPROP to calc %c...\n", what[0]);
 
 	//initialize interface to REFPROP.dll
@@ -420,12 +494,12 @@ OUTPUT
 				TPFLSHdll(T,p,x,d,dl,dv,xliq,xvap,q,e,h,s,cv,cp,w,ierr,herr,errormessagelength);
 			}
 		}else if (strcmp(statevars,"ph")==0 || strcmp(statevars,"hp")==0){
-/*			if (phase==1){ //fluid state is known to be single phase
-				PHFL1dll = (fp_PHFL1dllTYPE) GetProcAddress(RefpropdllInstance,"PHFL1dll");
-				PHFL1dll(p,h,x,liqvap,T,d,ierr,herr,errormessagelength);
-				if (liqvap==1) dl=d; else dv=d;
-			}else{*/
-//				PHFLSHdll = (fp_PHFLSHdllTYPE) GetProcAddress(RefpropdllInstance,"PHFLSHdll");
+//			if (phase==1){ //fluid state is known to be single phase
+////				PHFL1dll = (fp_PHFL1dllTYPE) GetProcAddress(RefpropdllInstance,"PHFL1dll");
+//				PHFL1dll(p,h,x,liqvap,T,d,ierr,herr,errormessagelength);
+////				if (liqvap==1) dl=d; else dv=d;
+//			}else{
+////				PHFLSHdll = (fp_PHFLSHdllTYPE) GetProcAddress(RefpropdllInstance,"PHFLSHdll");
 				PHFLSHdll(p,h,x,T,d,dl,dv,xliq,xvap,q,e,s,cv,cp,w,ierr,herr,errormessagelength);
 //			}
 		}else if (strcmp(statevars,"pd")==0 || strcmp(statevars,"dp")==0){
@@ -588,6 +662,7 @@ OUTPUT
 			break;
 		case 211:
 			sprintf(errormsg,"TPFLSH bubble point calculation did not converge: [SATTP error 1] iteration failed to converge");
+			break;
 		case 239:
 			sprintf(errormsg,"THFLSH error: Input value of enthalpy (%f) is outside limits",h);
 			break;
@@ -706,6 +781,7 @@ OUTPUT
 //    void* RefpropdllInstance;
 //    Poco::SharedLibrary RefpropdllInstance("");
 
+//  DEBUGMODE = 1;
 
 	if (DEBUGMODE)  printf("\nStarting function satprops_REFPROP...\n");
 
