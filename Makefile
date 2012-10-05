@@ -13,7 +13,8 @@
 # ============================================================================
 # general commands:
 RM = rm -f
-CP = cp -v 
+CP = cp 
+CH = chmod 0644 
 
 # used for the output
 THENAME          =refprop
@@ -25,18 +26,19 @@ LIBRARYEXTENSION =$(DYNAMICLIBRARYEXTENSION)
 ###########################################################
 LIBDIR     =./fortran
 SRCDIR     =./src
-LIBINST    =/usr/local/lib
-HEADINST   =/usr/local/include
+LIBINST    =/usr/lib
+HEADINST   =/usr/include
 BINDIR     =./bin
 
-OPTFLAGS   = -O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
+LIBS       =-l$(THENAME) -lPocoFoundation
+OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 #  Change these lines if you are using a different Fortran 
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
 FFLAGS     =$(OPTFLAGS) -Wall -pedantic# -ff2c  -fbounds-check
-FLINKFLAGS =$(FFLAGS) -l$(THENAME) -lPocoFoundation
+FLINKFLAGS =$(FFLAGS) $(LIBS)
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
@@ -90,9 +92,11 @@ LIBOBJECTFILES = \
 #  Copy files to places recognised by the system.
 ###########################################################
 .PHONY     : install
-installlib : header library
+install    : header library
 	$(CP) $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
 	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(CH) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
+	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 
 .PHONY     : uninstall
 uninstall  : 
@@ -134,7 +138,7 @@ $(SRCDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -o $(SRCDIR)/$*.o -c $<
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.FOR
-	$(FC) $(FFLAGS) -o $*.o -c $<
+	$(FC) $(FFLAGS) -o $(LIBDIR)/$*.o -c $<
 
 .PHONY: clean
 clean:
@@ -154,8 +158,8 @@ $(BINDIR)/ex_mix_c   : $(SRCDIR)/ex_mix.c
 .PHONY               : cpptest
 cpptest              : $(BINDIR)/ex_mix_cpp
 $(BINDIR)/ex_mix_cpp : $(SRCDIR)/ex_mix.cpp
-	$(FC) $(FFLAGS) -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.cpp
-	$(FC) $(FLINKFLAGS) -o $(BINDIR)/ex_mix_cpp $(SRCDIR)/ex_mix.o
+	$(CPPC) $(CPPFLAGS) -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.cpp
+	$(CPPC) $(CPPFLAGS) -o $(BINDIR)/ex_mix_cpp $(SRCDIR)/ex_mix.o $(LIBS)
 
 .PHONY               : fortest
 fortest              : $(BINDIR)/ex_mix_for
