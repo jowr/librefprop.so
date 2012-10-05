@@ -1,27 +1,16 @@
 
-#Welcome to REFPROP2Modelica!
-This piece of software enables the user to access the Refprop fluid property database from within Modelica. The aim is to develop wrapper classes and integrate them with the "Media" framework inside Modelica. It has only been tested with Dymola sofar. 
+#Welcome to librefprop.so!
+These files allow you to access the Refprop fluid property database from Linux software. It anables you to create a shared library from the Fortran sources provided by NIST. This project provides an alternative to the refprop.dll that comes with the software.
 
-Please be aware that you might need a copy of the Poco C++ framework to compile the wrapper files yourself. You can find it at: http://pocoproject.org/. The general idea is to use this framework to implement platform independent library loading and caching, but it is still a long way to go. 
+Please be aware that you might need a copy of the Poco C++ framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/. However, you do not need Poco to compile your own version of the refprop library. 
 
 ## Installation Instructions
+For installing on a Linux machine, please follow the two simple step described below. By default the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your system. 
 
-### Windows
-For Windows, please follow these instructions
-
-1.  After downloading and unzipping rename folder containing these files to "MediaTwoPhaseMixture".
-2.  Copy \_REFPROP-Wrapper\Version x.x\REFPROP_WRAPPER.LIB to %DYMOLADIR%\\BIN\\LIB\ (%DYMOLADIR% is DYMOLA's program directory)
-3.  Copy \_REFPROP-Wrapper\Version x.x\REFPROP_WRAPPER.H to %DYMOLADIR%\\SOURCE\\
-4.  Set the path to the REFPROP program directory with the constant String REFPROP_PATH (at the beginning of the package). Make sure you mask the backslashes. It should look something like: constant String REFPROP_PATH = "C:\\Program Files\\REFPROP\\";
-
-### Linux
-For installing on a Linux machine, please follow the instructions in the Makefile provided in the directory containing the Linux version of the wrapper class. You only have to type in the right directories and install all the compilers / libraries required. 
-
-1.  After downloading and unzipping rename folder containing these files to "MediaTwoPhaseMixture".
-2.  Change the paths in _REFPROP-Wrapper/Version x.x_linux/Makefile to your needs.
-3.  Call "make libheader library" and "sudo make installlib" to compile and install refprop.
-4.  Call "make wrapheader wrapper" and "sudo make installwrap" as well as "sudo make fixit" to compile and install the wrapper.
-5.  Set the path to the REFPROP program directory with the constant String REFPROP_PATH (at the beginning of the package). It should look something like: constant String REFPROP_PATH = "/home/user/Refprop/"; 
+0.  Change the paths in the Makefile, if needed.
+1.  Call "make header library" to prepare the files and finally 
+2.  call "sudo make install" to copy the files to the right directories. 
 
 ## General Remarks
-Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop.
+Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
+
