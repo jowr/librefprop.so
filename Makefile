@@ -13,8 +13,12 @@ RM = rm -f
 CP = cp 
 CH = chmod 0644 
 MK = mkdir -p 
+LD = ldconfig 
+LN = ln -s 
 
 # used for the output
+MAJORVERSION     =9
+MINORVERSION     =0
 THENAME          =refprop
 LIBRARYEXTENSION =$(DYNAMICLIBRARYEXTENSION)
 
@@ -24,8 +28,8 @@ LIBRARYEXTENSION =$(DYNAMICLIBRARYEXTENSION)
 ###########################################################
 LIBDIR     =./fortran
 SRCDIR     =./src
-LIBINST    =/usr/lib
-HEADINST   =/usr/include
+LIBINST    =/usr/local/lib
+HEADINST   =/usr/local/include
 BINDIR     =./bin
 
 LIBS       =-l$(THENAME) -lPocoFoundation
@@ -56,8 +60,8 @@ CFLAGS     =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -
 #  Change these lines if you have other needs regarding
 #  the library file.  
 ###########################################################
-LIBFLAGS                =-rdynamic -fPIC -shared
 LIBRARY                 =lib$(THENAME)
+LIBFLAGS                =-rdynamic -fPIC -shared -Wl,-soname,$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION)
 LIBFILE                 =PASS_FTN_LIN
 DYNAMICLIBRARYEXTENSION =.so
 STATICLIBRARYEXTENSION  =.a
@@ -99,15 +103,18 @@ LIBOBJECTFILES = \
 .PHONY     : install
 install    : header library
 	$(CP) $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(MK) $(HEADINST) $(LIBINST)
 	$(CH) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
+	$(LD) -l $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
+	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(LD) 
 
 .PHONY     : uninstall
 uninstall  : 
 	$(RM) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)*
 
 .PHONY     : all
 all        : header library
@@ -125,7 +132,7 @@ $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION): $(SRCDIR)/$(HEADERFILE)$(HEADEREXTENS
 library    : $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) 
 
 $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION): $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
-	$(FC) $(LIBFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+	$(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 	
 $(SRCDIR)/$(LIBFILE).FOR: $(LIBDIR)/PASS_FTN.FOR
 	sed 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).FOR
@@ -148,7 +155,7 @@ $(LIBDIR)/%.o : $(LIBDIR)/%.FOR
 
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.mod $(BINDIR)/* 
+	$(RM) **.o **.so **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE).FOR
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
