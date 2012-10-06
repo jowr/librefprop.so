@@ -13,7 +13,7 @@ For installation on a Linux machine, please follow the two simple steps describe
 You can remove the files again by calling "make uninstall" (as root user). 
 
 ## Testing the Installation
-Please be aware that you need a copy of the Poco framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/ or check the software package manager of your distribution for it. To run the test written in C++ you have to adjust the path "REFPROP_PATH_CHAR" in "ex_mix.cpp" to point to the directory where you keep the Refprop fluid files. Afterwards you can call "make cpptest" and run the executable with "./bin/ex_mix_cpp </path/to/fluid/files>"
+Please be aware that you need a copy of the Poco framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/ or check the software package manager of your distribution for it. Afterwards you can call "make cpptest" and run the executable with "./bin/ex_mix_cpp </path/to/fluid/files>"
 
 ## General Remarks
 Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
