@@ -1,18 +1,19 @@
 
 #Welcome to librefprop.so!
-These files allow you to access the Refprop fluid property database from Linux software. It anables you to create a shared library from the Fortran sources provided by NIST. This project provides an alternative to the refprop.dll that comes with the software.
-
-Please be aware that you might need a copy of the Poco C++ framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/. However, you do not need Poco to compile your own version of the refprop library. 
+These files allow you to compile the Refprop fluid property database as a shared library for Linux systems. This anables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll. 
 
 ## Installation Instructions
-For installing on a Linux machine, please follow the two simple step described below. By default the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your system. 
+For installation on a Linux machine, please follow the two simple steps described below. By default the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
 
-0.  Change the paths in the Makefile, if needed.
-1.  Call "make header library" to prepare the files and finally 
-2.  call "make install" as root user to copy the files to the right directories.
+1.  Change the paths in the Makefile, if needed.
+2.  Copy the Refprop fotran code tpo the "fortran" directory.
+3.  Call "make header library" to prepare the files. 
+4.  Use "make install" (as root user) to copy the files to the destination directories.
 
-You can remove the files again by calling "make uninstall". To compile the test written in C++, call "make cpptest" and the run the executable with "./bin/ex_mix_cpp".
+You can remove the files again by calling "make uninstall" (as root user). 
+
+## Testing the Installation
+Please be aware that you need a copy of the Poco framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/ or check the software package manager of your distribution for it. To run the test written in C++ you have to adjust the path "REFPROP_PATH_CHAR" in "ex_mix.cpp" to point to the directory where you keep the Refprop fluid files. Afterwards you can call "make cpptest" and run the executable with "./bin/ex_mix_cpp </path/to/fluid/files>"
 
 ## General Remarks
 Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
-

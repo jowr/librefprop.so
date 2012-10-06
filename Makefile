@@ -2,19 +2,17 @@
 # Name        : Makefile
 # Author      : Jorrit Wronski (jowr@mek.dtu.dk) 
 # Copyright   : Use and modify at your own risk.
-# Description : Makefile for Refprop library from Fortran.
+# Description : Makefile for Refprop library from Fortran sources.
 # ============================================================================
 # The installation procedure should be as follows:
-# 1) make libheader library
-# 2) sudo make installlib
-# 3) make wrapheader wrapper
-# 4) sudo make installwrap
-# 5) sudo make fixit
+# 1) make header library
+# 2) sudo make install
 # ============================================================================
 # general commands:
 RM = rm -f
 CP = cp 
 CH = chmod 0644 
+MK = mkdir -p 
 
 # used for the output
 THENAME          =refprop
@@ -46,6 +44,13 @@ FLINKFLAGS =$(FFLAGS) $(LIBS)
 ###########################################################
 CPPC       =g++
 CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -malign-double -mpreferred-stack-boundary=8 
+
+###########################################################
+#  Change these lines if you are using a different C
+#  compiler or if you would like to use other flags. 
+###########################################################
+CC         =gcc
+CFLAGS     =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -malign-double -mpreferred-stack-boundary=8 
 
 ###########################################################
 #  Change these lines if you have other needs regarding
@@ -95,6 +100,7 @@ LIBOBJECTFILES = \
 install    : header library
 	$(CP) $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
 	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(MK) $(HEADINST) $(LIBINST)
 	$(CH) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
 	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 
@@ -153,7 +159,7 @@ clean:
 ctest                : $(BINDIR)/ex_mix_c
 $(BINDIR)/ex_mix_c   : $(SRCDIR)/ex_mix.c
 	$(CC) $(CFLAGS) -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.c
-	$(FC) $(FLINKFLAGS) -o $(BINDIR)/ex_mix_c $(SRCDIR)/ex_mix.o 
+	$(CC) $(FLINKFLAGS) -o $(BINDIR)/ex_mix_c $(SRCDIR)/ex_mix.o $(LIBS)
 
 .PHONY               : cpptest
 cpptest              : $(BINDIR)/ex_mix_cpp
