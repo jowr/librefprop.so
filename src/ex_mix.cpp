@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
     SETMODdll_TYPE  * SETMODdll  = (SETMODdll_TYPE * ) library.getSymbol(SETMODdll_NAME);
     SETREFdll_TYPE  * SETREFdll  = (SETREFdll_TYPE * ) library.getSymbol(SETREFdll_NAME);
     SETUPdll_TYPE   * SETUPdll   = (SETUPdll_TYPE *  ) library.getSymbol(SETUPdll_NAME);
-    //	SPECGRdll_TYPE  * SPECGRdll  = (SPECGRdll_TYPE * ) library.getSymbol(SPECGRdll_NAME);
+//    SPECGRdll_TYPE  * SPECGRdll  = (SPECGRdll_TYPE * ) library.getSymbol(SPECGRdll_NAME); // not found in library
     SUBLPdll_TYPE   * SUBLPdll   = (SUBLPdll_TYPE *  ) library.getSymbol(SUBLPdll_NAME);
     SUBLTdll_TYPE   * SUBLTdll   = (SUBLTdll_TYPE *  ) library.getSymbol(SUBLTdll_NAME);
     SURFTdll_TYPE   * SURFTdll   = (SURFTdll_TYPE *  ) library.getSymbol(SURFTdll_NAME);

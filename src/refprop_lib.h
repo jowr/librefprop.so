@@ -1,8 +1,11 @@
 #ifndef REFPROP_H
 #define REFPROP_H
+// The idea here is to have a common header for Windows 
+// and Linux systems. The Windows branch should cover the
+// functions provided by the .dll and the Linux part covers
+// the compiled .so file. Name changes caused by gfortran 
+// are repsected and should be accounted for. 
 //
-#include <string.h>
-
 // Define data types that match the Fortran definitions. This is also
 // a possible starting point to introduce platform independence.
 // Partly taken from: http://arnholm.org/software/cppf77/cppf77.htm#Section5
@@ -13,7 +16,7 @@ typedef long    INTEGER;
 typedef float   REAL;
 typedef double  DOUBLE_PRECISION;
 typedef int     LOGICAL;
-
+// 
 // Do some manual changes to the function names
 // if needed.
 #if defined(WIN32) || defined(_WIN32)
@@ -100,7 +103,7 @@ typedef int     LOGICAL;
 #  define SETMODdll SETMODdll
 #  define SETREFdll SETREFdll
 #  define SETUPdll SETUPdll
-#  define SPECGRdll SPECGRdll
+//#  define SPECGRdll SPECGRdll // not found in library
 #  define SUBLPdll SUBLPdll
 #  define SUBLTdll SUBLTdll
 #  define SURFTdll SURFTdll
@@ -130,223 +133,123 @@ typedef int     LOGICAL;
 // Define function names for the shared library,
 // in this case it is the librefprop.so and the
 // names might change on some systems during
-// the compilation of the Fortran files.
-#  ifdef _CRAY
-#    include <fortran.h>
-#    define RPVersion    RPVERSION
-#    define SETPATHdll SETPATHDLL
-#    define ABFL1dll ABFL1DLL
-#    define ABFL2dll ABFL2DLL
-#    define ACTVYdll ACTVYDLL
-#    define AGdll AGDLL
-#    define CCRITdll CCRITDLL
-#    define CP0dll CP0DLL
-#    define CRITPdll CRITPDLL
-#    define CSATKdll CSATKDLL
-#    define CV2PKdll CV2PKDLL
-#    define CVCPKdll CVCPKDLL
-#    define CVCPdll CVCPDLL
-#    define DBDTdll DBDTDLL
-#    define DBFL1dll DBFL1DLL
-#    define DBFL2dll DBFL2DLL
-#    define DDDPdll DDDPDLL
-#    define DDDTdll DDDTDLL
-#    define DEFLSHdll DEFLSHDLL
-#    define DHD1dll DHD1DLL
-#    define DHFL1dll DHFL1DLL
-#    define DHFL2dll DHFL2DLL
-#    define DHFLSHdll DHFLSHDLL
-#    define DIELECdll DIELECDLL
-#    define DOTFILLdll DOTFILLDLL
-#    define DPDD2dll DPDD2DLL
-#    define DPDDKdll DPDDKDLL
-#    define DPDDdll DPDDDLL
-#    define DPDTKdll DPDTKDLL
-#    define DPDTdll DPDTDLL
-#    define DPTSATKdll DPTSATKDLL
-#    define DSFLSHdll DSFLSHDLL
-#    define DSFL1dll DSFL1DLL
-#    define DSFL2dll DSFL2DLL
-#    define ENTHALdll ENTHALDLL
-#    define ENTROdll ENTRODLL
-#    define ESFLSHdll ESFLSHDLL
-#    define FGCTYdll FGCTYDLL
-#    define FPVdll FPVDLL
-#    define GERG04dll GERG04DLL
-#    define GETFIJdll GETFIJDLL
-#    define GETKTVdll GETKTVDLL
-#    define GIBBSdll GIBBSDLL
-#    define HSFLSHdll HSFLSHDLL
-#    define INFOdll INFODLL
-#    define LIMITKdll LIMITKDLL
-#    define LIMITSdll LIMITSDLL
-#    define LIMITXdll LIMITXDLL
-#    define MELTPdll MELTPDLL
-#    define MELTTdll MELTTDLL
-#    define MLTH2Odll MLTH2ODLL
-#    define NAMEdll NAMEDLL
-#    define PDFL1dll PDFL1DLL
-#    define PDFLSHdll PDFLSHDLL
-#    define PEFLSHdll PEFLSHDLL
-#    define PHFL1dll PHFL1DLL
-#    define PHFLSHdll PHFLSHDLL
-#    define PQFLSHdll PQFLSHDLL
-#    define PREOSdll PREOSDLL
-#    define PRESSdll PRESSDLL
-#    define PSFL1dll PSFL1DLL
-#    define PSFLSHdll PSFLSHDLL
-#    define PUREFLDdll PUREFLDDLL
-#    define QMASSdll QMASSDLL
-#    define QMOLEdll QMOLEDLL
-#    define SATDdll SATDDLL
-#    define SATEdll SATEDLL
-#    define SATHdll SATHDLL
-#    define SATPdll SATPDLL
-#    define SATSdll SATSDLL
-#    define SATTdll SATTDLL
-#    define SETAGAdll SETAGADLL
-#    define SETKTVdll SETKTVDLL
-#    define SETMIXdll SETMIXDLL
-#    define SETMODdll SETMODDLL
-#    define SETREFdll SETREFDLL
-#    define SETUPdll SETUPDLL
-#    define SPECGRdll SPECGRDLL
-#    define SUBLPdll SUBLPDLL
-#    define SUBLTdll SUBLTDLL
-#    define SURFTdll SURFTDLL
-#    define SURTENdll SURTENDLL
-#    define TDFLSHdll TDFLSHDLL
-#    define TEFLSHdll TEFLSHDLL
-#    define THERM0dll THERM0DLL
-#    define THERM2dll THERM2DLL
-#    define THERM3dll THERM3DLL
-#    define THERMdll THERMDLL
-#    define THFLSHdll THFLSHDLL
-#    define TPFLSHdll TPFLSHDLL
-#    define TPFL2dll TPFL2DLL
-#    define TPRHOdll TPRHODLL
-#    define TQFLSHdll TQFLSHDLL
-#    define TRNPRPdll TRNPRPDLL
-#    define TSFLSHdll TSFLSHDLL
-#    define VIRBdll VIRBDLL
-#    define VIRCdll VIRCDLL
-#    define WMOLdll WMOLDLL
-#    define XMASSdll XMASSDLL
-#    define XMOLEdll XMOLEDLL
-#  else // _CRAY not defined
-#    if !defined(_AIX) && !defined(__hpux)
-#      define RPVersion  rpversion_
-#      define SETPATHdll setpathdll_
-#      define ABFL1dll abfl1dll_
-#      define ABFL2dll abfl2dll_
-#      define ACTVYdll actvydll_
-#      define AGdll agdll_
-#      define CCRITdll ccritdll_
-#      define CP0dll cp0dll_
-#      define CRITPdll critpdll_
-#      define CSATKdll csatkdll_
-#      define CV2PKdll cv2pkdll_
-#      define CVCPKdll cvcpkdll_
-#      define CVCPdll cvcpdll_
-#      define DBDTdll dbdtdll_
-#      define DBFL1dll dbfl1dll_
-#      define DBFL2dll dbfl2dll_
-#      define DDDPdll dddpdll_
-#      define DDDTdll dddtdll_
-#      define DEFLSHdll deflshdll_
-#      define DHD1dll dhd1dll_
-#      define DHFL1dll dhfl1dll_
-#      define DHFL2dll dhfl2dll_
-#      define DHFLSHdll dhflshdll_
-#      define DIELECdll dielecdll_
-#      define DOTFILLdll dotfilldll_
-#      define DPDD2dll dpdd2dll_
-#      define DPDDKdll dpddkdll_
-#      define DPDDdll dpdddll_
-#      define DPDTKdll dpdtkdll_
-#      define DPDTdll dpdtdll_
-#      define DPTSATKdll dptsatkdll_
-#      define DSFLSHdll dsflshdll_
-#      define DSFL1dll dsfl1dll_
-#      define DSFL2dll dsfl2dll_
-#      define ENTHALdll enthaldll_
-#      define ENTROdll entrodll_
-#      define ESFLSHdll esflshdll_
-#      define FGCTYdll fgctydll_
-#      define FPVdll fpvdll_
-#      define GERG04dll gerg04dll_
-#      define GETFIJdll getfijdll_
-#      define GETKTVdll getktvdll_
-#      define GIBBSdll gibbsdll_
-#      define HSFLSHdll hsflshdll_
-#      define INFOdll infodll_
-#      define LIMITKdll limitkdll_
-#      define LIMITSdll limitsdll_
-#      define LIMITXdll limitxdll_
-#      define MELTPdll meltpdll_
-#      define MELTTdll melttdll_
-#      define MLTH2Odll mlth2odll_
-#      define NAMEdll namedll_
-#      define PDFL1dll pdfl1dll_
-#      define PDFLSHdll pdflshdll_
-#      define PEFLSHdll peflshdll_
-#      define PHFL1dll phfl1dll_
-#      define PHFLSHdll phflshdll_
-#      define PQFLSHdll pqflshdll_
-#      define PREOSdll preosdll_
-#      define PRESSdll pressdll_
-#      define PSFL1dll psfl1dll_
-#      define PSFLSHdll psflshdll_
-#      define PUREFLDdll pureflddll_
-#      define QMASSdll qmassdll_
-#      define QMOLEdll qmoledll_
-#      define SATDdll satddll_
-#      define SATEdll satedll_
-#      define SATHdll sathdll_
-#      define SATPdll satpdll_
-#      define SATSdll satsdll_
-#      define SATTdll sattdll_
-#      define SETAGAdll setagadll_
-#      define SETKTVdll setktvdll_
-#      define SETMIXdll setmixdll_
-#      define SETMODdll setmoddll_
-#      define SETREFdll setrefdll_
-#      define SETUPdll setupdll_
-#      define SPECGRdll specgrdll_
-#      define SUBLPdll sublpdll_
-#      define SUBLTdll subltdll_
-#      define SURFTdll surftdll_
-#      define SURTENdll surtendll_
-#      define TDFLSHdll tdflshdll_
-#      define TEFLSHdll teflshdll_
-#      define THERM0dll therm0dll_
-#      define THERM2dll therm2dll_
-#      define THERM3dll therm3dll_
-#      define THERMdll thermdll_
-#      define THFLSHdll thflshdll_
-#      define TPFLSHdll tpflshdll_
-#      define TPFL2dll tpfl2dll_
-#      define TPRHOdll tprhodll_
-#      define TQFLSHdll tqflshdll_
-#      define TRNPRPdll trnprpdll_
-#      define TSFLSHdll tsflshdll_
-#      define VIRBdll virbdll_
-#      define VIRCdll vircdll_
-#      define WMOLdll wmoldll_
-#      define XMASSdll xmassdll_
-#      define XMOLEdll xmoledll_
-#    endif // !defined(_AIX) && !defined(__hpux)
-#  endif // _CRAY not defined, else branch
+// the compilation of the Fortran files. 
+// Possible other branches for this code could be:
+// #    if !defined(_AIX) 
+// #    if !defined(__hpux) 
+// #    ifdef _CRAY
+// However, I cannot test that and therefore do not include it.
+#  define RPVersion  rpversion_
+#  define SETPATHdll setpathdll_
+#  define ABFL1dll abfl1dll_
+#  define ABFL2dll abfl2dll_
+#  define ACTVYdll actvydll_
+#  define AGdll agdll_
+#  define CCRITdll ccritdll_
+#  define CP0dll cp0dll_
+#  define CRITPdll critpdll_
+#  define CSATKdll csatkdll_
+#  define CV2PKdll cv2pkdll_
+#  define CVCPKdll cvcpkdll_
+#  define CVCPdll cvcpdll_
+#  define DBDTdll dbdtdll_
+#  define DBFL1dll dbfl1dll_
+#  define DBFL2dll dbfl2dll_
+#  define DDDPdll dddpdll_
+#  define DDDTdll dddtdll_
+#  define DEFLSHdll deflshdll_
+#  define DHD1dll dhd1dll_
+#  define DHFL1dll dhfl1dll_
+#  define DHFL2dll dhfl2dll_
+#  define DHFLSHdll dhflshdll_
+#  define DIELECdll dielecdll_
+#  define DOTFILLdll dotfilldll_
+#  define DPDD2dll dpdd2dll_
+#  define DPDDKdll dpddkdll_
+#  define DPDDdll dpdddll_
+#  define DPDTKdll dpdtkdll_
+#  define DPDTdll dpdtdll_
+#  define DPTSATKdll dptsatkdll_
+#  define DSFLSHdll dsflshdll_
+#  define DSFL1dll dsfl1dll_
+#  define DSFL2dll dsfl2dll_
+#  define ENTHALdll enthaldll_
+#  define ENTROdll entrodll_
+#  define ESFLSHdll esflshdll_
+#  define FGCTYdll fgctydll_
+#  define FPVdll fpvdll_
+#  define GERG04dll gerg04dll_
+#  define GETFIJdll getfijdll_
+#  define GETKTVdll getktvdll_
+#  define GIBBSdll gibbsdll_
+#  define HSFLSHdll hsflshdll_
+#  define INFOdll infodll_
+#  define LIMITKdll limitkdll_
+#  define LIMITSdll limitsdll_
+#  define LIMITXdll limitxdll_
+#  define MELTPdll meltpdll_
+#  define MELTTdll melttdll_
+#  define MLTH2Odll mlth2odll_
+#  define NAMEdll namedll_
+#  define PDFL1dll pdfl1dll_
+#  define PDFLSHdll pdflshdll_
+#  define PEFLSHdll peflshdll_
+#  define PHFL1dll phfl1dll_
+#  define PHFLSHdll phflshdll_
+#  define PQFLSHdll pqflshdll_
+#  define PREOSdll preosdll_
+#  define PRESSdll pressdll_
+#  define PSFL1dll psfl1dll_
+#  define PSFLSHdll psflshdll_
+#  define PUREFLDdll pureflddll_
+#  define QMASSdll qmassdll_
+#  define QMOLEdll qmoledll_
+#  define SATDdll satddll_
+#  define SATEdll satedll_
+#  define SATHdll sathdll_
+#  define SATPdll satpdll_
+#  define SATSdll satsdll_
+#  define SATTdll sattdll_
+#  define SETAGAdll setagadll_
+#  define SETKTVdll setktvdll_
+#  define SETMIXdll setmixdll_
+#  define SETMODdll setmoddll_
+#  define SETREFdll setrefdll_
+#  define SETUPdll setupdll_
+//#  define SPECGRdll specgrdll_ // not found in library
+#  define SUBLPdll sublpdll_
+#  define SUBLTdll subltdll_
+#  define SURFTdll surftdll_
+#  define SURTENdll surtendll_
+#  define TDFLSHdll tdflshdll_
+#  define TEFLSHdll teflshdll_
+#  define THERM0dll therm0dll_
+#  define THERM2dll therm2dll_
+#  define THERM3dll therm3dll_
+#  define THERMdll thermdll_
+#  define THFLSHdll thflshdll_
+#  define TPFLSHdll tpflshdll_
+#  define TPFL2dll tpfl2dll_
+#  define TPRHOdll tprhodll_
+#  define TQFLSHdll tqflshdll_
+#  define TRNPRPdll trnprpdll_
+#  define TSFLSHdll tsflshdll_
+#  define VIRBdll virbdll_
+#  define VIRCdll vircdll_
+#  define WMOLdll wmoldll_
+#  define XMASSdll xmassdll_
+#  define XMOLEdll xmoledll_
 #endif // defined(WIN32) || defined(_WIN32), else branch
-
-
+//
+//
 // define new macros for function names
 // http://stackoverflow.com/questions/195975/how-to-make-a-char-string-from-a-c-macros-value
+#include <string.h>
 #define STR_VALUE(arg)      #arg
 #define FUNCTION_NAME(name) STR_VALUE(name)
-//#define TEST_FUNC      test_func
-//#define TEST_FUNC_NAME FUNCTION_NAME(TEST_FUNC)
-
+//
+// Prepare the strings to be used by the functions that
+// handle the library later on. 
 #define RPVersion_NAME FUNCTION_NAME(RPVersion)
 #define SETPATHdll_NAME FUNCTION_NAME(SETPATHdll)
 #define ABFL1dll_NAME FUNCTION_NAME(ABFL1dll)
@@ -424,7 +327,7 @@ typedef int     LOGICAL;
 #define SETMODdll_NAME FUNCTION_NAME(SETMODdll)
 #define SETREFdll_NAME FUNCTION_NAME(SETREFdll)
 #define SETUPdll_NAME FUNCTION_NAME(SETUPdll)
-#define SPECGRdll_NAME FUNCTION_NAME(SPECGRdll)
+//#define SPECGRdll_NAME FUNCTION_NAME(SPECGRdll) // not found in library
 #define SUBLPdll_NAME FUNCTION_NAME(SUBLPdll)
 #define SUBLTdll_NAME FUNCTION_NAME(SUBLTdll)
 #define SURFTdll_NAME FUNCTION_NAME(SURFTdll)
@@ -447,19 +350,12 @@ typedef int     LOGICAL;
 #define WMOLdll_NAME FUNCTION_NAME(WMOLdll)
 #define XMASSdll_NAME FUNCTION_NAME(XMASSdll)
 #define XMOLEdll_NAME FUNCTION_NAME(XMOLEdll)
-
-
+//
 // I'll try to follow this example from:
 // http://www.gershnik.com/tips/cpp.asp
-////not a pointer but function type
-//typedef void [compiler specific stuff]  func_t(int, float);
-//
-////this is the function declaration
-//func_t func;
-//
-////and this is the pointer type just for convenience
-//typedef func_t * func_ptr;
-
+// function type: typedef void [compiler stuff]  func_t(int, float);
+// function declaration: func_t func;
+// pointer type: typedef func_t * func_ptr;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -543,7 +439,7 @@ extern "C" {
   typedef void (LIBRARY_API SETREFdll_TYPE)(char*,INTEGER &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER ,INTEGER );
   //typedef void (LIBRARY_API SETUPdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER &,char*,INTEGER ,INTEGER ,INTEGER ,INTEGER );
   typedef void (LIBRARY_API SETUPdll_TYPE)(INTEGER &,char*,char*,char*,INTEGER &,char*);
-  typedef void (LIBRARY_API SPECGRdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &);
+//  typedef void (LIBRARY_API SPECGRdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION &); // not found in library
   typedef void (LIBRARY_API SUBLPdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
   typedef void (LIBRARY_API SUBLTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
   typedef void (LIBRARY_API SURFTdll_TYPE)(DOUBLE_PRECISION &,DOUBLE_PRECISION &,DOUBLE_PRECISION *,DOUBLE_PRECISION &,INTEGER &,char*,INTEGER );
@@ -566,8 +462,8 @@ extern "C" {
   typedef void (LIBRARY_API WMOLdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION &);
   typedef void (LIBRARY_API XMASSdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
   typedef void (LIBRARY_API XMOLEdll_TYPE)(DOUBLE_PRECISION *,DOUBLE_PRECISION *,DOUBLE_PRECISION &);
-
-  //Declare the functions for direct access
+  // 
+  // Declare the functions for direct access
   RPVersion_TYPE RPVersion;
   SETPATHdll_TYPE SETPATHdll;
   ABFL1dll_TYPE ABFL1dll;
@@ -645,7 +541,7 @@ extern "C" {
   SETMODdll_TYPE SETMODdll;
   SETREFdll_TYPE SETREFdll;
   SETUPdll_TYPE SETUPdll;
-  SPECGRdll_TYPE SPECGRdll;
+//  SPECGRdll_TYPE SPECGRdll; // not found in library
   SUBLPdll_TYPE SUBLPdll;
   SUBLTdll_TYPE SUBLTdll;
   SURFTdll_TYPE SURFTdll;
@@ -668,8 +564,8 @@ extern "C" {
   WMOLdll_TYPE WMOLdll;
   XMASSdll_TYPE XMASSdll;
   XMOLEdll_TYPE XMOLEdll;
-
-  //Define explicit function pointers
+  // 
+  // Define explicit function pointers
   typedef RPVersion_TYPE * RPVersion_POINTER;
   typedef SETPATHdll_TYPE * SETPATHdll_POINTER;
   typedef ABFL1dll_TYPE * ABFL1dll_POINTER;
@@ -747,7 +643,7 @@ extern "C" {
   typedef SETMODdll_TYPE * SETMODdll_POINTER;
   typedef SETREFdll_TYPE * SETREFdll_POINTER;
   typedef SETUPdll_TYPE * SETUPdll_POINTER;
-  typedef SPECGRdll_TYPE * SPECGRdll_POINTER;
+//  typedef SPECGRdll_TYPE * SPECGRdll_POINTER; // not found in library
   typedef SUBLPdll_TYPE * SUBLPdll_POINTER;
   typedef SUBLTdll_TYPE * SUBLTdll_POINTER;
   typedef SURFTdll_TYPE * SURFTdll_POINTER;
@@ -770,10 +666,8 @@ extern "C" {
   typedef WMOLdll_TYPE * WMOLdll_POINTER;
   typedef XMASSdll_TYPE * XMASSdll_POINTER;
   typedef XMOLEdll_TYPE * XMOLEdll_POINTER;
-
 #ifdef __cplusplus
 } // extern "C"
 #endif
 // REFPROP_H
 #endif
-

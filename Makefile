@@ -14,7 +14,7 @@ CP = cp
 CH = chmod 0644 
 MK = mkdir -p 
 LD = ldconfig 
-LN = ln -s 
+LN = ln -sf 
 
 # used for the output
 MAJORVERSION     =9
