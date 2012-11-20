@@ -39,7 +39,7 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -Wall -pedantic# -ff2c  -fbounds-check
+FFLAGS     =$(OPTFLAGS) -Wall -pedantic #-fbounds-check #-ff2c 
 FLINKFLAGS =$(FFLAGS) $(LIBS)
 
 ###########################################################
@@ -68,6 +68,11 @@ STATICLIBRARYEXTENSION  =.a
 #ar -cvq $(LIBRARY)$(STATICLIBRARYEXTENSION) $(OBJECTFILES)
 HEADERFILE              =$(THENAME)_lib
 HEADEREXTENSION         =.h
+HEADERFILES             =$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
+SRCHEADERFILES          =$(SRCDIR)/$(THENAME)_lib.h $(SRCDIR)/$(THENAME)_constants.h $(SRCDIR)/$(THENAME)_names.h $(SRCDIR)/$(THENAME)_types_c.h $(SRCDIR)/$(THENAME)_types_cpp.h $(SRCDIR)/$(THENAME)_types.h
+BINHEADERFILES          =$(BINDIR)/$(THENAME)_lib.h $(BINDIR)/$(THENAME)_constants.h $(BINDIR)/$(THENAME)_names.h $(BINDIR)/$(THENAME)_types_c.h $(BINDIR)/$(THENAME)_types_cpp.h $(BINDIR)/$(THENAME)_types.h
+INSTHEADERFILES         =$(HEADINST)/$(THENAME)_lib.h $(HEADINST)/$(THENAME)_constants.h $(HEADINST)/$(THENAME)_names.h $(HEADINST)/$(THENAME)_types_c.h $(HEADINST)/$(THENAME)_types_cpp.h $(HEADINST)/$(THENAME)_types.h
+#
 ### List of files to compile
 LIBOBJECTFILES = \
 	$(LIBDIR)/SETUP.o \
@@ -102,10 +107,10 @@ LIBOBJECTFILES = \
 ###########################################################
 .PHONY     : install
 install    : header library
-	$(CP) $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(MK) $(HEADINST) $(LIBINST)
-	$(CH) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
+	$(CP) $(BINHEADERFILES) $(HEADINST)
+	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
+	$(CH) $(INSTHEADERFILES) 
 	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(LD) -l $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
@@ -113,7 +118,7 @@ install    : header library
 
 .PHONY     : uninstall
 uninstall  : 
-	$(RM) $(HEADINST)/$(HEADERFILE)$(HEADEREXTENSION)
+	$(RM) $(INSTHEADERFILES)
 	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)*
 
 .PHONY     : all
@@ -124,9 +129,7 @@ all        : header library
 #  be used as a shared object.
 ###########################################################
 .PHONY     : header
-header     : $(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION)
-$(BINDIR)/$(HEADERFILE)$(HEADEREXTENSION): $(SRCDIR)/$(HEADERFILE)$(HEADEREXTENSION)
-	$(CP) $(SRCDIR)/$(HEADERFILE)$(HEADEREXTENSION) $(BINDIR)
+header     : $(BINHEADERFILES)
 
 .PHONY     : library
 library    : $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) 
@@ -141,6 +144,9 @@ $(SRCDIR)/$(LIBFILE).FOR: $(LIBDIR)/PASS_FTN.FOR
 ###########################################################
 #  General rulesets for compilation.
 ###########################################################
+$(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
+	$(CP) $< $@
+
 $(SRCDIR)/%.o : $(SRCDIR)/%.FOR
 	$(FC) $(FFLAGS) -o $(SRCDIR)/$*.o -c $<
 	

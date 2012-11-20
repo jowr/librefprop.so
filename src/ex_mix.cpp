@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
   static long i,ierr,info_index;
   static double wm,ttp,tnbp,tc,pc,dc,zc,acf,dip,rgas;
   static char hfld[maxstringlength+1],hrf[lengthofreference+1],herr[errormessagelength+1],hfm[refpropcharlength+1];
-  static char v[refpropcharlength+1],hpth[filepathlength+1],errormsg[errormessagelength+1];
+  static char v[refpropcharlength],hpth[filepathlength+1],errormsg[errormessagelength+1];
   
   static double x[ncmax],xliq[ncmax],xvap[ncmax],f[ncmax];
   
