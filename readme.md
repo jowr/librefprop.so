@@ -15,5 +15,10 @@ You can remove the files again by calling `make uninstall` (as root user).
 ## Testing the Installation
 Please be aware that you need a copy of the *Poco* framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/ or check the software package manager of your distribution for it. Afterwards you can call `make cpptest` and run the executable with `./bin/ex_mix_cpp </path/to/fluid/files>`
 
+## Python Integration
+There is a basic python package based on the examples from
+[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#PythonApplications "NIST homepage")
+in the `pyrp` folder. 
+
 ## General Remarks
 Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
