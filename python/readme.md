@@ -16,7 +16,7 @@ mass fractions as standard input.
 
 Keep in mind that Refprop uses the units given below and that you might want to add
 your own conversion routines in case you use the standard class. You can also enter a new path to fluid and 
-mixture definition files in line 350 of `refpropClass.py`. 
+mixture definition files in line 350 of `refpropClasses.py`. 
 
 Enjoy working with this small python package!
 

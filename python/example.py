@@ -30,7 +30,7 @@ paramsTable.set_cols_valign(["t", "m", "m"])
 paramsTable.header(["Parameter","Value","Unit"])
 
 
-from pyrp.refpropClass import RefpropSI
+from pyrp.refpropClasses import RefpropSI
 RP = RefpropSI()
 RP.SETUPFLEX(xkg=[0.5,0.5], FluidNames="butane|pentane")
 

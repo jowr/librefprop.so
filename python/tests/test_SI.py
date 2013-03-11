@@ -10,7 +10,7 @@ class Sentinel(object): pass
 # ---------------------------------------------
 # Refprop test cases
 # ---------------------------------------------
-from pyrp.refpropClass import RefpropSI
+from pyrp.refpropClasses import RefpropSI
 
 TEST_FLUIDS       = ['PENTANE', 'WATER.FLD', 'CO2']
 TEST_DENSITIES    = [  15.137 ,    0.4846,  801.62  ] # kg/m3
