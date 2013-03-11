@@ -48,7 +48,7 @@ jowr@mek.dtu.dk
 The included `example.py` should produce the follwing output:
 
       Point       Temperature,    Pressure,      Enthalpy,       Entropy,   
-			C             bar           kJ/kg         kJ/kg-K    
+                        C             bar           kJ/kg         kJ/kg-K    
     ========================================================================
     Point 1              20.000          1.638        105.738          0.612 
     Point 2              24.117         40.000        118.551          0.633 
@@ -56,7 +56,7 @@ The included `example.py` should produce the follwing output:
     Point 4             177.568          2.138        791.765          2.649 
 
 
-	Parameter         Value     Unit  
+         Parameter         Value     Unit  
     =====================================
     subcooling              5.000   K     
     HX pressure drop        0.500   bar   
