@@ -43,3 +43,27 @@ jowr@mek.dtu.dk
 | dipole moment                | debye         |      |
 | surface tension              | N/m           |      |
 
+
+## Example
+The included `example.py` should produce the follwing output:
+
+      Point       Temperature,    Pressure,      Enthalpy,       Entropy,   
+			C             bar           kJ/kg         kJ/kg-K    
+    ========================================================================
+    Point 1              20.000          1.638        105.738          0.612 
+    Point 2              24.117         40.000        118.551          0.633 
+    Point 3             250.000         39.500        912.754          2.558 
+    Point 4             177.568          2.138        791.765          2.649 
+
+
+	Parameter         Value     Unit  
+    =====================================
+    subcooling              5.000   K     
+    HX pressure drop        0.500   bar   
+    eta pump               50.000   %     
+    eta expander           75.000   %     
+    Pump work              12.813   kJ/kg 
+    added heat            794.203   kJ/kg 
+    expander work        -120.989   kJ/kg 
+    thermal efficiency     13.621   %     
+    power, 50 g/s           5.409   kW  
