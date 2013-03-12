@@ -3,8 +3,8 @@
 Created on 15 Feb 2013
 author: Jorrit Wronski
 '''
-
-from ctypes import cdll,create_string_buffer,c_long,c_double,byref
+import ctypes
+from ctypes import create_string_buffer,c_long,c_double,byref
 import sys, os, string 
 
 class Refprop(object):
@@ -265,8 +265,8 @@ class Refprop(object):
         self.DDDTdll    = rp.DDDTdll
         self.DEFLSHdll  = rp.DEFLSHdll
         self.DHD1dll    = rp.DHD1dll
-        self.DHFL1dll   = rp.DHFL1dll
-        self.DHFL2dll   = rp.DHFL2dll
+        #self.DHFL1dll   = rp.DHFL1dll
+        #self.DHFL2dll   = rp.DHFL2dll
         self.DHFLSHdll  = rp.DHFLSHdll
         self.DIELECdll  = rp.DIELECdll
         self.DOTFILLdll = rp.DOTFILLdll
@@ -277,8 +277,8 @@ class Refprop(object):
         self.DPDTdll    = rp.DPDTdll
         self.DPTSATKdll = rp.DPTSATKdll
         self.DSFLSHdll  = rp.DSFLSHdll
-        self.DSFL1dll   = rp.DSFL1dll
-        self.DSFL2dll   = rp.DSFL2dll
+        #self.DSFL1dll   = rp.DSFL1dll
+        #self.DSFL2dll   = rp.DSFL2dll
         self.ENTHALdll  = rp.ENTHALdll
         self.ENTROdll   = rp.ENTROdll
         self.ESFLSHdll  = rp.ESFLSHdll
@@ -335,7 +335,7 @@ class Refprop(object):
         self.THERMdll   = rp.THERMdll
         self.THFLSHdll  = rp.THFLSHdll
         self.TPFLSHdll  = rp.TPFLSHdll
-        self.TPFL2dll   = rp.TPFL2dll
+        #self.TPFL2dll   = rp.TPFL2dll
         self.TPRHOdll   = rp.TPRHOdll
         self.TQFLSHdll  = rp.TQFLSHdll
         self.TRNPRPdll  = rp.TRNPRPdll
@@ -355,16 +355,16 @@ class Refprop(object):
         if sys.platform.startswith('win32'):
             functions = 'win'
             library   = 'refprop.dll'
-            self.rp   = cdll.LoadLibrary(library)    
-            self.fpath= ""         
+            self.rp   = ctypes.windll.LoadLibrary(library)    
+            self.fpath= "C:\\Program Files (x86)\\REFPROP\\"         
         elif sys.platform.startswith('darwin'):
             functions = 'gcc'
             library   = 'librefprop.dym'
-            self.rp   = cdll.LoadLibrary(library)
+            self.rp   = ctypes.cdll.LoadLibrary(library)
         elif sys.platform.startswith('linux'):
             functions = 'gcc'
             library   = 'librefprop.so'
-            self.rp   = cdll.LoadLibrary(library)
+            self.rp   = ctypes.cdll.LoadLibrary(library)
             self.fpath= "/opt/refprop/"
         else:
             print "ERROR: Operating system cannot be determined."
