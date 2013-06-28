@@ -473,7 +473,7 @@ class Refprop(object):
         '''set path to refprop root containing fluids and mixtures'''
         self.fpath = value.strip()
         if (len(self.fpath)>0):
-            assert os.path.exists(self.fpath), "The specified path " + self.fpath + "does not exist."
+            assert os.path.exists(self.fpath), "The specified path " + self.fpath + " does not exist."
             self.fldpath = os.path.join(self.fpath, "fluids")
             self.mixpath = os.path.join(self.fpath, "mixtures")
         else:

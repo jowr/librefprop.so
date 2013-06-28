@@ -85,7 +85,10 @@ class TestRefprop(unittest.TestCase):
         self.assertEqual(0,self.RP.SETUPFLEX(xkg=[0.5,0.5], FluidNames="R134A.FLD|R22.FLD"))
         self.assertEqual(101,self.RP.SETUPFLEX(xkg=[0.5,0.5], FluidNames="R134A.FLD|R2"))
         self.assertEqual(0,self.RP.SETUPFLEX(xkg=[0.5,0.5], FluidNames="R134A|R22"))
-    
+        
+#    def test_mixApp(self):
+#        print self.RP.SETUPFLEX(xkg=[0.5,0.5], FluidNames="CO2.FLD|ACETONE.FLD")
+#        print self.RP.TPFLSH(150+273.15,8500.)
     
     def test_sat(self):
         # prepare library
