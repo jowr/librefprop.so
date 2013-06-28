@@ -18,7 +18,7 @@ LN = ln -sf
 
 # used for the output
 MAJORVERSION     =9
-MINORVERSION     =0
+MINORVERSION     =1
 THENAME          =refprop
 
 ###########################################################
@@ -188,8 +188,8 @@ $(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
 	$(MK) $(BINDIR)
 	$(CP) $< $@
 
-$(SRCDIR)/%.o : $(SRCDIR)/%.FOR
-	$(FC) $(FFLAGS) -o $(SRCDIR)/$*.o -c $<
+$(SRCDIR)/%.o : $(SRCDIR)/%.FOR $(LIBDIR)/commons.for $(LIBDIR)/comtrn.for
+	$(FC) $(FFLAGS) -I $(LIBDIR)/ -o $(SRCDIR)/$*.o -c $<
 	
 $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CPPC) $(CPPFLAGS) -o $(SRCDIR)/$*.o -c $<
@@ -197,8 +197,19 @@ $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
 $(SRCDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -o $(SRCDIR)/$*.o -c $<
 
-$(LIBDIR)/%.o : $(LIBDIR)/%.FOR
+$(LIBDIR)/%.o : $(LIBDIR)/%.FOR $(LIBDIR)/commons.for $(LIBDIR)/comtrn.for
 	$(FC) $(FFLAGS) -o $(LIBDIR)/$*.o -c $<
+
+$(LIBDIR)/commons.for : $(LIBDIR)/COMMONS.FOR
+	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
+
+$(LIBDIR)/comtrn.for : $(LIBDIR)/COMTRN.FOR
+	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
+
+#.PHONY: fixfiles
+#fixfiles: $(LIBDIR)/COMMONS.FOR $(LIBDIR)/COMTRN.FOR
+#	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
+#	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
 
 .PHONY: clean
 clean:
