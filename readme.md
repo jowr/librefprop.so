@@ -2,7 +2,7 @@
 #Welcome to librefprop.so!
 These files allow you to compile the Refprop fluid property database as a shared library for Linux systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll. 
 
-*Be careful, the library does not run reliably on OSX!*
+*Be careful, the library does not run reliably on OSX and should not be used for real work!*
 
 ## Installation Instructions
 For installation on a Linux or OSX machine, please follow the steps described below. By default, the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
