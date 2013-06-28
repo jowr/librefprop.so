@@ -35,13 +35,13 @@ BINDIR     =./bin
 
 LIBS       =-l$(THENAME)# -lPocoFoundation
 # Disable optimisation for now, this should be removed again
-OPTFLAGS   =#-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
+OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 #  Change these lines if you are using a different Fortran 
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -Wall -pedantic #-fbounds-check #-ff2c 
+FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp#-fbounds-check #-ff2c 
 FLINKFLAGS =$(FFLAGS)
 
 ###########################################################

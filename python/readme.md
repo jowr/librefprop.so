@@ -1,6 +1,8 @@
 #pyrp - Python and Refprop interface
 Provides access to most Refprop functions from Python.
 
+Please note that there is a much more mature Python interface available at https://github.com/BenThelen/python-refprop. Thank you Ben for sharing it!
+
 ##Basic Information
 The file python code is based on Bruce Wernicks REFPROP8 library that 
 can be downloaded from [NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#PythonApplications). 
