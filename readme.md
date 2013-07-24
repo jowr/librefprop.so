@@ -1,12 +1,13 @@
 
 #Welcome to librefprop.so!
-These files allow you to compile the Refprop fluid property database as a shared library for Linux systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll. 
+These files allow you to compile the Refprop fluid property database as a shared library for Linux and MacOS systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll for Windows. 
 
 *Be careful, the library does not run reliably on OSX and should not be used for real work!*
 
 ## Installation Instructions
 For installation on a Linux or OSX machine, please follow the steps described below. By default, the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
 
+0.  Make sure that you have a gfortran, for OSX use: http://web.mit.edu/mfloyd/www/computing/mac/gfortran/
 1.  Change the paths in the Makefile, if needed.
 2.  Copy the Refprop Fortran code to the *fortran* directory.
 3.  Put the *fluids* and *mixtures* folders from Refprop into the *files* folder.
