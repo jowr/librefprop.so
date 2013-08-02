@@ -9,12 +9,13 @@
 # 2) sudo make install
 # ============================================================================
 # general commands:
-RM = rm -f
-CP = cp 
-CH = chmod 0644 
-MK = mkdir -p 
-LD = ldconfig 
-LN = ln -sf 
+RM =rm -f
+CP =cp 
+CH =chmod 0644 
+MK =mkdir -p 
+LD =ldconfig 
+LN =ln -sf 
+SE =sed
 
 # used for the output
 MAJORVERSION     =9
@@ -49,39 +50,35 @@ FLINKFLAGS =-lgfortran -lm -lgomp
 #  compiler or if you would like to use other flags. 
 ###########################################################
 CPPC       =g++
-CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8 
+CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8
 
 ###########################################################
 #  Change these lines if you are using a different C
 #  compiler or if you would like to use other flags. 
 ###########################################################
 CC         =gcc
-CFLAGS     =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8 
+CFLAGS     =$(CPPFLAGS)
 
 ###########################################################
 #  Change these lines if you have other needs regarding
 #  the library file.  
 ###########################################################
-LIBFILE                 =PASS_FTN_LIN
+LIBFILE                 =PASS_FTN_ALT
 LIBRARY                 =lib$(THENAME)
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
   DYNAMICLIBRARYEXTENSION =.so
-  STATICLIBRARYEXTENSION  =.a
-  LIBFLAGS                =-rdynamic -fPIC -fno-common -shared -Wl,-soname,$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION) $(FLINKFLAGS)
-  LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+  LIBFLAGS                =-rdynamic -fPIC -fno-common -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION) $(FLINKFLAGS)
 endif
 ifeq ($(UNAME), Darwin)
   DYNAMICLIBRARYEXTENSION =.dylib
-  STATICLIBRARYEXTENSION  =.a
-  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -fPIC -fno-common -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
-  LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -fPIC -fno-common -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION)
   #LIBFLAGS                =-static -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LIBFLAGS                =-dynamic -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LINKCOMM                = libtool $(LIBFLAGS) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 endif
-#ar -cvq $(LIBRARY)$(STATICLIBRARYEXTENSION) $(OBJECTFILES)
 LIBRARYEXTENSION        =$(DYNAMICLIBRARYEXTENSION)
+LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 HEADERFILE              =$(THENAME)_lib
 HEADEREXTENSION         =.h
 HEADERFILES             =$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
@@ -183,10 +180,10 @@ $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) : $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILE
 	$(LINKCOMM)
 
 $(SRCDIR)/$(LIBFILE).for: $(LIBDIR)/PASS_FTN.FOR  $(LIBDIR)/COMMONS.for $(LIBDIR)/COMTRN.for
-	sed 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).for
+	$(SE) 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).for
 	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE).for
-	sed -i "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
-	sed -i "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
+	$(SE) -i "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
+	$(SE) -i "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
 
 ###########################################################
 #  General rulesets for compilation.
@@ -207,22 +204,11 @@ $(SRCDIR)/%.o : $(SRCDIR)/%.c
 $(LIBDIR)/%.o : $(LIBDIR)/%.for
 	$(FC) $(FFLAGS) -o $(LIBDIR)/$*.o -c $<
 
-# $(LIBDIR)/commons.for : $(LIBDIR)/COMMONS.FOR
-# 	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
-# 
-# $(LIBDIR)/comtrn.for : $(LIBDIR)/COMTRN.FOR
-# 	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
-
 $(LIBDIR)/%.for : $(LIBDIR)/%.FOR
 	$(CP) $(LIBDIR)/$*.FOR $(LIBDIR)/$*.for
-	sed -i "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
-	sed -i "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
-
-#.PHONY: fixfiles
-#fixfiles: $(LIBDIR)/COMMONS.FOR $(LIBDIR)/COMTRN.FOR
-#	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
-#	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
-
+	$(SE) -i "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
+	$(SE) -i "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
+	
 .PHONY: clean
 clean:
 	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*.for $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE).for
