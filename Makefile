@@ -41,8 +41,8 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp#-fbounds-check #-ff2c 
-FLINKFLAGS =$(FFLAGS)
+FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp
+FLINKFLAGS =-lgfortran -lm -lgomp
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
@@ -68,12 +68,17 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
   DYNAMICLIBRARYEXTENSION =.so
   STATICLIBRARYEXTENSION  =.a
-  LIBFLAGS                =-rdynamic -fPIC -fno-common -shared -Wl,-soname,$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION)
+  LIBFLAGS                =-rdynamic -fPIC -fno-common -shared -Wl,-soname,$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION) $(FLINKFLAGS)
+  LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 endif
 ifeq ($(UNAME), Darwin)
   DYNAMICLIBRARYEXTENSION =.dylib
   STATICLIBRARYEXTENSION  =.a
-  LIBFLAGS                =-dynamiclib -fPIC -fno-common -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
+  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -fPIC -fno-common -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
+  LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+  #LIBFLAGS                =-static -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
+  #LIBFLAGS                =-dynamic -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
+  #LINKCOMM                = libtool $(LIBFLAGS) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 endif
 #ar -cvq $(LIBRARY)$(STATICLIBRARYEXTENSION) $(OBJECTFILES)
 LIBRARYEXTENSION        =$(DYNAMICLIBRARYEXTENSION)
@@ -173,13 +178,15 @@ header     : $(BINHEADERFILES)
 .PHONY     : library
 library    : $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) 
 
-$(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION): $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+$(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) : $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 	$(MK) $(BINDIR)
-	$(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
-	
-$(SRCDIR)/$(LIBFILE).FOR: $(LIBDIR)/PASS_FTN.FOR
-	sed 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).FOR
-	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE).FOR
+	$(LINKCOMM)
+
+$(SRCDIR)/$(LIBFILE).for: $(LIBDIR)/PASS_FTN.FOR  $(LIBDIR)/COMMONS.for $(LIBDIR)/COMTRN.for
+	sed 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).for
+	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE).for
+	sed -i "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
+	sed -i "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
 
 ###########################################################
 #  General rulesets for compilation.
@@ -188,7 +195,7 @@ $(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
 	$(MK) $(BINDIR)
 	$(CP) $< $@
 
-$(SRCDIR)/%.o : $(SRCDIR)/%.FOR $(LIBDIR)/commons.for $(LIBDIR)/comtrn.for
+$(SRCDIR)/%.o : $(SRCDIR)/%.for
 	$(FC) $(FFLAGS) -I $(LIBDIR)/ -o $(SRCDIR)/$*.o -c $<
 	
 $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
@@ -197,14 +204,19 @@ $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
 $(SRCDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -o $(SRCDIR)/$*.o -c $<
 
-$(LIBDIR)/%.o : $(LIBDIR)/%.FOR $(LIBDIR)/commons.for $(LIBDIR)/comtrn.for
+$(LIBDIR)/%.o : $(LIBDIR)/%.for
 	$(FC) $(FFLAGS) -o $(LIBDIR)/$*.o -c $<
 
-$(LIBDIR)/commons.for : $(LIBDIR)/COMMONS.FOR
-	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
+# $(LIBDIR)/commons.for : $(LIBDIR)/COMMONS.FOR
+# 	$(CP) $(LIBDIR)/COMMONS.FOR $(LIBDIR)/commons.for
+# 
+# $(LIBDIR)/comtrn.for : $(LIBDIR)/COMTRN.FOR
+# 	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
 
-$(LIBDIR)/comtrn.for : $(LIBDIR)/COMTRN.FOR
-	$(CP) $(LIBDIR)/COMTRN.FOR $(LIBDIR)/comtrn.for
+$(LIBDIR)/%.for : $(LIBDIR)/%.FOR
+	$(CP) $(LIBDIR)/$*.FOR $(LIBDIR)/$*.for
+	sed -i "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
+	sed -i "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
 
 #.PHONY: fixfiles
 #fixfiles: $(LIBDIR)/COMMONS.FOR $(LIBDIR)/COMTRN.FOR
@@ -213,7 +225,7 @@ $(LIBDIR)/comtrn.for : $(LIBDIR)/COMTRN.FOR
 
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE).FOR
+	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*.for $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE).for
 
 ###########################################################
 #  Compile a simple example to illustrate the connection

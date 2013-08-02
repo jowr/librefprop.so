@@ -7,7 +7,7 @@ These files allow you to compile the Refprop fluid property database as a shared
 ## Installation Instructions
 For installation on a Linux or OSX machine, please follow the steps described below. By default, the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
 
-0.  Make sure that you have a gfortran, for OSX use: http://web.mit.edu/mfloyd/www/computing/mac/gfortran/
+0.  Make sure that you have gcc, for OSX use [HPC](http://hpc.sourceforge.net/) and install the [OSX command line tools](https://developer.apple.com/downloads).
 1.  Change the paths in the Makefile, if needed.
 2.  Copy the Refprop Fortran code to the *fortran* directory.
 3.  Put the *fluids* and *mixtures* folders from Refprop into the *files* folder.

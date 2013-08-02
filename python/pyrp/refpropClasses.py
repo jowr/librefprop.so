@@ -359,8 +359,9 @@ class Refprop(object):
             self.fpath= "C:\\Program Files (x86)\\REFPROP\\"         
         elif sys.platform.startswith('darwin'):
             functions = 'gcc'
-            library   = 'librefprop.dym'
+            library   = 'librefprop.dylib'
             self.rp   = ctypes.cdll.LoadLibrary(library)
+            self.fpath= "/opt/refprop/"
         elif sys.platform.startswith('linux'):
             functions = 'gcc'
             library   = 'librefprop.so'
