@@ -1,4 +1,3 @@
-
 #Welcome to librefprop.so!
 These files allow you to compile the Refprop fluid property database as a shared library for Linux and MacOS systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll for Windows. 
 
@@ -18,7 +17,7 @@ You can remove the files again by calling `make uninstall` (as root user).
 There is a simple Fortran file to test the library. You can call `make fortest` and run the executable with `./bin/ex_mix_for` to display some R410 two-phase properties:
 
 | Temperature | Pressure  | Density, liquid | Density, vapour |
-|-------------------------|-----------------|-----------------|
+|-------------|-----------|-----------------|-----------------|
 | 300.0000    | 1740.5894 |   14.4550       |   0.9628        |
 | 300.0000    | 1735.1589 |   14.2345       |   0.9603        |
 
