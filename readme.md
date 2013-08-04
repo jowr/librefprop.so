@@ -2,8 +2,6 @@
 #Welcome to librefprop.so!
 These files allow you to compile the Refprop fluid property database as a shared library for Linux and MacOS systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the refprop.dll for Windows. 
 
-*Be careful, the library does not run reliably on OSX and should not be used for real work!*
-
 ## Installation Instructions
 For installation on a Linux or OSX machine, please follow the steps described below. By default, the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
 
@@ -17,7 +15,13 @@ For installation on a Linux or OSX machine, please follow the steps described be
 You can remove the files again by calling `make uninstall` (as root user). 
 
 ## Testing the Installation
-Please be aware that you need a copy of the *Poco* framework to compile the C++ test files yourself. You can find it at: http://pocoproject.org/ or check the software package manager of your distribution for it. Afterwards you can call `make cpptest` and run the executable with `./bin/ex_mix_cpp </path/to/fluid/files>`
+There is a simple Fortran file to test the library. You can call `make fortest` and run the executable with `./bin/ex_mix_for` to display some R410 two-phase properties:
+
+| Temperature | Pressure  | Density, liquid | Density, vapour |
+|-------------------------|-----------------|-----------------|
+| 300.0000    | 1740.5894 |   14.4550       |   0.9628        |
+| 300.0000    | 1735.1589 |   14.2345       |   0.9603        |
+
 
 ## Python Integration
 There is a basic python package based on the examples from

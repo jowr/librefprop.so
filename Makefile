@@ -13,7 +13,7 @@ RM =rm -f
 CP =cp 
 CH =chmod 0644 
 MK =mkdir -p 
-LD =ldconfig 
+LD =ldconfig 	
 LN =ln -sf 
 SE =sed
 
@@ -118,9 +118,6 @@ LIBOBJECTFILES = \
 ###########################################################
 #  Copy files to places recognised by the system.
 ###########################################################
-# .PHONY     : install
-# install    : install-linux 
-
 .PHONY  : install 
 ifeq ($(UNAME), Linux)
   install : install-linux
