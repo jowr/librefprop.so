@@ -42,8 +42,7 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 #  compiler or if you would like to use other flags. 
 ###########################################################
 FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp
-FLINKFLAGS =-lgfortran -lm -lgomp
+FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp -fPIC
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
@@ -68,17 +67,17 @@ LIBRARY                 =lib$(THENAME)
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
   DYNAMICLIBRARYEXTENSION =.so
-  LIBFLAGS                =-rdynamic -fPIC -fno-common -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION) $(FLINKFLAGS)
+  LIBFLAGS                =-rdynamic -lc -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
 endif
 ifeq ($(UNAME), Darwin)
   DYNAMICLIBRARYEXTENSION =.dylib
-  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -fPIC -fno-common -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION)
+  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION) -lgfortran -lm -lgomp
   #LIBFLAGS                =-static -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LIBFLAGS                =-dynamic -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LINKCOMM                = libtool $(LIBFLAGS) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 endif
 LIBRARYEXTENSION        =$(DYNAMICLIBRARYEXTENSION)
-LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) $(FLINKFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 HEADERFILE              =$(THENAME)_lib
 HEADEREXTENSION         =.h
 HEADERFILES             =$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
@@ -157,7 +156,7 @@ install-fluids :
 uninstall    : 
 	$(RM) $(INSTHEADERFILES)
 	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)*
-	$(RM) $(FILINST)
+	$(RM) -r $(FILINST)
 
 .PHONY       : all
 all          : header library
