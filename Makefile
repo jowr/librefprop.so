@@ -178,8 +178,8 @@ $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) : $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILE
 $(SRCDIR)/$(LIBFILE).for: $(LIBDIR)/PASS_FTN.FOR  $(LIBDIR)/COMMONS.for $(LIBDIR)/COMTRN.for
 	$(SE) 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).for
 	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE).for
-	$(SE) -i "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
-	$(SE) -i "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
+	$(SE) -i.du "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
+	$(SE) -i.du "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
 
 ###########################################################
 #  General rulesets for compilation.
@@ -202,8 +202,8 @@ $(LIBDIR)/%.o : $(LIBDIR)/%.for
 
 $(LIBDIR)/%.for : $(LIBDIR)/%.FOR
 	$(CP) $(LIBDIR)/$*.FOR $(LIBDIR)/$*.for
-	$(SE) -i "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
-	$(SE) -i "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
+	$(SE) -i.du "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
+	$(SE) -i.du "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
 	
 .PHONY: clean
 clean:
