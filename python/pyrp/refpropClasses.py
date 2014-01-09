@@ -1261,12 +1261,12 @@ class Refprop(object):
         return self.hname.value.strip(),lhs,self.hcas.value.strip()
     
     def XMASS(self, xmol):
-        self.XMASSdll(xmol,self.xkg,byref(self.wmix))
-        return self.wmix.value
+        self.XMASSdll(xmol,self.xkg,byref(self.wm))
+        return self.wm.value
     
     def XMOLE(self, xkg):
-        self.XMOLEdll(xkg,self.xmol,byref(self.wmix))
-        return self.wmix.value
+        self.XMOLEdll(xkg,byref(self.x),byref(self.wm))
+        return self.wm.value
     
     def LIMITX(self, htyp='EOS',t=0,D=0,p=0):
         htyp=create_string_buffer(htyp, 3)
