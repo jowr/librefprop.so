@@ -29,5 +29,12 @@ in the `pyrp` folder.
 
 Please note that there is a much more mature Python interface available at https://github.com/BenThelen/python-refprop. Thank you Ben for sharing it!
 
+## Matlab Integration
+There is a Matlab prototype file available from
+[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the 
+library on MacOS and Linux. There is a shell script in the `matlab` folder that can do all the foot work for you. You only have
+to put the files `refpropm.m`, `rp_proto64.m` and `rp_proto.m` into the `matlab` folder and run `fixfiles.sh`. Enjoy your new library.
+
+
 ## General Remarks
 Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
