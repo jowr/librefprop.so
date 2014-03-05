@@ -9,84 +9,85 @@
 # 2) sudo make install
 # ============================================================================
 # general commands:
-RM =rm -f
-CP =cp 
-CH =chmod 0644 
-MK =mkdir -p 
-LD =ldconfig 	
-LN =ln -sf 
-SE =sed
+RM :=rm -f
+CP :=cp 
+CH :=chmod 0644 
+MK :=mkdir -p 
+LD :=ldconfig 	
+LN :=ln -sf 
+SE :=sed
 
 # used for the output
-MAJORVERSION     =9
-MINORVERSION     =1
-THENAME          =refprop
+MAJORVERSION     :=9
+MINORVERSION     :=1
+THENAME          :=refprop
 
 ###########################################################
 #  Setting the directories for library, header and 
 #  binary files created in this makefile. 
 ###########################################################
-LIBDIR     =./fortran
-FILDIR     =./files
-SRCDIR     =./src
-LIBINST    =/usr/local/lib
-HEADINST   =/usr/local/include
-FILINST    =/opt/refprop
-BINDIR     =./bin
+LIBDIR     :=./fortran
+FILDIR     :=./files
+SRCDIR     :=./src
+LIBINST    :=/usr/local/lib
+HEADINST   :=/usr/local/include
+FILINST    :=/opt/refprop
+BINDIR     :=./bin
 
-LIBS       =-l$(THENAME)# -lPocoFoundation
+LIBS       :=-l$(THENAME)# -lPocoFoundation
 # Disable optimisation for now, this should be removed again
-OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
+OPTFLAGS   :=-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 #  Change these lines if you are using a different Fortran 
 #  compiler or if you would like to use other flags. 
 ###########################################################
-FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -Wall -pedantic -fopenmp -fPIC
+FEXT       :=.for_
+FC         :=gfortran
+FFLAGS     :=$(OPTFLAGS) -Wall -pedantic -fopenmp -fPIC# -fno-underscoring
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
 #  compiler or if you would like to use other flags. 
 ###########################################################
-CPPC       =g++
-CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8
+CPPC       :=g++
+CPPFLAGS   :=$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8
 
 ###########################################################
 #  Change these lines if you are using a different C
 #  compiler or if you would like to use other flags. 
 ###########################################################
-CC         =gcc
-CFLAGS     =$(CPPFLAGS)
+CC         :=gcc
+CFLAGS     :=$(CPPFLAGS)
 
 ###########################################################
 #  Change these lines if you have other needs regarding
 #  the library file.  
 ###########################################################
-LIBFILE                 =PASS_FTN_ALT
-LIBRARY                 =lib$(THENAME)
+LIBFILE                 :=PASS_FTN_ALT
+LIBRARY                 :=lib$(THENAME)
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-  DYNAMICLIBRARYEXTENSION =.so
-  LIBFLAGS                =-rdynamic -lc -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
+  DYNAMICLIBRARYEXTENSION :=.so
+  LIBFLAGS                :=-rdynamic -lc -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
 endif
 ifeq ($(UNAME), Darwin)
-  DYNAMICLIBRARYEXTENSION =.dylib
-  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION) -lgfortran -lm -lgomp
+  DYNAMICLIBRARYEXTENSION :=.dylib
+  LIBFLAGS                :=-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION) -lgfortran -lm -lgomp
   #LIBFLAGS                =-static -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LIBFLAGS                =-dynamic -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LINKCOMM                = libtool $(LIBFLAGS) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
 endif
-LIBRARYEXTENSION        =$(DYNAMICLIBRARYEXTENSION)
-LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
-HEADERFILE              =$(THENAME)_lib
-HEADEREXTENSION         =.h
-HEADERFILES             =$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
-SRCHEADERFILES          =$(SRCDIR)/$(THENAME)_lib.h $(SRCDIR)/$(THENAME)_constants.h $(SRCDIR)/$(THENAME)_names.h $(SRCDIR)/$(THENAME)_types_c.h $(SRCDIR)/$(THENAME)_types_cpp.h $(SRCDIR)/$(THENAME)_types.h
-BINHEADERFILES          =$(BINDIR)/$(THENAME)_lib.h $(BINDIR)/$(THENAME)_constants.h $(BINDIR)/$(THENAME)_names.h $(BINDIR)/$(THENAME)_types_c.h $(BINDIR)/$(THENAME)_types_cpp.h $(BINDIR)/$(THENAME)_types.h
-INSTHEADERFILES         =$(HEADINST)/$(THENAME)_lib.h $(HEADINST)/$(THENAME)_constants.h $(HEADINST)/$(THENAME)_names.h $(HEADINST)/$(THENAME)_types_c.h $(HEADINST)/$(THENAME)_types_cpp.h $(HEADINST)/$(THENAME)_types.h
+LIBRARYEXTENSION        :=$(DYNAMICLIBRARYEXTENSION)
+LINKCOMM                := $(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+HEADERFILE              :=$(THENAME)_lib
+HEADEREXTENSION         :=.h
+HEADERFILES             :=$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
+SRCHEADERFILES          :=$(SRCDIR)/$(THENAME)_lib.h $(SRCDIR)/$(THENAME)_constants.h $(SRCDIR)/$(THENAME)_names.h $(SRCDIR)/$(THENAME)_types_c.h $(SRCDIR)/$(THENAME)_types_cpp.h $(SRCDIR)/$(THENAME)_types.h
+BINHEADERFILES          :=$(BINDIR)/$(THENAME)_lib.h $(BINDIR)/$(THENAME)_constants.h $(BINDIR)/$(THENAME)_names.h $(BINDIR)/$(THENAME)_types_c.h $(BINDIR)/$(THENAME)_types_cpp.h $(BINDIR)/$(THENAME)_types.h
+INSTHEADERFILES         :=$(HEADINST)/$(THENAME)_lib.h $(HEADINST)/$(THENAME)_constants.h $(HEADINST)/$(THENAME)_names.h $(HEADINST)/$(THENAME)_types_c.h $(HEADINST)/$(THENAME)_types_cpp.h $(HEADINST)/$(THENAME)_types.h
 #
 ### List of files to compile
-LIBOBJECTFILES = \
+LIBOBJECTFILES := \
 	$(LIBDIR)/SETUP.o \
 	$(LIBDIR)/CORE_ANC.o \
 	$(LIBDIR)/CORE_BWR.o \
@@ -175,11 +176,11 @@ $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) : $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILE
 	$(MK) $(BINDIR)
 	$(LINKCOMM)
 
-$(SRCDIR)/$(LIBFILE).for: $(LIBDIR)/PASS_FTN.FOR  $(LIBDIR)/COMMONS.for $(LIBDIR)/COMTRN.for
-	$(SE) 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE).for
-	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE).for
-	$(SE) -i.du "s/'commons.for'/'COMMONS.for'/" $(SRCDIR)/$(LIBFILE).for
-	$(SE) -i.du "s/'comtrn.for'/'COMTRN.for'/" $(SRCDIR)/$(LIBFILE).for
+$(SRCDIR)/$(LIBFILE)$(FEXT): $(LIBDIR)/PASS_FTN.FOR  $(LIBDIR)/COMMONS$(FEXT) $(LIBDIR)/COMTRN$(FEXT)
+	$(SE) 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE)$(FEXT)
+	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE)$(FEXT)
+	$(SE) -i.du "s/'commons.for'/'COMMONS$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
+	$(SE) -i.du "s/'comtrn$.for'/'COMTRN$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
 
 ###########################################################
 #  General rulesets for compilation.
@@ -188,7 +189,7 @@ $(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
 	$(MK) $(BINDIR)
 	$(CP) $< $@
 
-$(SRCDIR)/%.o : $(SRCDIR)/%.for
+$(SRCDIR)/%.o : $(SRCDIR)/%$(FEXT)
 	$(FC) $(FFLAGS) -I $(LIBDIR)/ -o $(SRCDIR)/$*.o -c $<
 	
 $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
@@ -197,17 +198,17 @@ $(SRCDIR)/%.o : $(SRCDIR)/%.cpp
 $(SRCDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -o $(SRCDIR)/$*.o -c $<
 
-$(LIBDIR)/%.o : $(LIBDIR)/%.for
+$(LIBDIR)/%.o : $(LIBDIR)/%$(FEXT)
 	$(FC) $(FFLAGS) -o $(LIBDIR)/$*.o -c $<
 
-$(LIBDIR)/%.for : $(LIBDIR)/%.FOR
-	$(CP) $(LIBDIR)/$*.FOR $(LIBDIR)/$*.for
-	$(SE) -i.du "s/'commons.for'/'COMMONS.for'/" $(LIBDIR)/$*.for
-	$(SE) -i.du "s/'comtrn.for'/'COMTRN.for'/" $(LIBDIR)/$*.for
+$(LIBDIR)/%$(FEXT) : $(LIBDIR)/%.FOR
+	$(CP) $(LIBDIR)/$*.FOR $(LIBDIR)/$*$(FEXT)
+	$(SE) -i.du "s/'commons.for'/'COMMONS$(FEXT)'/" $(LIBDIR)/$*$(FEXT)
+	$(SE) -i.du "s/'comtrn.for'/'COMTRN$(FEXT)'/" $(LIBDIR)/$*$(FEXT)
 	
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*.for $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE).for
+	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*$(FEXT) $(LIBDIR)/*$(FEXT).du $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE)$(FEXT) $(SRCDIR)/$(LIBFILE)$(FEXT).du
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
