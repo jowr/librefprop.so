@@ -33,7 +33,11 @@ Please note that there is a much more mature Python interface available at https
 There is a Matlab prototype file available from
 [NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the 
 library on MacOS and Linux. There is a shell script in the `matlab` folder that can do all the foot work for you. You only have
-to put the files `refpropm.m`, `rp_proto64.m` and `rp_proto.m` into the `matlab` folder and run `fixfiles.sh`. Enjoy your new library.
+to put the files `refpropm.m`, `rp_proto64.m` and `rp_proto.m` into the `matlab` folder and run `fixfiles.sh`. Enjoy your new libray.
+
+## MATLAB 64 bit Integration
+
+Once you have ran fixfiles.sh on refpropm.m header.h and rp_proto64.m you need to make a few changes. First copy thunk.m and header.h to the install folder where the symbolic link to the dynamically shared library is and the fluid files are. This should be /opt/refprop if you didn't change the location. Next you need to use the chown command to change the owner of the folder refprop (or what ever folder your using if you didn't use opt/refprop). Now here is the hard part, you need to have matlab up and running with the MEX capablity for your platform and your version of matlab along with the correct version of gcc. If you have gotten this far, you need to run thunk.m which will take the header.h and the dynamically shared library and create a thunk library interface and a new rp_proto64 file. If this worked successfully, view the open rp_proto64.m file and copy the file name of the thunk library. close and delete this file or it will cause problems. now go back to the renamed rp_proto64.m file in the matlab folder in this install package. Open it and change the name of the thunk file to the correct one. Now you can move the files to your prefered location on the matlab path so that refprop can be called (or for simplicity just run from librefprop.so-master/matlab folder for now) The test.m is a simple code you can use to check if the intergration works. Congrats! 
 
 
 ## General Remarks
