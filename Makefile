@@ -29,9 +29,9 @@ THENAME     =refprop
 LIBDIR     =./fortran
 FILDIR     =./files
 SRCDIR     =./src
-LIBINST    =/usr/local/lib
-HEADINST   =/usr/local/include
-FILINST    =/opt/refprop
+LIBINST    =/scratch/USERNAME/lib
+HEADINST   =/scratch/USERNAME/include
+FILINST    =/scratch/USERNAME/refprop
 BINDIR     =./bin
 
 LIBS       =-l$(THENAME)# -lPocoFoundation
@@ -133,10 +133,13 @@ install-linux : header library install-fluids
 	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(CH) $(INSTHEADERFILES) 
 	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
-	$(LD) -l $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
-	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+# The following line replaces the $(LD) lines that are commented out. This should adapt the code for the Linux SC EOS
+#	env var(“export LD_LIBRARY_PATH=/scratch/USERNAME/librefprop.so-master/bin”)
+#	$(LD) -l $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
+	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
-	$(LD) 
+#	$(LD)
 
 .PHONY        : install-mac
 install-mac   : header library install-fluids
@@ -231,7 +234,8 @@ $(BINDIR)/ex_mix_cpp : $(SRCDIR)/ex_mix.cpp
 fortest              : $(BINDIR)/ex_mix_for
 $(BINDIR)/ex_mix_for : $(SRCDIR)/ex_mix.for
 	$(FC) $(FFLAGS) -g -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.for
-	$(FC) $(FLINKFLAGS) -g -o $(BINDIR)/ex_mix_for $(SRCDIR)/ex_mix.o $(LIBS) -lgfortran
+#	$(FC) $(FLINKFLAGS) -g -o $(BINDIR)/ex_mix_for $(SRCDIR)/ex_mix.o $(LIBS) -lgfortran
+	$(FC) $(FLINKFLAGS) -g -o $(BINDIR)/ex_mix_for $(SRCDIR)/ex_mix.o $(BINDIR)/librefprop.so -lgfortran
 	
 .PHONY               : print-flags
 print-flags:
