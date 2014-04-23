@@ -143,6 +143,7 @@ fixdll "$FILE"
 FILE="rp_proto64.m"
 fixdll "$FILE" 
 fixcall "$FILE"
+fixcall2 "$FILE"
 fixlast "$FILE" 
 #
 # Rename functions in Header file
@@ -151,4 +152,5 @@ fixlast "$FILE"
 FILE="header.h"
 fixdll "$FILE"
 fixcall "$FILE"
+fixcall2 "$FILE"
 fixlast "$FILE"
