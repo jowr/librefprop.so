@@ -11,7 +11,7 @@ c  contained in a .mix file (located in the ...\Refprop\Mixtures directory).
 
 c...If the fluid files are located in a directory that the code cannot
 c.....find, make a call to SETPATH
-      call SETPATH('/scratch/USERNAME/refprop/')
+      call SETPATH('/usr/local/refprop/')
 
 !      i=3;
 !      hflnme='nitrogen.fld|argon.fld|oxygen.fld'

@@ -129,28 +129,43 @@ function fixlast {
   sed -i.du 's/CSTARdll/cstardll_/g' "$1"
 }
 #
-#
+# Test if the files have been added to the current folder
+function test_if_file_exists {
+  if [ ! -f $1 ]; then
+    echo "The file '$1' needs to be copied in the current directory. Please copy it first."
+    exit 0
+  fi
+}
+
 FILE="refpropm.m"
+test_if_file_exists "$FILE"
 fixdll "$FILE" 
 #
-###################### Comment in for 32-bit option #######################
-# FILE="rp_proto.m"
-# fixdll "$FILE" 
-# fixcall "$FILE" 
-# fixlast "$FILE" 
-#
-###################### Comment in the section for 64-bit option ################
-FILE="rp_proto64.m"
-fixdll "$FILE" 
-fixcall "$FILE"
-fixcall2 "$FILE"
-fixlast "$FILE" 
-#
-# Rename functions in Header file
-# header file is used with thunk.m to generate the thunk dynamically shared library
-# file needed for 64 bit systems.
-FILE="header.h"
-fixdll "$FILE"
-fixcall "$FILE"
-fixcall2 "$FILE"
-fixlast "$FILE"
+case $(getconf LONG_BIT) in
+  "32" )
+    FILE="rp_proto.m"
+    test_if_file_exists "$FILE"
+    fixdll "$FILE" 
+    fixcall "$FILE" 
+    fixlast "$FILE"
+    ;;
+  "64" )
+    FILE="rp_proto64.m"
+    test_if_file_exists "$FILE"
+    fixdll "$FILE"
+    fixcall "$FILE"
+    fixcall2 "$FILE"
+    fixlast "$FILE" 
+    # Rename functions in Header file
+    # header file is used with thunk.m to generate the thunk dynamically shared library
+    # file needed for 64 bit systems.
+    FILE="header.h"
+    fixdll "$FILE"
+    fixcall "$FILE"
+    fixcall2 "$FILE"
+    fixlast "$FILE"
+    ;;
+  * )
+    echo "Your platform is not supported yet. Please report the issue."
+    exit 0
+esac
