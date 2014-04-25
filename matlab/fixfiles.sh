@@ -138,26 +138,34 @@ function test_if_file_exists {
 }
 
 FILE="refpropm.m"
+test_if_file_exists "$FILE"
 fixdll "$FILE" 
 #
-###################### Comment in for 32-bit option #######################
-# FILE="rp_proto.m"
-# fixdll "$FILE" 
-# fixcall "$FILE" 
-# fixlast "$FILE" 
-#
-###################### Comment in the section for 64-bit option ################
-FILE="rp_proto64.m"
-fixdll "$FILE" 
-fixcall "$FILE"
-fixcall2 "$FILE"
-fixlast "$FILE" 
-#
-# Rename functions in Header file
-# header file is used with thunk.m to generate the thunk dynamically shared library
-# file needed for 64 bit systems.
-FILE="header.h"
-fixdll "$FILE"
-fixcall "$FILE"
-fixcall2 "$FILE"
-fixlast "$FILE"
+case $(getconf LONG_BIT) in
+  "32" )
+    FILE="rp_proto.m"
+    test_if_file_exists "$FILE"
+    fixdll "$FILE" 
+    fixcall "$FILE" 
+    fixlast "$FILE"
+    ;;
+  "64" )
+    FILE="rp_proto64.m"
+    test_if_file_exists "$FILE"
+    fixdll "$FILE"
+    fixcall "$FILE"
+    fixcall2 "$FILE"
+    fixlast "$FILE" 
+    # Rename functions in Header file
+    # header file is used with thunk.m to generate the thunk dynamically shared library
+    # file needed for 64 bit systems.
+    FILE="header.h"
+    fixdll "$FILE"
+    fixcall "$FILE"
+    fixcall2 "$FILE"
+    fixlast "$FILE"
+    ;;
+  * )
+    echo "Your platform is not supported yet. Please report the issue."
+    exit 0
+esac
