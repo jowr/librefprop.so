@@ -129,7 +129,14 @@ function fixlast {
   sed -i.du 's/CSTARdll/cstardll_/g' "$1"
 }
 #
-#
+# Test if the files have been added to the current folder
+function test_if_file_exists {
+  if [ ! -f $1 ]; then
+    echo "The file '$1' needs to be copied in the current directory. Please copy it first."
+    exit 0
+  fi
+}
+
 FILE="refpropm.m"
 fixdll "$FILE" 
 #
