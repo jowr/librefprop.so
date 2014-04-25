@@ -71,6 +71,7 @@ function fixdll {
   sed -i.du 's/SATHdll/sathdll_/g' "$1"
   sed -i.du 's/SATPdll/satpdll_/g' "$1"
   sed -i.du 's/SATSdll/satsdll_/g' "$1"
+  sed -i.du 's/SATSPLNdll/satsplndll_/g' "$1"
   sed -i.du 's/SATTdll/sattdll_/g' "$1"
   sed -i.du 's/SETAGAdll/setagadll_/g' "$1"
   sed -i.du 's/SETKTVdll/setktvdll_/g' "$1"
@@ -105,6 +106,9 @@ function fixdll {
 function fixcall {
   sed -i.du 's/stdcall/cdecl/g' "$1" 
 }
+function fixcall2 {
+sed -i.du 's/\ __cdecl\ /\ /g' "$1"
+}
 #
 function fixlast {
   sed -i.du 's/UNsetagadll_/unsetagadll_/g' "$1"
@@ -127,24 +131,24 @@ function fixlast {
 #
 #
 FILE="refpropm.m"
-#cp "$FILE.old" "$FILE" 
 fixdll "$FILE" 
 #
+###################### Comment in for 32-bit option #######################
+# FILE="rp_proto.m"
+# fixdll "$FILE" 
+# fixcall "$FILE" 
+# fixlast "$FILE" 
+#
+###################### Comment in the section for 64-bit option ################
 FILE="rp_proto64.m"
-#cp "$FILE.old" "$FILE" 
 fixdll "$FILE" 
-fixcall "$FILE" 
+fixcall "$FILE"
 fixlast "$FILE" 
 #
-FILE="rp_proto.m"
-#cp "$FILE.old" "$FILE" 
-fixdll "$FILE" 
-fixcall "$FILE" 
-fixlast "$FILE" 
-
-
-
-
-
-
-
+# Rename functions in Header file
+# header file is used with thunk.m to generate the thunk dynamically shared library
+# file needed for 64 bit systems.
+FILE="header.h"
+fixdll "$FILE"
+fixcall "$FILE"
+fixlast "$FILE"
