@@ -29,9 +29,9 @@ THENAME     =refprop
 LIBDIR     =./fortran
 FILDIR     =./files
 SRCDIR     =./src
-LIBINST    =/scratch/USERNAME/lib
-HEADINST   =/scratch/USERNAME/include
-FILINST    =/scratch/USERNAME/refprop
+LIBINST    =/usr/local/lib
+HEADINST   =/usr/local/include
+FILINST    =/usr/local/refprop
 BINDIR     =./bin
 
 LIBS       =-l$(THENAME)# -lPocoFoundation
