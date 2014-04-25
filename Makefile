@@ -21,7 +21,7 @@ SE =sed
 MAJORVERSION=9
 MINORVERSION=1
 THENAME     =refprop
-USERNAME    =`whoami`
+USERNAME    =$(shell whoami)
 
 ###########################################################
 #  Setting the directories for library, header and 
@@ -40,7 +40,7 @@ else
   LIBINST    =/home/$(USERNAME)/lib
   HEADINST   =/home/$(USERNAME)/include
   FILINST    =/home/$(USERNAME)/refprop
-endef
+endif
 
 LIBS       =-l$(THENAME)# -lPocoFoundation
 # Disable optimisation for now, this should be removed again
@@ -147,9 +147,12 @@ install-linux : header library install-fluids
 ifeq ($(USERNAME),root)
 	$(LD)
 else 
-	# This code exports the path for the current session
-	env var("export LD_LIBRARY_PATH=$(LIBINST)")
-endef
+	@echo "------------------ IMPORTANT NOTICE ------------------"
+	@echo "You are not root:"
+	# This code exports the path for the next command: 
+	export LD_LIBRARY_PATH=$(LIBINST)
+	# remeber to preceed all your commands with it to use the locally installed library.
+endif
 
 .PHONY        : install-mac
 install-mac   : header library install-fluids
