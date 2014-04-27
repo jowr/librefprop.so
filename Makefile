@@ -162,7 +162,7 @@ else
 	@echo "You are not root:"
 	# This code exports the path for the next command: 
 	export LD_LIBRARY_PATH=$(LIBINST)
-	# remeber to preceed all your commands with it to use the locally installed library.
+	# Remember to preceed all your commands with it to use the locally installed library.
 endif
 
 .PHONY        : install-mac
@@ -230,7 +230,7 @@ matlab     : matlab64
 endif
 	@echo " "
 	@echo " "
-	@echo "Remeber to run something like 'addpath('$(FILINST)')';"
+	@echo "Remember to run something like 'addpath('$(FILINST)')';"
 	@echo "to complete the Matlab integration."
 
 .PHONY     : matlab32
