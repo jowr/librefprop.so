@@ -8,7 +8,7 @@ For installation on a Linux or OSX machine, please follow the steps described be
 1.  Change the paths in the Makefile, if needed.
 2.  Copy the REFPROP Fortran code to the *fortran* directory.
 3.  Put the *fluids* and *mixtures* folders from REFPROP into the *files* folder.
-4.  Call `make header library` to prepare the files. 
+4.  Call `make` to prepare the files. 
 5.  Use `make install` (as root user) to copy the files to the destination directories.
 
 You can remove the files again by calling `make uninstall` (as root user). 
