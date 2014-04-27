@@ -216,9 +216,9 @@ $(SRCDIR)/$(LIBFILE)$(FEXT): $(LIBDIR)/PASS_FTN.FOR $(LIBDIR)/COMMONS$(FEXT) $(L
 #  a lot!
 ###########################################################
 URL_NIST :=http://www.boulder.nist.gov/div838/theory/refprop
-URL_RPMM :=refpropm.m
-URL_PR32 :=rp_proto.m
-URL_PR64 :=rp_proto64.m
+FIL_RPMM :=refpropm.m
+FIL_PR32 :=rp_proto.m
+FIL_PR64 :=rp_proto64.m
 
 .PHONY     : matlab
 ifeq ($(ARCH), 32)
@@ -237,11 +237,13 @@ endif
 matlab32   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
 	($(CD) $(MATDIR); ./fixfiles.sh)
 	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
+	$(CH) $(FILINST)/*.m $(FILINST)/*.so
 
 .PHONY     : matlab64
 matlab64   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
 	($(CD) $(MATDIR); ./fixfiles.sh)
 	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/librefprop_thunk_glnxa64.so $(MATDIR)/rp_proto64.m $(FILINST)
+	$(CH) $(FILINST)/*.m $(FILINST)/*.so
 
 $(MATDIR)/%.m: $(MATDIR)/%.m.org
 	$(CP) $(MATDIR)/$*.m.org $(MATDIR)/$*.m
@@ -276,7 +278,7 @@ $(LIBDIR)/%$(FEXT) : $(LIBDIR)/%.FOR
 	
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*$(FEXT) $(LIBDIR)/*$(FEXT).du $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE)$(FEXT) $(SRCDIR)/$(LIBFILE)$(FEXT).du
+	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*$(FEXT) $(LIBDIR)/*$(FEXT).du $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE)$(FEXT) $(SRCDIR)/$(LIBFILE)$(FEXT).du $(MATDIR)/r*.m
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
