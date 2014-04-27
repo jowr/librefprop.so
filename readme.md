@@ -31,18 +31,17 @@ Please note that there is a much more mature Python interface available at https
 
 ## Matlab Integration
 There is a Matlab prototype file available from
-[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the 
-library on MacOS and Linux.
+[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the library on MacOS and GNU/Linux.
 
 There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use Refprop with Matlab. Run `make matlab` as root user for a system-wide installation. 
 
 The test.m is a simple code you can use to check if the intergration works.
 
 ### MATLAB 64 bit Integration
-This part was contributed from nkampy and speredenn and is still a little experimental. Please open new issues if you encounter any problems. Problems are likely to be encountered in setting up matlab with gcc to use the built in MEX functionality which is required for the load library command in the thunk.m file. We hope the user community comments help that nkampy and others have left at the mathworks website.
+This part was contributed partly by @nkampy and @speredenn and is still experimental. Please open new issues if you encounter any problems. Problems are likely to be encountered in setting up matlab with gcc, needed to use the builtin MEX functionality, which is required for the load library command in the thunk.m file. We hope that the user community and @nkampy comments, left at the mathworks website, will help figuring out a good solution.
 
 ## No root user access
-It is possible to use the shared libraries without root access. However, you need to make sure that the libraries get found and it is recommended to add something like `export LD_LIBRARY_PATH=/home/USERNAME/lib:/home/USERNAME/refprop:$LD_LIBRARY_PATH` to the calls to executables that need Refprop. The makefile will print more instructions when running `make install` as a non-root user.
+It is possible to use the shared libraries without root access. However, you need to make sure that the libraries get found and it is recommended to add something like `export LD_LIBRARY_PATH=/home/USERNAME/lib:/home/USERNAME/refprop:$LD_LIBRARY_PATH` to the calls to executables that need REFPROP. The makefile will print more instructions when running `make install` as a non-root user.
 
 ## General Remarks
 Please note that you need a working and licensed copy of Refprop in order to use the software provided here. This is not a replacement for Refprop. You can purchase Refprop at http://www.nist.gov/srd/nist23.cfm
