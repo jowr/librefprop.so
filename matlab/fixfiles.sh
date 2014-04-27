@@ -101,13 +101,16 @@ function fixdll {
   sed -i.du 's/WMOLdll/wmoldll_/g' "$1"
   sed -i.du 's/XMASSdll/xmassdll_/g' "$1"
   sed -i.du 's/XMOLEdll/xmoledll_/g' "$1" 
+  rm "$1.du"
 }
 #
 function fixcall {
   sed -i.du 's/stdcall/cdecl/g' "$1" 
+  rm "$1.du"
 }
 function fixcall2 {
-sed -i.du 's/\ __cdecl\ /\ /g' "$1"
+  sed -i.du 's/\ __cdecl\ /\ /g' "$1"
+  rm "$1.du"
 }
 #
 function fixlast {
@@ -127,7 +130,53 @@ function fixlast {
   sed -i.du 's/DVSATKdll/dvsatkdll_/g' "$1"
   sed -i.du 's/HEATdll/heatdll_/g' "$1"
   sed -i.du 's/CSTARdll/cstardll_/g' "$1"
+  rm "$1.du"
 }
+#
+function fixpath {
+  #sed -i.du 's/\/usr\/local\/REFPROP\//\/opt\/refprop\//g' "$1"
+  #sed -i.du 's/FLUIDS\//fluids\//g' "$1"
+  #rm "$1.du"
+  #sed -i.du '/\/usr\/local\/REFPROP\//c\This line is removed by the admin.' "$1"
+  #rm "$1.du"
+  echo "################################################"
+  echo "Integrating Matlab and Refprop"
+  echo "################################################"
+  echo "Unfortunately, there is still some manual work "
+  echo "to be done. Please follow the intructions below "
+  echo "to complete the installation."
+  echo " "
+  echo " "
+  echo " 1) Find the line (around line 194): "
+  echo "    case {'GLNXA64', 'GLNX86', 'MACI', 'MACI64', 'SOL64'}"
+  echo "    in $1 and replace the whole case statement (3 lines) with:"
+  echo " "
+  echo "        case {'GLNX86', 'MACI'}"
+  echo "            dllName = 'librefprop.so';"
+  echo "            BasePath = '/opt/refprop';"
+  echo "            FluidDir = 'fluids/';"
+  echo "        case {'GLNXA64', 'MACI64', 'SOL64'}"
+  echo "            dllName = 'librefprop.so';"
+  echo "            BasePath = '/opt/refprop';"
+  echo "            FluidDir = 'fluids/';"
+  echo "            prototype = @() rp_proto64(BasePath);"
+  echo " "
+  echo "    save the file and proceed by pressing ENTER."
+  read dummy 
+}
+
+function fixpath64 {
+  cp rp_proto64.m rp_proto64.m.tmp
+  echo " "
+  echo " "
+  echo " 2) Open Matlab, change to the 'matlab' directory and run \"run('thunk.m');\", "
+  echo "    proceed to step 3 by pressing ENTER."
+  read dummy 
+  mv rp_proto64.m rp_proto64.m.thunk
+  mv rp_proto64.m.tmp rp_proto64.m
+  sed -i.du 's/REFPRP64_thunk_pcwin64/librefprop_thunk_glnxa64/g' rp_proto64.m
+}
+
 #
 # Test if the files have been added to the current folder
 function test_if_file_exists {
@@ -137,21 +186,31 @@ function test_if_file_exists {
   fi
 }
 
+function backup_file {
+  if [ ! -f $1.org ]; then
+    test_if_file_exists $1
+    cp $1 $1.org
+  else
+    cp $1.org $1
+  fi
+}
+
 FILE="refpropm.m"
-test_if_file_exists "$FILE"
+backup_file "$FILE"
 fixdll "$FILE" 
+fixpath "$FILE" 
 #
 case $(getconf LONG_BIT) in
   "32" )
     FILE="rp_proto.m"
-    test_if_file_exists "$FILE"
+    backup_file "$FILE"
     fixdll "$FILE" 
     fixcall "$FILE" 
     fixlast "$FILE"
     ;;
   "64" )
     FILE="rp_proto64.m"
-    test_if_file_exists "$FILE"
+    backup_file "$FILE"
     fixdll "$FILE"
     fixcall "$FILE"
     fixcall2 "$FILE"
@@ -164,6 +223,8 @@ case $(getconf LONG_BIT) in
     fixcall "$FILE"
     fixcall2 "$FILE"
     fixlast "$FILE"
+    # Finish the file changing
+    fixpath64
     ;;
   * )
     echo "Your platform is not supported yet. Please report the issue."

@@ -9,38 +9,50 @@
 # 2) sudo make install
 # ============================================================================
 # general commands:
-RM =rm -f
-CP =cp
-CH =chmod 0644
-MK =mkdir -p
-LD =ldconfig
-LN =ln -sf
-SE =sed
+RM :=rm -f
+CP :=cp
+CD :=cd
+CH :=chmod 0644
+MK :=mkdir -p
+LD :=ldconfig
+LN :=ln -sf
+SE :=sed
+CU :=curl
 
 # used for the output
-MAJORVERSION=9
-MINORVERSION=1
-THENAME     =refprop
-USERNAME    =$(shell whoami)
+MAJORVERSION:=9
+MINORVERSION:=1
+THENAME     :=refprop
+USERNAME    :=$(shell whoami)
+UNAME       :=$(shell uname -s)
+ARCH        :=$(shell getconf LONG_BIT)
 
 ###########################################################
 #  Setting the directories for library, header and 
 #  binary files created in this makefile. 
 ###########################################################
-LIBDIR     =./fortran
-FILDIR     =./files
-SRCDIR     =./src
-BINDIR     =./bin
+LIBDIR     :=./fortran
+FILDIR     :=./files
+SRCDIR     :=./src
+BINDIR     :=./bin
+MATDIR     :=./matlab
 
 ifeq ($(USERNAME),root)
-  LIBINST    =/usr/local/lib
-  HEADINST   =/usr/local/include
-  FILINST    =/opt/refprop
+  LIBINST  :=/usr/local/lib
+  HEADINST :=/usr/local/include
+  FILINST  :=/opt/refprop
 else 
-  LIBINST    =/home/$(USERNAME)/lib
-  HEADINST   =/home/$(USERNAME)/include
-  FILINST    =/home/$(USERNAME)/refprop
+  LIBINST  :=/home/$(USERNAME)/lib
+  HEADINST :=/home/$(USERNAME)/include
+  FILINST  :=/home/$(USERNAME)/refprop
 endif
+
+
+###########################################################
+# ============================================================================
+# No more customisation should be needed below this line
+# ============================================================================
+###########################################################
 
 LIBS       =-l$(THENAME)# -lPocoFoundation
 # Disable optimisation for now, this should be removed again
@@ -73,7 +85,6 @@ CFLAGS     =$(CPPFLAGS)
 ###########################################################
 LIBFILE   =PASS_FTN_ALT
 LIBRARY   =lib$(THENAME)
-UNAME     = $(shell uname)
 ifeq ($(UNAME), Linux)
   DYNAMICLIBRARYEXTENSION =.so
   LIBFLAGS                =-rdynamic -lc -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
@@ -197,6 +208,47 @@ $(SRCDIR)/$(LIBFILE)$(FEXT): $(LIBDIR)/PASS_FTN.FOR $(LIBDIR)/COMMONS$(FEXT) $(L
 	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE)$(FEXT)
 	$(SE) -i.du "s/'commons.for'/'COMMONS$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
 	$(SE) -i.du "s/'comtrn.for'/'COMTRN$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
+
+###########################################################
+#  Automate the integration with Matlab. This is a work in 
+#  progress and there are still some pitfalls...
+#  However, contributions from nkampy and speredenn helped
+#  a lot!
+###########################################################
+URL_NIST :=http://www.boulder.nist.gov/div838/theory/refprop
+URL_RPMM :=refpropm.m
+URL_PR32 :=rp_proto.m
+URL_PR64 :=rp_proto64.m
+
+.PHONY     : matlab
+ifeq ($(ARCH), 32)
+matlab     : matlab32 
+else
+  ifeq ($(ARCH), 64)
+matlab     : matlab64
+  endif
+endif
+	@echo " "
+	@echo " "
+	@echo "Remeber to run something like 'addpath('$(FILINST)')';"
+	@echo "to complete the Matlab integration."
+
+.PHONY     : matlab32
+matlab32   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
+	($(CD) $(MATDIR); ./fixfiles.sh)
+	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
+
+.PHONY     : matlab64
+matlab64   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
+	($(CD) $(MATDIR); ./fixfiles.sh)
+	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/librefprop_thunk_glnxa64.so $(MATDIR)/rp_proto64.m $(FILINST)
+
+$(MATDIR)/%.m: $(MATDIR)/%.m.org
+	$(CP) $(MATDIR)/$*.m.org $(MATDIR)/$*.m
+
+$(MATDIR)/%.m.org: 
+	$(CU) $(URL_NIST)/$*.m > $(MATDIR)/$*.m.org
+
 
 ###########################################################
 #  General rulesets for compilation.
