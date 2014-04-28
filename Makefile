@@ -63,7 +63,7 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 FEXT       =.f
 FC         =gfortran
-FFLAGS     =$(OPTFLAGS) -fopenmp -fPIC# -Wall -pedantic# -fno-underscoring
+FFLAGS     =$(OPTFLAGS) -fPIC #-fopenmp# -Wall -pedantic# -fno-underscoring
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
@@ -134,6 +134,14 @@ LIBOBJECTFILES = \
 	$(LIBDIR)/TRNSP.o \
 	$(LIBDIR)/UTILITY.o
 	
+	
+###########################################################
+#  Set the default goal.
+###########################################################
+.DEFAULT_GOAL := all
+.PHONY        : all
+all           : header library
+
 ###########################################################
 #  Copy files to places recognised by the system.
 ###########################################################
@@ -185,9 +193,6 @@ uninstall    :
 	$(RM) $(INSTHEADERFILES)
 	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)*
 	$(RM) -r $(FILINST)
-
-.PHONY       : all
-all          : header library
 
 ###########################################################
 #  Compile the Fortran sources into a library file that can 

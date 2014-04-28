@@ -46,3 +46,5 @@ It is possible to use the shared libraries without root access. However, you nee
 
 ## General Remarks
 Please note that you need a working and licensed copy of REFPROP in order to use the software provided here. This is not a replacement for REFPROP. You can purchase REFPROP at http://www.nist.gov/srd/nist23.cfm
+
+If you are interested in fluid property modelling, you might also be interested in [CoolProp](https://github.com/ibell/coolprop), an open-source thermodynamic fluid property package with over 100 compressible and over 50 incompressible fluids.
