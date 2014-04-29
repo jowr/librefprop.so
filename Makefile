@@ -47,6 +47,8 @@ else
   FILINST  :=/home/$(USERNAME)/refprop
 endif
 
+USEOPENMP  :=TRUE # TRUE or FALSE
+
 
 ###########################################################
 # ============================================================================
@@ -63,7 +65,11 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 ###########################################################
 FEXT       =.f
 FC         =gfortran
+ifeq ($(USEOPENMP), TRUE)
+FFLAGS     =$(OPTFLAGS) -fPIC -fopenmp# -Wall -pedantic# -fno-underscoring
+else
 FFLAGS     =$(OPTFLAGS) -fPIC #-fopenmp# -Wall -pedantic# -fno-underscoring
+endif
 
 ###########################################################
 #  Change these lines if you are using a different C++ 
