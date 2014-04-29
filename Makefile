@@ -257,8 +257,12 @@ matlab-install32 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
 .PHONY           : matlab-install64
 matlab-install64 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
 	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m $(FILINST)
+ifeq ($(UNAME), Linux)
 	$(CP) $(MATDIR)/librefprop_thunk_glnxa64.so $(FILINST)
+endif
+ifeq ($(UNAME), Darwin)
 	$(CP) $(MATDIR)/librefprop_thunk_maci64.dylib $(FILINST)
+endif
 
 $(MATDIR)/%.m: $(MATDIR)/%.m.org
 	$(CP) $(MATDIR)/$*.m.org $(MATDIR)/$*.m
@@ -293,7 +297,7 @@ $(LIBDIR)/%$(FEXT) : $(LIBDIR)/%.FOR
 	
 .PHONY: clean
 clean:
-	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*$(FEXT) $(LIBDIR)/*$(FEXT).du $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE)$(FEXT) $(SRCDIR)/$(LIBFILE)$(FEXT).du $(MATDIR)/r*.m.* $(MATDIR)/*.so
+	$(RM) **.o **.so **.a **.dylib **.mod $(BINDIR)/* $(SRCDIR)/*.o $(LIBDIR)/*$(FEXT) $(LIBDIR)/*$(FEXT).du $(LIBDIR)/*.o $(SRCDIR)/$(LIBFILE)$(FEXT) $(SRCDIR)/$(LIBFILE)$(FEXT).du $(MATDIR)/r*.m* $(MATDIR)/*.so
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
