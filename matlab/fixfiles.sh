@@ -224,6 +224,7 @@ case $(getconf LONG_BIT) in
     # header file is used with thunk.m to generate the thunk dynamically shared library
     # file needed for 64 bit systems.
     FILE="header.h"
+    backup_file "$FILE"
     fixdll "$FILE"
     fixcall "$FILE"
     fixcall2 "$FILE"
