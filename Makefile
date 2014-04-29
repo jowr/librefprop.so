@@ -254,7 +254,13 @@ else
 matlab-install   : matlab-install64
   endif
 endif
+ifeq ($(UNAME), Linux)
 	$(CH) $(FILINST)/*.m $(FILINST)/*.so
+endif
+ifeq ($(UNAME), Darwin)
+	$(CH) $(FILINST)/*.m $(FILINST)/*.dylib
+endif
+
 
 .PHONY           : matlab-install32
 matlab-install32 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m

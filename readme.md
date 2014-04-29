@@ -34,7 +34,13 @@ Please note that there is a much more mature Python interface available at https
 There is a Matlab prototype file available from
 [NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the library on MacOS and GNU/Linux.
 
-There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use REFPROP with Matlab. Run `make matlab` as root user for a system-wide installation. 
+There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use REFPROP with Matlab. Run `make matlab` as root user to download and modify the files. Then run `make matlab-install’ as root user for a system-wide installation. 
+
+## Known Issue with `make matlab’ - you need to use the command:
+Before following the first prompt
+chown USERNAME:wheel refpropm.m
+Before following the second prompt
+chown USERNAME:wheel rp_proto64.m
 
 The test.m is a simple code you can use to check if the intergration works.
 
