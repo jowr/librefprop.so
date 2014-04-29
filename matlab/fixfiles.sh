@@ -175,11 +175,17 @@ function fixpath64 {
   echo " 2) Open Matlab, change to the 'matlab' directory, "
   echo "    `pwd`,"
   echo "    and run \"run('thunk.m');\", "
-  echo "    proceed to step 3 by pressing ENTER."
+  echo "    proceed by pressing ENTER."
   read dummy 
   mv rp_proto64.m rp_proto64.m.thunk
   mv rp_proto64.m.tmp rp_proto64.m
-  sed -i.du 's/REFPRP64_thunk_pcwin64/librefprop_thunk_glnxa64/g' rp_proto64.m
+  unamestr=`uname`
+  if [[ "$unamestr" == 'Linux' ]]; then
+      sed -i.du 's/REFPRP64_thunk_pcwin64/librefprop_thunk_glnxa64/g' rp_proto64.m
+  elif [[ "$unamestr" == 'Darwin' ]]; then
+     sed -i.du 's/REFPRP64_thunk_pcwin64/librefprop_thunk_maci64/g' rp_proto64.m
+  fi  
+  rm rp_proto64.m.du
 }
 
 #

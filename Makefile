@@ -256,7 +256,9 @@ matlab-install32 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
 
 .PHONY           : matlab-install64
 matlab-install64 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
-	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/librefprop_thunk_glnxa64.so $(MATDIR)/rp_proto64.m $(FILINST)
+	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m $(FILINST)
+	$(CP) $(MATDIR)/librefprop_thunk_glnxa64.so $(FILINST)
+	$(CP) $(MATDIR)/librefprop_thunk_maci64.dylib $(FILINST)
 
 $(MATDIR)/%.m: $(MATDIR)/%.m.org
 	$(CP) $(MATDIR)/$*.m.org $(MATDIR)/$*.m
