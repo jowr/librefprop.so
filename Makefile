@@ -227,28 +227,36 @@ FIL_PR64 :=rp_proto64.m
 
 .PHONY     : matlab
 ifeq ($(ARCH), 32)
-matlab     : matlab32 
+matlab     : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
 else
   ifeq ($(ARCH), 64)
-matlab     : matlab64
+matlab     : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
   endif
 endif
+	($(CD) $(MATDIR); ./fixfiles.sh)
 	@echo " "
 	@echo " "
 	@echo "Remember to run something like 'addpath('$(FILINST)')';"
 	@echo "to complete the Matlab integration."
 
-.PHONY     : matlab32
-matlab32   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
-	($(CD) $(MATDIR); ./fixfiles.sh)
-	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
+
+.PHONY     : matlab-install
+ifeq ($(ARCH), 32)
+matlab-install   : matlab-install32 
+else
+  ifeq ($(ARCH), 64)
+matlab-install   : matlab-install64
+  endif
+endif
 	$(CH) $(FILINST)/*.m $(FILINST)/*.so
 
-.PHONY     : matlab64
-matlab64   : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
-	($(CD) $(MATDIR); ./fixfiles.sh)
+.PHONY           : matlab-install32
+matlab-install32 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
+	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
+
+.PHONY           : matlab-install64
+matlab-install64 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
 	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/librefprop_thunk_glnxa64.so $(MATDIR)/rp_proto64.m $(FILINST)
-	$(CH) $(FILINST)/*.m $(FILINST)/*.so
 
 $(MATDIR)/%.m: $(MATDIR)/%.m.org
 	$(CP) $(MATDIR)/$*.m.org $(MATDIR)/$*.m
