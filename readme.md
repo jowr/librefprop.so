@@ -34,15 +34,15 @@ Please note that there is a much more mature Python interface available at https
 There is a Matlab prototype file available from
 [NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the library on MacOS and GNU/Linux.
 
-There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use REFPROP with Matlab. Run `make matlab` as root user to download and modify the files. Then run `make matlab-install’ as root user for a system-wide installation. 
-
-## Known Issue with `make matlab’ - you need to use the command:
-Before following the first prompt
-chown USERNAME:wheel refpropm.m
-Before following the second prompt
-chown USERNAME:wheel rp_proto64.m
+There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use REFPROP with Matlab. Then run `make matlab-install’ as root user for a system-wide installation. 
 
 The test.m is a simple code you can use to check if the intergration works.
+
+Summary for the impatient:
+  * Go to the directory with the downloaded files and open a command prompt.
+  * Run `make` and then `sudo make install` to install the shared library.
+  * Run `make matlab` to download files and edit them as written in the terminal.
+  * Run `sudo make matlab-install` to copy the matlab file to `/opt/refprop`.
 
 ### MATLAB 64 bit Integration
 This part was contributed partly by [nkampy](https://github.com/nkampy) and [speredenn](https://github.com/speredenn) and is still experimental. Please open new issues if you encounter any problems. Problems are likely to be encountered in setting up matlab with gcc, needed to use the builtin MEX functionality, which is required for the load library command in the thunk.m file. We hope that the user community and [nkampy's](https://github.com/nkampy) comments, left at the mathworks website, will help figuring out a good solution.
