@@ -240,10 +240,6 @@ matlab     : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
   endif
 endif
 	($(CD) $(MATDIR); ./fixfiles.sh)
-	@echo " "
-	@echo " "
-	@echo "Remember to run something like 'addpath('$(FILINST)')';"
-	@echo "to complete the Matlab integration."
 
 
 .PHONY     : matlab-install
@@ -260,6 +256,10 @@ endif
 ifeq ($(UNAME), Darwin)
 	$(CH) $(FILINST)/*.m $(FILINST)/*.dylib
 endif
+	@echo " "
+	@echo " "
+	@echo "Remember to run something like 'addpath('$(FILINST)')';"
+	@echo "to complete the Matlab integration."
 
 
 .PHONY           : matlab-install32

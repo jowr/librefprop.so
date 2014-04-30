@@ -181,9 +181,9 @@ function fixpath64 {
   cp rp_proto64.m rp_proto64.m.tmp
   echo " "
   echo " "
-  echo " 2) Open Matlab, change to the 'matlab' directory, "
-  echo "    `pwd`,"
-  echo "    and run \"run('thunk.m');\", "
+  echo " 2) Open Matlab, and run :"
+  echo "    \"cd `pwd`;\""
+  echo "    \"run('thunk.m');\""
   echo "    proceed by pressing ENTER."
   read dummy 
   mv rp_proto64.m rp_proto64.m.thunk
