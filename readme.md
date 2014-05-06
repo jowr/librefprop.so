@@ -51,7 +51,7 @@ This part was contributed partly by [nkampy](https://github.com/nkampy) and [spe
 It is possible to use the shared libraries without root access. However, you need to make sure that the libraries get found and it is recommended to add something like `export LD_LIBRARY_PATH=/home/USERNAME/lib:/home/USERNAME/refprop:$LD_LIBRARY_PATH` to the calls to executables that need REFPROP. The makefile will print more instructions when running `make install` as a non-root user.
 
 ## Known Problems
-  * Older compilers might not with the OpenMP directives used in the original Fortran code. If you experience any problems related to OpenMP, try removing OpenMP support by setting `USEOPENMP  :=FALSE` in line 50 of the Makefile.
+  * Older compilers might not work properly with the OpenMP directives used in the original Fortran code. If you experience any problems related to OpenMP, try removing OpenMP support by setting `USEOPENMP  :=FALSE` in line 51 of the Makefile.
 
 ## General Remarks
 Please note that you need a working and licensed copy of REFPROP in order to use the software provided here. This is not a replacement for REFPROP. You can purchase REFPROP at http://www.nist.gov/srd/nist23.cfm
