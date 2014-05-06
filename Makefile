@@ -18,6 +18,7 @@ LD :=ldconfig
 LN :=ln -sf
 SE :=sed
 CU :=curl
+MV :=mv
 
 # used for the output
 MAJORVERSION:=9
@@ -162,7 +163,7 @@ endif
 .PHONY        : install-linux
 install-linux : header library install-fluids
 	$(MK) $(HEADINST) $(LIBINST)
-	$(CP) $(BINHEADERFILES) $(HEADINST)
+	$(MV) $(BINHEADERFILES) $(HEADINST)
 	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(CH) $(INSTHEADERFILES) 
 	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
@@ -259,21 +260,21 @@ endif
 	@echo " "
 	@echo " "
 	@echo "Remember to run something like 'addpath('$(FILINST)')';"
-	@echo "to complete the Matlab integration."
+	@echo "from within Matlab to complete the Matlab integration."
 
 
 .PHONY           : matlab-install32
 matlab-install32 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
-	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
+	$(MV) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m $(FILINST)
 
 .PHONY           : matlab-install64
 matlab-install64 : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
-	$(CP) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m $(FILINST)
+	$(MV) $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m $(FILINST)
 ifeq ($(UNAME), Linux)
-	$(CP) $(MATDIR)/librefprop_thunk_glnxa64.so $(FILINST)
+	$(MV) $(MATDIR)/librefprop_thunk_glnxa64.so $(FILINST)
 endif
 ifeq ($(UNAME), Darwin)
-	$(CP) $(MATDIR)/librefprop_thunk_maci64.dylib $(FILINST)
+	$(MV) $(MATDIR)/librefprop_thunk_maci64.dylib $(FILINST)
 endif
 
 $(MATDIR)/%.m: $(MATDIR)/%.m.org
