@@ -4,7 +4,7 @@ These files allow you to compile the REFPROP fluid property database as a shared
 ## Installation Instructions
 For installation on a Linux or OSX machine, please follow the steps described below. By default, the library and the header file are placed in system directories. Please change the paths if you do not have write access to this part of your file system. 
 
-0.  Make sure that you have gcc, for OSX use [HPC](http://hpc.sourceforge.net/) and install the [OSX command line tools](https://developer.apple.com/downloads).
+0.  Make sure that you have gcc and gfortran, for OSX use [HPC](http://hpc.sourceforge.net/) and install the [OSX command line tools](https://developer.apple.com/downloads).
 1.  Get a copy of this repository, either by downloading the latest [release](https://github.com/jowr/librefprop.so/releases/latest) or the current development version as [zip file](https://github.com/jowr/librefprop.so/archive/master.zip) or simply clone the [repository](https://github.com/jowr/librefprop.so.git) with git.
 2.  Change the paths in the Makefile, if needed.
 3.  Copy the REFPROP Fortran code to the *fortran* directory.
