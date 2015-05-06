@@ -25,14 +25,14 @@ There is a simple Fortran file to test the library. You can call `make fortest` 
 
 ## Python Integration
 There is a basic python package based on the examples from
-[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#PythonApplications "NIST homepage")
+[NIST](http://www.boulder.nist.gov/div838/theory/refprop/LINKING/Linking.htm#PythonApplications "NIST homepage")
 in the `pyrp` folder. 
 
 Please note that there is a much more mature Python interface available at https://github.com/BenThelen/python-refprop. Thank you Ben for sharing it!
 
 ## Matlab Integration
 There is a Matlab prototype file available from
-[NIST](http://www.boulder.nist.gov/div838/theory/refprop/Frequently_asked_questions.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the library on MacOS and GNU/Linux.
+[NIST](http://www.boulder.nist.gov/div838/theory/refprop/LINKING/Linking.htm#MatLabApplications "NIST homepage"). Unfortunately, you have to change a few things in order to use the library on MacOS and GNU/Linux.
 
 There is a makefile section and a shell script that help you with this. After installing the library as described above, you can run `make matlab` in order to use REFPROP with Matlab. Then run `make matlab-install’ as root user for a system-wide installation. 
 
@@ -40,7 +40,7 @@ The test.m is a simple code you can use to check if the intergration works.
 
 Summary for the impatient:
   * Go to the directory with the downloaded files and open a command prompt.
-  * Run `make` and then `sudo make install` to install the shared library.
+  * Run `make` and then `sudo make install` to install the shared library *(Skip this if your administrator already installed REFPROP for you)*.
   * Run `make matlab` to download files and edit them as written in the terminal.
   * Run `sudo make matlab-install` to copy the matlab file to `/opt/refprop`.
 

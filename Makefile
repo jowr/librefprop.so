@@ -227,17 +227,17 @@ $(SRCDIR)/$(LIBFILE)$(FEXT): $(LIBDIR)/PASS_FTN.FOR $(LIBDIR)/COMMONS$(FEXT) $(L
 #  However, contributions from nkampy and speredenn helped
 #  a lot!
 ###########################################################
-URL_NIST :=http://www.boulder.nist.gov/div838/theory/refprop
+URL_NIST :=http://www.boulder.nist.gov/div838/theory/refprop/LINKING
 FIL_RPMM :=refpropm.m
 FIL_PR32 :=rp_proto.m
 FIL_PR64 :=rp_proto64.m
 
 .PHONY     : matlab
 ifeq ($(ARCH), 32)
-matlab     : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
+matlab     : header $(MATDIR)/refpropm.m $(MATDIR)/rp_proto.m
 else
   ifeq ($(ARCH), 64)
-matlab     : header library $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
+matlab     : header $(MATDIR)/refpropm.m $(MATDIR)/rp_proto64.m
   endif
 endif
 	($(CD) $(MATDIR); ./fixfiles.sh)

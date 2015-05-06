@@ -1,2 +1,3 @@
 clear all; clc;
-T=refpropm('T','C',0,' ',0,'water');
+Tp=refpropm('T','C',0,' ',0,'water');
+Tm=refpropm('T','P',800,'Q',0,'ammonia','water',[0.7 0.3])
