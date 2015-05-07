@@ -1,0 +1,48 @@
+--- refpropm_20131017.m	Thu May  7 11:29:37 2015
++++ refpropm_20150507.m	Thu May  7 11:45:13 2015
+@@ -154,6 +154,12 @@
+ %       make other modifications.
+ %       Added outputs B, E, F, J, and R.
+ %       HQ input regressed.
++%
++%   Jorrit Wronski, DTU Mechanical Engineering
++%       Minor changes to load shared libraries on OS X and Linux systems 
++%       Tested with MATLAB 2014a on Linux
++%       Visit https://github.com/jowr/librefprop.so for more information
++% 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ function varargout = refpropm( varargin )
+@@ -190,13 +196,28 @@
+     fluidType = [fluidType char(varargin(5+i))];
+ end
+ 
+-% Load DLL
++% Load the shared library
+ RefpropLoadedState = getappdata(0, 'RefpropLoadedState');
+ if ~libisloaded(libName)
+     switch computer
+-        case {'GLNXA64', 'GLNX86', 'MACI', 'MACI64', 'SOL64'}
+-            BasePath = '/usr/local/REFPROP/';
+-            FluidDir = 'FLUIDS/';
++        case {'GLNX86'}
++            dllName = 'librefprop.so';
++            BasePath = 'REFPROPINSTALLPATH';
++            FluidDir = 'fluids/';
++        case {'GLNXA64', 'SOL64'}
++            dllName = 'librefprop.so';
++            BasePath = 'REFPROPINSTALLPATH';
++            FluidDir = 'fluids/';
++            prototype = @() rp_proto64();
++        case {'MACI'}
++            dllName = 'librefprop.dylib';
++            BasePath = 'REFPROPINSTALLPATH';
++            FluidDir = 'fluids/';
++        case {'MACI64'}
++            dllName = 'librefprop.dylib';
++            BasePath = 'REFPROPINSTALLPATH';
++            FluidDir = 'fluids/';
++            prototype = @() rp_proto64();
+         otherwise
+             BasePath = 'C:\Program Files\REFPROP\';
+             FluidDir = 'fluids\';
