@@ -148,37 +148,18 @@ function fixpath {
   echo " "
   echo " "
   echo " "
-  echo " 0) Make sure that you use the correct path."
-  read -e -p "Where did you install REFPROP? - " -i "/opt/refprop/" RPINSTPATH
+  echo " 1) Make sure that you use the correct path. We "
+  echo "    are going to patch the original refpropm.m  "
+  echo "    from NIST. "
+  DEFPATH="/usr/local/lib/"
+  read -e -p "    Where did you install REFPROP? default: $DEFPATH - "  RPINSTPATH
+  [ -z "${RPINSTPATH}" ] && RPINSTPATH="$DEFPATH"
   echo " "
-  echo " "
-  echo " 1) Go to the 'matlab' directory in your installation folder "
-  echo "    (`pwd`)"
-  echo "    In the file $1 find the line containing "
-  echo "    case {'GLNXA64', 'GLNX86', 'MACI', 'MACI64', 'SOL64'}"
-  echo "    (around line 194) and replace the whole case "
-  echo "    statement (3 lines) with:"
-  echo " "
-  echo "        case {'GLNX86'}"
-  echo "            dllName = 'librefprop.so';"
-  echo "            BasePath = '$RPINSTPATH';"
-  echo "            FluidDir = 'fluids/';"
-  echo "        case {'GLNXA64', 'SOL64'}"
-  echo "            dllName = 'librefprop.so';"
-  echo "            BasePath = '$RPINSTPATH';"
-  echo "            FluidDir = 'fluids/';"
-  echo "            prototype = @() rp_proto64();"
-  echo "        case {'MACI'}"
-  echo "            dllName = 'librefprop.dylib';"
-  echo "            BasePath = '$RPINSTPATH';"
-  echo "            FluidDir = 'fluids/';"
-  echo "        case {'MACI64'}"
-  echo "            dllName = 'librefprop.dylib';"
-  echo "            BasePath = '$RPINSTPATH';"
-  echo "            FluidDir = 'fluids/';"
-  echo "            prototype = @() rp_proto64();"
-  echo " "
-  echo "    save the file and proceed by pressing ENTER."
+  cp refpropm.patch.org refpropm.patch
+  ESCAPED=$(echo $RPINSTPATH | sed -e 's/[\/&]/\\&/g')
+  sed -i.du "s/REFPROPINSTALLPATH/$ESCAPED/g" "refpropm.patch"
+  patch "$1" < refpropm.patch
+  echo "    Done, proceed by pressing ENTER."
   read dummy 
 }
 
@@ -186,13 +167,17 @@ function fixpath64 {
   cp rp_proto64.m rp_proto64.m.tmp
   echo " "
   echo " "
-  echo " 2) Open Matlab, and run :"
-  echo "    \"cd `pwd`;\""
-  echo "    \"run('thunk.m');\""
-  echo "    proceed by pressing ENTER."
-  read dummy 
+  echo " 2) Generating the thunk library "
   mv rp_proto64.m rp_proto64.m.thunk
   mv rp_proto64.m.tmp rp_proto64.m
+  matlab -nodesktop -r "loadlibrary('librefprop','header.h','mfilename','rp_proto64')"
+  echo "    Tried to automatically generate the library. If the "
+  echo "    command failed, please run the command manually from "
+  echo "    from your MATLAB installation by executing: "
+  echo "    \"cd `pwd`\""
+  echo "    \"loadlibrary('librefprop','header.h','mfilename','rp_proto64')\""
+  echo "    after doing this, proceed by pressing ENTER."
+  read dummy 
   unamestr=`uname`
   if [[ "$unamestr" == 'Linux' ]]; then
       sed -i.du 's/REFPRP64_thunk_pcwin64/librefprop_thunk_glnxa64/g' rp_proto64.m

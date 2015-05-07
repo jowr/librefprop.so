@@ -6,11 +6,11 @@ For installation on a Linux or OSX machine, please follow the steps described be
 
 0.  Make sure that you have gcc and gfortran, for OSX use either [HPC](http://hpc.sourceforge.net/) **or** [Homebrew](http://brew.sh/) **and** install the [OSX command line tools](https://developer.apple.com/downloads). On a Linux machine, something like `apt-get install gcc` might do the job.
 1.  Get a copy of this repository, either by downloading the latest [release](https://github.com/jowr/librefprop.so/releases/latest) or the current development version as [zip file](https://github.com/jowr/librefprop.so/archive/master.zip) or simply clone the [repository](https://github.com/jowr/librefprop.so.git) with git.
-2.  Change the paths in the Makefile, if needed.
+2.  Change the paths in the Makefile around line 40, if needed.
 3.  Copy the REFPROP Fortran code to the *fortran* directory.
 4.  Put the *fluids* and *mixtures* folders from REFPROP into the *files* folder.
 5.  Call `make` to prepare the files. 
-6.  Use `make install` (as root user) to copy the files to the destination directories.
+6.  Use `sudo make install` (system install) or `make install` (as normal user) to copy the files to the destination directories.
 
 You can remove the files again by calling `make uninstall` (as root user). 
 
@@ -38,11 +38,11 @@ There is a makefile section and a shell script that help you with this. After in
 
 The test.m is a simple code you can use to check if the intergration works.
 
-Summary for the impatient:
-  * Go to the directory with the downloaded files and open a command prompt.
-  * Run `make` and then `sudo make install` to install the shared library *(Skip this if your administrator already installed REFPROP for you)*.
+### Installation steps
+  * Get the Git repository and install the library *(Skip this if your administrator already installed REFPROP for you)*.
+  * Go to the directory with the downloaded librefprop.so files and open a command prompt.
   * Run `make matlab` to download files and edit them as written in the terminal.
-  * Run `sudo make matlab-install` to copy the matlab file to `/opt/refprop`.
+  * Make sure to put the `refpropm.m` file into a folder that is in your MATLABPATH, run `addpath(FOLDERNAME)` if required.
 
 ### MATLAB 64 bit Integration
 This part was contributed partly by [nkampy](https://github.com/nkampy) and [speredenn](https://github.com/speredenn) and is still experimental. Please open new issues if you encounter any problems. Problems are likely to be encountered in setting up matlab with gcc, needed to use the builtin MEX functionality, which is required for the load library command in the thunk.m file. We hope that the user community and [nkampy's](https://github.com/nkampy) comments, left at the mathworks website ([here](http://www.mathworks.com/matlabcentral/answers/125301-maverick-r2014a-loadlibrary-error-loaddefinedlibrary) and [here](http://www.mathworks.com/matlabcentral/answers/124597-how-to-setup-gfortran-on-mac-osx-10-9-and-matlab-r2014a)), will help figuring out a good solution.
