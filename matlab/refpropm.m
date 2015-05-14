@@ -205,7 +205,7 @@ if ~libisloaded(libName)
             dllName   = 'librefprop.so';
             BasePath  = '/opt/refprop/';
             FluidDir  = 'fluids/';
-            prototype = @rp_proto64;
+            prototype = @() rp_proto64(BasePath);
         case {'MACI'}
             dllName   = 'librefprop.dylib';
             BasePath  = '/opt/refprop/';
@@ -215,7 +215,7 @@ if ~libisloaded(libName)
             dllName   = 'librefprop.dylib';
             BasePath  = '/opt/refprop/';
             FluidDir  = 'fluids/';
-            prototype = @rp_proto64;
+            prototype = @() rp_proto64(BasePath);
         case {'PCWIN'}
             dllName   = 'REFPROP.dll';
             BasePath  = 'C:\Program Files\REFPROP\';
@@ -225,7 +225,7 @@ if ~libisloaded(libName)
             dllName   = 'REFPRP64.dll';
             BasePath  = 'C:\Program Files (x86)\REFPROP\';
             FluidDir  = 'fluids/';
-            prototype = @rp_proto64;
+            prototype = @() rp_proto64(BasePath);
         otherwise
             error(strcat(computer,' is an unknown system. Please edit the refpropm.m file and add an entry for your system above this error message.'));
     end
