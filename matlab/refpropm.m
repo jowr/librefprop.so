@@ -154,6 +154,12 @@
 %       make other modifications.
 %       Added outputs B, E, F, J, and R.
 %       HQ input regressed.
+%
+%   Jorrit Wronski, IPU Refrigeration and Energy Technology 2015-05-09
+%       Minor changes to load shared libraries on OS X and Linux systems 
+%       Tested with MATLAB 2014a on Linux
+%       Visit https://github.com/jowr/librefprop.so for more information
+% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function varargout = refpropm( varargin )
@@ -167,11 +173,6 @@ cp = 0;
 w = 0;
 hjt = 0;
 phaseFlag = 0;
-
-archstr = computer('arch');
-libName = 'refprop';
-dllName = 'REFPROP.dll';
-prototype = @rp_proto;
 
 % Input Sanity Checking
 nc_base = 5;
@@ -190,32 +191,53 @@ for i = 1:numComponents
     fluidType = [fluidType char(varargin(5+i))];
 end
 
-% Load DLL
+libName = 'refprop';
+% Load the shared library
 RefpropLoadedState = getappdata(0, 'RefpropLoadedState');
 if ~libisloaded(libName)
     switch computer
-        case {'GLNXA64', 'GLNX86', 'MACI', 'MACI64', 'SOL64'}
-            BasePath = '/usr/local/REFPROP/';
-            FluidDir = 'FLUIDS/';
+        case {'GLNX86'}
+            dllName   = 'librefprop.so';
+            BasePath  = '/opt/refprop/';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto;
+        case {'GLNXA64', 'SOL64'}
+            dllName   = 'librefprop.so';
+            BasePath  = '/opt/refprop/';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto64;
+        case {'MACI'}
+            dllName   = 'librefprop.dylib';
+            BasePath  = '/opt/refprop/';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto;
+        case {'MACI64'}
+            dllName   = 'librefprop.dylib';
+            BasePath  = '/opt/refprop/';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto64;
+        case {'PCWIN'}
+            dllName   = 'REFPROP.dll';
+            BasePath  = 'C:\Program Files\REFPROP\';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto;
+        case {'PCWIN64'}
+            dllName   = 'REFPRP64.dll';
+            BasePath  = 'C:\Program Files (x86)\REFPROP\';
+            FluidDir  = 'fluids/';
+            prototype = @rp_proto64;
         otherwise
-            BasePath = 'C:\Program Files\REFPROP\';
-            FluidDir = 'fluids\';
-
-            if ~exist(BasePath,'dir')
-                BasePath = 'C:\Program Files (x86)\REFPROP\';
-            end
-
-            if archstr == 'win64'
-                %If you are using a 64 bit version of MatLab, please contact Eric Lemmon for the DLL listed below. (eric.lemmon@nist.gov)
-                dllName = 'REFPRP64.dll';
-                prototype = @() rp_proto64(BasePath);
-            end
+            error(strcat(computer,' is an unknown system. Please edit the refpropm.m file and add an entry for your system above this error message.'));
     end
     % v=char(calllib('REFPROP','RPVersion',zeros(255,1))'); % Useful for debugging...
     RefpropLoadedState = struct('FluidType', 'none', 'BasePath', BasePath, 'FluidDir', FluidDir, 'nComp', 0, 'mixFlag', 0, 'z_mix', 0);
     setappdata(0, 'RefpropLoadedState', RefpropLoadedState);
 
-    % the following returns 0 if refprop.dll does not exist, 1 if refprop.dll is a variable name in the workspace, 2 if C:\Program Files (x86)\REFPROP\refprop.dll exist, and 3 if refprop.dll exist but is a .dll file in the MATLAB path
+    % the following returns 
+    % 0 - if refprop.dll does not exist, 
+    % 1 - if refprop.dll is a variable name in the workspace, 
+    % 2 - if C:\Program Files (x86)\REFPROP\refprop.dll exists, and 
+    % 3 - if refprop.dll exists but is a .dll file in the MATLAB path
     if ~ismember(exist(strcat(BasePath, dllName),'file'),[2 3])
         dllName = lower(dllName);
     end
