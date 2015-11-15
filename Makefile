@@ -22,7 +22,7 @@ MV :=mv
 
 # used for the output
 MAJORVERSION:=9
-MINORVERSION:=1
+MINORVERSION:=12
 THENAME     :=refprop
 USERNAME    :=$(shell whoami)
 UNAME       :=$(shell uname -s)
@@ -182,9 +182,9 @@ endif
 
 .PHONY        : install-mac
 install-mac   : header library install-fluids
-	install -d -m 755 -o root -g wheel $(HEADINST) $(LIBINST)
-	install -m 644 -o root -g wheel $(BINHEADERFILES) $(HEADINST)
-	install -m 644 -o root -g wheel $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
+	install -d -m 755 -o root -g admin $(HEADINST) $(LIBINST)
+	install -m 644 -o root -g admin $(BINHEADERFILES) $(HEADINST)
+	install -m 644 -o root -g admin $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
 	$(LN) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	
