@@ -13,7 +13,7 @@ RM :=rm -f
 CP :=cp
 CD :=cd
 CMF:=664
-CMG:=775
+CMD:=775
 CH :=chmod
 MK :=mkdir -p
 LD :=ldconfig
@@ -200,11 +200,11 @@ endif
 
 .PHONY        : install-mac
 install-mac   : header library install-fluids
-	install -d -m $(CMG) -o root -g admin $(HEADINST) $(LIBINST)
-	install -m $(CMF) -o root -g admin $(BINHEADERFILE) $(INSTHEADERFILE)
-	install -m $(CMF) -o root -g admin $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION)      $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
-	$(LN) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
-	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)                                 $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	install -d -m $(CMD) -o $(USERNAME) -g admin $(HEADINST) $(LIBINST)
+	install    -m $(CMF) -o $(USERNAME) -g admin $(BINHEADERFILE) $(INSTHEADERFILE)
+	install    -m $(CMF) -o $(USERNAME) -g admin $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
+	$(LN) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)    $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)                                    $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	
 .PHONY       : install-fluids
 install-fluids :
