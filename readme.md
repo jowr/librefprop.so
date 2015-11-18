@@ -10,18 +10,19 @@ For installation on a Linux or OSX machine, please follow the steps described be
 3.  Copy the REFPROP Fortran code to the *fortran* directory.
 4.  Put the *fluids* and *mixtures* folders from REFPROP into the *files* folder.
 5.  Call `make` to prepare the files. 
-6.  Use `make install` (as root user) to copy the files to the destination directories.
+6.  Either you use `sudo make install` to copy the files to `/usr/local/lib`, `/usr/local/include` and `/opt/refprop` **or** you run `make install` as normal user to copy the files to `$(HOME)/.refprop/lib`, `$(HOME)/.refprop/include` and `$(HOME)/.refprop`.
 
 You can remove the files again by calling `make uninstall` (as root user). 
 
 ## Testing the Installation
-There is a simple Fortran file to test the library. You can call `make fortest` and run the executable with `./bin/ex_mix_for` to display some R410 two-phase properties:
+There is a simple Fortran file to test the library. You can call `make fortest` and run the executable `./bin/fortest` to display some R410 two-phase properties:
 
 | Temperature | Pressure  | Density, liquid | Density, vapour |
 |-------------|-----------|-----------------|-----------------|
 | 300.0000    | 1740.5894 |   14.4550       |   0.9628        |
 | 300.0000    | 1735.1589 |   14.2345       |   0.9603        |
 
+There is also a simple C++ file to test the library: Call `make cpptest` and run the executable `./bin/cpptest` to display some R410 two-phase properties:
 
 ## Python Integration
 There is a basic python package based on the examples from
