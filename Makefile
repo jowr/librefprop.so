@@ -12,26 +12,41 @@
 RM :=rm -f
 CP :=cp
 CD :=cd
-CH :=chmod 0644
+CMF:=664
+CMD:=775
+CH :=chmod
 MK :=mkdir -p
 LD :=ldconfig
 LN :=ln -sf
 SE :=sed
 CU :=curl
 MV :=mv
+CA :=cat
 
 # used for the output
 MAJORVERSION:=9
-MINORVERSION:=1
+MINORVERSION:=12
 THENAME     :=refprop
 USERNAME    :=$(shell whoami)
+USERHOME    :=$(HOME)
 UNAME       :=$(shell uname -s)
 ARCH        :=$(shell getconf LONG_BIT)
+
+# Fix architecture for msys builds 
+ifeq ($(ARCH), )
+  ARCH      :=32
+endif
+ifeq ($(ARCH), 64)
+  ARCHFLAG  :=-m64
+else
+  ARCHFLAG  :=-m32
+endif
 
 ###########################################################
 #  Setting the directories for library, header and 
 #  binary files created in this makefile. 
 ###########################################################
+HEADIR     :=./externals/REFPROP-headers
 LIBDIR     :=./fortran
 FILDIR     :=./files
 SRCDIR     :=./src
@@ -43,9 +58,9 @@ ifeq ($(USERNAME),root)
   HEADINST :=/usr/local/include
   FILINST  :=/opt/refprop
 else 
-  LIBINST  :=/home/$(USERNAME)/lib
-  HEADINST :=/home/$(USERNAME)/include
-  FILINST  :=/home/$(USERNAME)/refprop
+  LIBINST  :=$(USERHOME)/.refprop/lib
+  HEADINST :=$(USERHOME)/.refprop/include
+  FILINST  :=$(USERHOME)/.refprop
 endif
 
 USEOPENMP  :=TRUE # TRUE or FALSE
@@ -67,9 +82,9 @@ OPTFLAGS   =-O3 -ffast-math# -ffloat-store # optimisation, remove for debugging
 FEXT       =.f
 FC         =gfortran
 ifeq ($(USEOPENMP), TRUE)
-FFLAGS     =$(OPTFLAGS) -fPIC -fopenmp# -Wall -pedantic# -fno-underscoring
+FFLAGS     =$(ARCHFLAG) $(OPTFLAGS) -fPIC -fopenmp# -Wall -pedantic# -fno-underscoring
 else
-FFLAGS     =$(OPTFLAGS) -fPIC #-fopenmp# -Wall -pedantic# -fno-underscoring
+FFLAGS     =$(ARCHFLAG) $(OPTFLAGS) -fPIC #-fopenmp# -Wall -pedantic# -fno-underscoring
 endif
 
 ###########################################################
@@ -77,40 +92,43 @@ endif
 #  compiler or if you would like to use other flags. 
 ###########################################################
 CPPC       =g++
-CPPFLAGS   =$(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8
+CPPFLAGS   =$(ARCHFLAG) $(OPTFLAGS) -Wall -pedantic -fbounds-check -ansi -Wpadded -Wpacked -mpreferred-stack-boundary=8
 
 ###########################################################
 #  Change these lines if you are using a different C
 #  compiler or if you would like to use other flags. 
 ###########################################################
 CC         =gcc
-CFLAGS     =$(CPPFLAGS)
+CFLAGS     =$(ARCHFLAG) $(CPPFLAGS)
 
 ###########################################################
 #  Change these lines if you have other needs regarding
 #  the library file.  
 ###########################################################
 LIBFILE   =PASS_FTN_ALT
-LIBRARY   =lib$(THENAME)
 ifeq ($(UNAME), Linux)
+  LIBRARY   =lib$(THENAME)
   DYNAMICLIBRARYEXTENSION =.so
   LIBFLAGS                =-rdynamic -lc -shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
-endif
-ifeq ($(UNAME), Darwin)
+else ifeq ($(UNAME), Darwin)
+  LIBRARY   =lib$(THENAME)
   DYNAMICLIBRARYEXTENSION =.dylib
-  LIBFLAGS                =-dynamiclib -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION) -lgfortran -lm -lgomp
+  LIBFLAGS                =-dynamiclib -static -o $(BINDIR)/$(LIBRARY)$(DYNAMICLIBRARYEXTENSION) -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,$(MAJORVERSION).$(MINORVERSION),-current_version,$(MAJORVERSION).$(MINORVERSION),-install_name,$(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(DYNAMICLIBRARYEXTENSION) -lgfortran -lm -lgomp
   #LIBFLAGS                =-static -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LIBFLAGS                =-dynamic -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) -install_name $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) -current_version $(MAJORVERSION) -compatibility_version $(MAJORVERSION) $(FLINKFLAGS)
   #LINKCOMM                = libtool $(LIBFLAGS) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+else 
+  LIBRARY   =$(THENAME)
+  DYNAMICLIBRARYEXTENSION =.dll
+  LIBFLAGS                =-shared -Wl,-soname,$(LIBRARY)$(DYNAMICLIBRARYEXTENSION).$(MAJORVERSION)
 endif
-LIBRARYEXTENSION        =$(DYNAMICLIBRARYEXTENSION)
-LINKCOMM                = $(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
-HEADERFILE              =$(THENAME)_lib
-HEADEREXTENSION         =.h
-HEADERFILES             =$(THENAME)_lib.h $(THENAME)_constants.h $(THENAME)_names.h $(THENAME)_types_c.h $(THENAME)_types_cpp.h $(THENAME)_types.h
-SRCHEADERFILES          =$(SRCDIR)/$(THENAME)_lib.h $(SRCDIR)/$(THENAME)_constants.h $(SRCDIR)/$(THENAME)_names.h $(SRCDIR)/$(THENAME)_types_c.h $(SRCDIR)/$(THENAME)_types_cpp.h $(SRCDIR)/$(THENAME)_types.h
-BINHEADERFILES          =$(BINDIR)/$(THENAME)_lib.h $(BINDIR)/$(THENAME)_constants.h $(BINDIR)/$(THENAME)_names.h $(BINDIR)/$(THENAME)_types_c.h $(BINDIR)/$(THENAME)_types_cpp.h $(BINDIR)/$(THENAME)_types.h
-INSTHEADERFILES         =$(HEADINST)/$(THENAME)_lib.h $(HEADINST)/$(THENAME)_constants.h $(HEADINST)/$(THENAME)_names.h $(HEADINST)/$(THENAME)_types_c.h $(HEADINST)/$(THENAME)_types_cpp.h $(HEADINST)/$(THENAME)_types.h
+LIBRARYEXTENSION =$(DYNAMICLIBRARYEXTENSION)
+LINKCOMM         =$(FC) $(LIBFLAGS) $(FFLAGS) -o $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILES)
+HEADEREXTENSION  =.h
+HEADERFILE       =$(THENAME)_lib$(HEADEREXTENSION)
+SRCHEADERFILE    =$(HEADIR)/REFPROP_lib.h
+BINHEADERFILE    =$(BINDIR)/$(HEADERFILE)
+INSTHEADERFILE   =$(HEADINST)/$(HEADERFILE)
 #
 ### List of files to compile
 LIBOBJECTFILES = \
@@ -163,10 +181,10 @@ endif
 .PHONY        : install-linux
 install-linux : header library install-fluids
 	$(MK) $(HEADINST) $(LIBINST)
-	$(MV) $(BINHEADERFILES) $(HEADINST)
+	$(MV) $(BINHEADERFILE) $(INSTHEADERFILE)
 	$(CP) $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
-	$(CH) $(INSTHEADERFILES) 
-	$(CH) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
+	$(CH) $(CMF) $(INSTHEADERFILE) 
+	$(CH) $(CMF) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION).$(MINORVERSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION).$(MAJORVERSION)                 $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)                                 $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
@@ -182,22 +200,22 @@ endif
 
 .PHONY        : install-mac
 install-mac   : header library install-fluids
-	install -d -m 755 -o root -g wheel $(HEADINST) $(LIBINST)
-	install -m 644 -o root -g wheel $(BINHEADERFILES) $(HEADINST)
-	install -m 644 -o root -g wheel $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
-	$(LN) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
-	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION) $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	install -d -m $(CMD) -o $(USERNAME) -g admin $(HEADINST) $(LIBINST)
+	install    -m $(CMF) -o $(USERNAME) -g admin $(BINHEADERFILE) $(INSTHEADERFILE)
+	install    -m $(CMF) -o $(USERNAME) -g admin $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)
+	$(LN) $(LIBINST)/$(LIBRARY).$(MAJORVERSION).$(MINORVERSION)$(LIBRARYEXTENSION)    $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)
+	$(LN) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)                                    $(FILINST)/$(LIBRARY)$(LIBRARYEXTENSION)
 	
 .PHONY       : install-fluids
 install-fluids :
 	$(MK) $(FILINST)
 	$(CP) -r $(FILDIR)/* $(FILINST)
-	chmod 755 $(FILINST) $(FILINST)/fluids $(FILINST)/mixtures
-	$(CH) $(FILINST)/fluids/* $(FILINST)/mixtures/*
+	$(CH) $(CMD) $(FILINST) $(FILINST)/fluids $(FILINST)/mixtures
+	$(CH) $(CMF) $(FILINST)/fluids/* $(FILINST)/mixtures/*
 
 .PHONY       : uninstall
 uninstall    : 
-	$(RM) $(INSTHEADERFILES)
+	$(RM) $(INSTHEADERFILE)
 	$(RM) $(LIBINST)/$(LIBRARY)$(LIBRARYEXTENSION)*
 	$(RM) -r $(FILINST)
 
@@ -206,7 +224,7 @@ uninstall    :
 #  be used as a shared object.
 ###########################################################
 .PHONY     : header
-header     : $(BINHEADERFILES)
+header     : $(BINHEADERFILE)
 
 .PHONY     : library
 library    : $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) 
@@ -217,7 +235,7 @@ $(BINDIR)/$(LIBRARY)$(LIBRARYEXTENSION) : $(SRCDIR)/$(LIBFILE).o $(LIBOBJECTFILE
 
 $(SRCDIR)/$(LIBFILE)$(FEXT): $(LIBDIR)/PASS_FTN.FOR $(LIBDIR)/COMMONS$(FEXT) $(LIBDIR)/COMTRN$(FEXT)
 	$(SE) 's/dll_export/!dll_export/g' $(LIBDIR)/PASS_FTN.FOR > $(SRCDIR)/$(LIBFILE)$(FEXT)
-	cat $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE)$(FEXT)
+	$(CA) $(SRCDIR)/$(LIBFILE).FOR.tpl >> $(SRCDIR)/$(LIBFILE)$(FEXT)
 	$(SE) -i.du "s/'commons.for'/'COMMONS$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
 	$(SE) -i.du "s/'comtrn.for'/'COMTRN$(FEXT)'/" $(SRCDIR)/$(LIBFILE)$(FEXT)
 
@@ -287,7 +305,11 @@ $(MATDIR)/%.m.org:
 ###########################################################
 #  General rulesets for compilation.
 ###########################################################
-$(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
+#$(BINDIR)/%$(HEADEREXTENSION): $(SRCDIR)/%$(HEADEREXTENSION)
+#	$(MK) $(BINDIR)
+#	$(CP) $< $@
+
+$(BINHEADERFILE): $(SRCHEADERFILE)
 	$(MK) $(BINDIR)
 	$(CP) $< $@
 
@@ -314,29 +336,28 @@ clean:
 
 ###########################################################
 #  Compile a simple example to illustrate the connection
-#  between C++, C and Fortran as well as the usage of the 
+#  between C++ and Fortran as well as the usage of the 
 #  created library.
 ###########################################################
-.PHONY               : ctest
-ctest                : $(BINDIR)/ex_mix_c
-$(BINDIR)/ex_mix_c   : $(SRCDIR)/ex_mix.c
-	$(CC) $(CFLAGS) -g -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.c
-	$(CC) $(FLINKFLAGS) -g -o $(BINDIR)/ex_mix_c $(SRCDIR)/ex_mix.o $(LIBS)
+.PHONY            : test
+test              : cpptest fortest
 
-.PHONY               : cpptest
-cpptest              : $(BINDIR)/ex_mix_cpp
-$(BINDIR)/ex_mix_cpp : $(SRCDIR)/ex_mix.cpp
-	$(CPPC) $(CPPFLAGS) -g -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.cpp
-	$(CPPC) $(CPPFLAGS) -g -o $(BINDIR)/ex_mix_cpp $(SRCDIR)/ex_mix.o $(LIBS) -lPocoFoundation
+.PHONY            : cpptest
+cpptest           : $(BINDIR)/cpptest
+$(BINDIR)/cpptest : $(HEADIR)/main.cpp
+	$(CPPC) $(CPPFLAGS) -g -o $<.o -c $<
+	$(CPPC) $(CPPFLAGS) -g -o $@ $<.o -L$(BINDIR) $(LIBS) -lgfortran
 
-.PHONY               : fortest
-fortest              : $(BINDIR)/ex_mix_for
-$(BINDIR)/ex_mix_for : $(SRCDIR)/ex_mix.for
-	$(FC) $(FFLAGS) -g -o $(SRCDIR)/ex_mix.o -c $(SRCDIR)/ex_mix.for
-	$(FC) $(FLINKFLAGS) -g -o $(BINDIR)/ex_mix_for $(SRCDIR)/ex_mix.o $(LIBS) -lgfortran
+.PHONY            : fortest
+fortest           : $(BINDIR)/fortest
+$(BINDIR)/fortest : $(SRCDIR)/ex_mix.for
+	$(FC) $(FFLAGS)     -g -o $<.o -c $<
+	$(FC) $(FLINKFLAGS) -g -o $@ $<.o -L$(BINDIR) $(LIBS)
 	
-.PHONY               : print-flags
-print-flags:
+.PHONY           : print-flags
+print-flags      :
 	@echo "LINKCOMM: $(LINKCOMM)\n"
 	@echo "LIB     : $(SRCDIR)/$(LIBFILE)$(FEXT)\n"
 	@echo "USERNAME: $(USERNAME)\n"
+	@echo "USERHOME: $(USERHOME)\n"
+	@echo "ARCH    : $(ARCH)\n"
