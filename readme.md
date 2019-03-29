@@ -1,4 +1,10 @@
-#Welcome to librefprop.so!
+
+# Please use the official CMake files
+Have a look at https://github.com/usnistgov/REFPROP-cmake before you start looking at this outdated repository.
+
+... if you really want to work with ancient scripts - please go ahead.
+
+# Welcome to librefprop.so!
 These files allow you to compile the REFPROP fluid property database as a shared library for Linux and MacOS systems. This enables you to use the Fortran sources developed by NIST providing an alternative to the REFPROP.dll for Windows. 
 
 ## Installation Instructions
